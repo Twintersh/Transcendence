@@ -1,0 +1,21 @@
+.home-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+  
+.logo img {
+	max-width: 100%;
+}
+
+.login-button {
+	background-color: #007bff;
+	color: #fff;
+	padding: 10px 20px;
+	border: none;
+	cursor: pointer;
+}
+  
+.decorations {
+	color: #fff;
+}
