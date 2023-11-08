@@ -1,10 +1,18 @@
 import { Component } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'app-login-modal',
+  selector: 'login-modal',
   templateUrl: './login-modal.component.html',
   styleUrls: ['./login-modal.component.scss']
 })
+
 export class LoginModalComponent {
-	display = false;
+	constructor(private readonly NgbModal: NgbModal) {
+	}
+
+	close(): void {
+		console.log('close()');
+		this.NgbModal.dismissAll('close');
+	}
 }
