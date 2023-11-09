@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { LoginModalComponent } from '../login-modal/login-modal.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { LoginModalComponent } from '../login-modal/login-modal.component';
 
 @Component({
   selector: 'landing',
@@ -12,8 +12,8 @@ export class LandingComponent {
 	constructor(private readonly ngbModal: NgbModal) {
 	}
 
-	loginModal(): void {
+	openModal(): void {
 		console.log('loginModal()');
-		this.ngbModal.open(LoginModalComponent, { size: 'lg', centered: true });
+		this.ngbModal.open(LoginModalComponent, { size: 'md', centered: true });
 	}
 }

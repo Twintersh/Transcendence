@@ -1,0 +1,61 @@
+@import '../../../../../styles.scss'; 
+
+.modal {
+	font-family: 'Gopher', sans-serif;
+}
+
+.modal-header {
+	font-family: 'Gopher', sans-serif;
+	text-align: center;
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+	border: none;
+	background-color: #53A6AC;
+	color: #000;
+}
+
+.title {
+    flex-grow: 1; /* Allow the title to take up all available space */
+    margin-left: 25px; /* Remove any default margin that may exist */
+}
+
+.modal-content {
+	background-color: #53A6AC;
+	text-align: center;
+	border: none;
+	border-radius: 0px;
+}
+
+.modal-footer {
+	font-family: 'GopherBoldItalic', 'Gopher', sans-serif;
+	font-size: small;
+	background-color: #53A6AC;
+	color:#000;
+	align-items: center;
+	border: none;
+	justify-content: center;
+}
+
+.buttons {
+	font-family: Gopher, sans-serif;
+	margin-top: 20px;
+}
+
+.signUp {
+	@extend .clickableButtons;
+	background-color: #FFC801;
+	border: solid 3px #000;
+	border-radius: 5px;	
+	color: #000;
+	box-shadow: 5px 5px 0px 0px #000;
+}
+
+.sign42 {
+	margin-bottom: 20px;
+	background-color: #FE90E7;
+	border: solid 3px #000;
+	border-radius: 5px;
+	color: #000;
+	box-shadow: 5px 5px 0px 0px #000;
+}

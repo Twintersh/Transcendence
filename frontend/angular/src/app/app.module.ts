@@ -3,14 +3,16 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './feature-modules/home/components/home/home.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LandingComponent } from './feature-modules/landing/components/landing/landing.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { PageNotFoundComponent } from './core-modules/pagenotfound/pagenotfound.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-	LandingComponent
+	LandingComponent,
+	PageNotFoundComponent
   ],
   imports: [
     BrowserModule,

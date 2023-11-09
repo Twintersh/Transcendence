@@ -1,0 +1,86 @@
+/* General Styles */
+body {
+    font-family: Gopher, sans-serif;
+    background-color: #FFECDE;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header Styles */
+.header {
+    background-color: #FFECDE;
+    color: #000;
+    text-align: center;
+    padding: 20px;
+}
+
+.logo {
+    max-width: 100px;
+    height: auto;
+}
+
+/* Main Content Styles */
+.main-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+	position: relative;
+	left: -10%;
+	max-width: 50%;
+	text-align: left;
+	z-index: 1;
+}
+
+.presentation {
+	font-size: xx-large;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+  
+/* Styles for the button */
+.play-button {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+
+	/* Styles for the button */
+	background-color: #9D95E7;
+	padding: 10px 20px;
+	border:solid #000;
+	box-shadow: 5px 5px 0 0 #000;
+    transition: 0.15s;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.play-button:active {
+	box-shadow: 0px 0px 0px 0px;
+	transform: translate(5px, 5px);
+}
+
+.project-name {
+    font-size: 36px;
+    margin: 20px 0;
+}
+
+/* Footer Styles */
+.footer {
+    background-color: #9D95E7;
+	font-size: small;
+    color: #000;
+    text-align: center;
+    padding-top: 10px;
+	padding-bottom: 10px;
+}
+footer > p {
+	margin: 0;
+}

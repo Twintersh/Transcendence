@@ -1,0 +1,46 @@
+body {
+	font-family: 'Gopher', sans-serif;
+	background-color: #FFECDE;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	margin: 0;
+}
+
+.not-found-container {
+	text-align: center;
+	background-color: #53A6AC;
+	border-radius: 4px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	padding: 20px;
+}
+
+.error-title {
+	font-size: 5rem;
+	color: #000;
+	margin: 0;
+}
+
+.error-message {
+	font-size: 1.5rem;
+	color: #333;
+	margin: 20px 0;
+}
+
+.error-link {
+	display: inline-block;
+	background-color: #FE90E7;
+	color: #000;
+	text-decoration: none;
+	padding: 10px 20px;
+	border: solid 3px #000;
+	border-radius: 5px;
+	transition: background-color 0.3s;
+	box-shadow: 5px 5px 0px 0px #000;
+	margin-bottom: 10px;
+}
+
+.error-link:hover {
+	background-color: #FE90E7;
+}

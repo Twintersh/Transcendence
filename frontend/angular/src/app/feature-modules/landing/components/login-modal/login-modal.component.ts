@@ -4,15 +4,21 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'login-modal',
   templateUrl: './login-modal.component.html',
-  styleUrls: ['./login-modal.component.scss']
+  styleUrls: ['./login-modal.component.scss'],
 })
 
 export class LoginModalComponent {
+	displayForm = false;
+
 	constructor(private readonly NgbModal: NgbModal) {
 	}
 
 	close(): void {
-		console.log('close()');
 		this.NgbModal.dismissAll('close');
+	}
+
+	signUp(): void {
+		this.displayForm = true;
+		console.log('displayForm');
 	}
 }
