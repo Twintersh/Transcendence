@@ -19,6 +19,5 @@ export class LoginModalComponent {
 
 	signUp(): void {
 		this.displayForm = true;
-		console.log('displayForm');
 	}
 }

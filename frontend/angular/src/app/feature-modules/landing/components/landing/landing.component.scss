@@ -1,6 +1,7 @@
+@import '../../../../../styles.scss';
 /* General Styles */
 body {
-    font-family: Gopher, sans-serif;
+    font-family: 'Gopher', 'arial', sans-serif;
     background-color: #FFECDE;
     margin: 0;
     padding: 0;
@@ -48,6 +49,7 @@ body {
   
 /* Styles for the button */
 .play-button {
+	@extend .clickableButtons;		
 	position: absolute;
 	right: 0;
 	bottom: 0;
@@ -55,21 +57,6 @@ body {
 	/* Styles for the button */
 	background-color: #9D95E7;
 	padding: 10px 20px;
-	border:solid #000;
-	box-shadow: 5px 5px 0 0 #000;
-    transition: 0.15s;
-	border-radius: 4px;
-	cursor: pointer;
-}
-
-.play-button:active {
-	box-shadow: 0px 0px 0px 0px;
-	transform: translate(5px, 5px);
-}
-
-.project-name {
-    font-size: 36px;
-    margin: 20px 0;
 }
 
 /* Footer Styles */
