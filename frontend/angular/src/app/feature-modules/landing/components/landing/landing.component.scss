@@ -12,6 +12,7 @@ body {
 
 /* Header Styles */
 .header {
+	font-size: 7rem;
     background-color: #FFECDE;
     color: #000;
     text-align: center;
@@ -20,6 +21,9 @@ body {
 
 .logo {
     max-width: 100px;
+	align-items: center;
+	align-content: middle;
+	margin-bottom: 15px;
     height: auto;
 }
 
@@ -49,7 +53,8 @@ body {
   
 /* Styles for the button */
 .play-button {
-	@extend .clickableButtons;		
+	@extend .clickableButtons;	
+	font-size: xx-large;	
 	position: absolute;
 	right: 0;
 	bottom: 0;

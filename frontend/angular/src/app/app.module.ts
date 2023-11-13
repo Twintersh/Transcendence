@@ -4,19 +4,19 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './feature-modules/home/components/home/home.component';
-import { LandingComponent } from './feature-modules/landing/components/landing/landing.component';
+import { LandingModule } from './feature-modules/landing/landing.module';
 import { PageNotFoundComponent } from './core-modules/pagenotfound/pagenotfound.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-	LandingComponent,
 	PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+	LandingModule,
     NgbModule
   ],
   providers: [],

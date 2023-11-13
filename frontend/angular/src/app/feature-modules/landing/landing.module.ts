@@ -12,6 +12,10 @@ import { LoginFormComponent } from './components/login-form/login-form.component
   ],
   imports: [
     CommonModule
+  ],
+  exports: [
+	LoginModalComponent,
+	LoginFormComponent
   ]
 })
 export class LandingModule { }

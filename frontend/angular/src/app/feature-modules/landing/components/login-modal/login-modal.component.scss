@@ -44,6 +44,7 @@
 
 .signUp {
 	@extend .clickableButtons;
+	font-size: larger;
 	background-color: #FFC801;
 	border: solid 3px #000;
 	border-radius: 5px;	
@@ -52,6 +53,8 @@
 }
 
 .sign42 {
+	@extend .clickableButtons;
+	font-size: larger;
 	margin-bottom: 20px;
 	background-color: #FE90E7;
 	border: solid 3px #000;
