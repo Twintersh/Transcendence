@@ -1,0 +1,117 @@
+@import '../../../../../styles.scss';
+
+.body {
+	display: flex;
+	height: 100vh;
+	flex-direction: row;
+	background-color: #FFECDE;
+}
+
+.profile-container {
+	font-family: 'Gopher', sans-serif;
+	display: flex;
+	flex-direction: column;
+	width: 30vw;
+	margin: 20px auto;
+  
+	.profile-info {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+  
+		.profile-pic {
+			width: 240px;
+			height: 240px;
+			background-image: url(https://www.w3schools.com/howto/img_avatar.png);
+			background-position:50% 50%;
+			background-repeat:no-repeat;
+			background-size:cover;
+			border-radius: 50%;
+			margin-bottom: 10px;
+		}
+
+		.user-details {
+			text-align: center;
+			margin-bottom: 10px;
+
+			h2 {
+				margin-bottom: 10px;
+			}
+
+			p {
+				margin-top: 10px;
+			}
+		}
+  
+		.edit-button {
+			@extend .clickableButtons;
+			padding: 8px 16px;
+			background-color: #FFC801;
+			cursor: pointer;
+			transition: background-color 0.3s;
+
+			&:hover {
+				background-color: #2980b9;
+			}
+		}
+	}
+
+	.achievements {
+		align-self: center;
+		font-family: 'Gopher', sans-serif;
+		margin-top: 40px;
+	}
+}
+
+.stats-container {
+	display: flex;
+	flex-direction: column;
+	width : 70vw;
+	align-items: center;
+
+	h2 {
+		font-family: 'Gopher', sans-serif;
+		position: sticky;
+		margin: 10px 10px;
+		width: 60vw;
+		text-align: center;
+		top: 0; // Stick the element at the top
+		background-color: #FFECDE; // Optional: Set a background color for contrast
+		z-index: 1; // Ensure it's above the scrolling content
+		border: solid 4px #000;
+		box-shadow: 5px 5px 0px 0px #000;
+	}
+
+	.gameList {
+		display: flex;
+		flex-direction: column;
+		padding: 10px 10px;
+		border-left: 1px solid #000;
+		max-height: 65vh;
+		width: 65vw;
+		overflow-y: auto;
+		align-items: center;
+	
+		.matchcontainer {
+			display: flex;
+			position: relative;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			margin: 0 auto;
+		}
+	}
+
+	.generalStats {
+		font-family: 'Gopher', sans-serif;
+		display: flex;
+		flex-direction: column;
+		padding: 10px 10px;
+		border-left: 1px solid #000;
+		max-height: 65vh;
+		width: 65vw;
+		overflow-y: auto;
+		align-items: center;
+	}
+}
+  

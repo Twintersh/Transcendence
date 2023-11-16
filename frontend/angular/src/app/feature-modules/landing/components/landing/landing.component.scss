@@ -17,14 +17,8 @@ body {
     color: #000;
     text-align: center;
     padding: 20px;
-}
-
-.logo {
-    max-width: 100px;
-	align-items: center;
-	align-content: middle;
-	margin-bottom: 15px;
-    height: auto;
+	display: flex;
+	justify-content: center;
 }
 
 /* Main Content Styles */
@@ -75,4 +69,10 @@ body {
 }
 footer > p {
 	margin: 0;
+}
+
+.main {
+	display: grid;
+	place-items: center;
+	position: relative;
 }

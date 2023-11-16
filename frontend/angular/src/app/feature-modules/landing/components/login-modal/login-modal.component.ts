@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { HttpClient } from '@angular/common/http';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { Oauth42Service } from 'src/app/services/oauth42.service';
 
 @Component({
   selector: 'login-modal',
@@ -10,7 +13,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class LoginModalComponent {
 	displayForm = false;
 
-	constructor(private readonly NgbModal: NgbModal) {
+	constructor(private readonly NgbModal: NgbModal,
+				private readonly OAuth42: Oauth42Service,
+				private readonly HttpClient: HttpClient) {
 	}
 
 	close(): void {
@@ -19,5 +24,10 @@ export class LoginModalComponent {
 
 	signUp(): void {
 		this.displayForm = true;
+	}
+
+	sign42(): void {
+		console.log('sign42');
+		this.OAuth42.login();
 	}
 }

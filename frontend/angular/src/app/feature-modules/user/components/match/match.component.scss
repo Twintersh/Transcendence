@@ -1,0 +1,38 @@
+.match-container {
+	border: 1px solid #ccc;
+	padding: 10px;
+	margin-bottom: 10px;
+	width: 60vw;
+	box-shadow: 5px 5px 0 0 #000;
+	border: 3px solid #000;
+	background-color: #53A6AC;
+  
+	h3 {
+	  margin-bottom: 5px;
+	  margin-left: 10px;
+	  margin-right: 10px;
+	  display: inline;
+	}
+  
+	p {
+		display: inline;
+	  	margin-left: 10px;
+		margin-right: 10px;
+	}
+
+	.matchId {
+		text-align: center;
+	}
+
+	.matchWinner {
+		text-align: center;
+	}
+
+	.matchScore {
+		text-align: center;
+	}
+
+	.matchPlayers {
+		text-align: center;
+	}
+  }

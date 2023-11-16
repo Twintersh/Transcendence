@@ -32,10 +32,13 @@
     display: flex;
 	max-width: 75%;
 	align-items: center;
+	box-shadow: 5px 5px 0 0 #000;
+	border: 3px solid #000;
 }
 
 .submit {
 	@extend .clickableButtons;
+	border: 4px solid #000;
 	font-size: larger;
 	margin-top: 20px;
 	background-color: #FFC800;

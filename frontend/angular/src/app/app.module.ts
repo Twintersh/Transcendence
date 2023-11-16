@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './feature-modules/home/components/home/home.component';
 import { LandingModule } from './feature-modules/landing/landing.module';
 import { PageNotFoundComponent } from './core-modules/pagenotfound/pagenotfound.component';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { UserModule } from './feature-modules/user/user.module';
 
 @NgModule({
   declarations: [
@@ -16,8 +18,10 @@ import { PageNotFoundComponent } from './core-modules/pagenotfound/pagenotfound.
   imports: [
     BrowserModule,
     AppRoutingModule,
+	OAuthModule.forRoot(),
 	LandingModule,
-    NgbModule
+    NgbModule,
+	UserModule
   ],
   providers: [],
   bootstrap: [AppComponent]

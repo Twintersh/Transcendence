@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LandingComponent } from './components/landing/landing.component';
 import { LoginModalComponent } from './components/login-modal/login-modal.component';
 import { LoginFormComponent } from './components/login-form/login-form.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -11,7 +12,8 @@ import { LoginFormComponent } from './components/login-form/login-form.component
 	LoginFormComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+	HttpClientModule
   ],
   exports: [
 	LoginModalComponent,
