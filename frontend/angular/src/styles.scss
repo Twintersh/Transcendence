@@ -24,6 +24,13 @@
 	font-style: normal;
 }
 
+:root {
+	--yellow: #FFC801;
+	--green: #53A6AC;
+	--purple: #9D95E7;
+	--beige: #FFECDE;
+}
+
 .clickableButtons {
 	font-family: 'Gopher', sans-serif;
 	border:solid 4px #000;
@@ -45,7 +52,7 @@
 	position: fixed;
 	width: 100vw;
 	bottom: 0;
-    background-color: #9D95E7;
+    background-color: var(--purple);
 	font-size: small;
     color: #000;
     text-align: center;
@@ -54,4 +61,26 @@
 }
 footer > p {
 	margin-bottom: 0;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+	width: 15px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	margin: 20px 20px;
+	background: var(--green);
+	border-radius: 7.5px;
+	box-shadow: 5px 5px 0 0 #000;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	margin: 20px 20px;
+	border: solid 3px #000;
+	box-shadow: 5px 5px 0 0 #000;
+	border-radius: 7.5px;
+	background: var(--yellow);
 }

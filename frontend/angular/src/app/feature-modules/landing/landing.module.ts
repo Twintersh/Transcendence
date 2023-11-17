@@ -9,15 +9,15 @@ import { HttpClientModule } from '@angular/common/http';
   declarations: [
     LandingComponent,
     LoginModalComponent,
-	LoginFormComponent
+    LoginFormComponent
   ],
   imports: [
     CommonModule,
-	HttpClientModule
+    HttpClientModule
   ],
   exports: [
-	LoginModalComponent,
-	LoginFormComponent
+    LoginModalComponent,
+    LoginFormComponent
   ]
 })
 export class LandingModule { }

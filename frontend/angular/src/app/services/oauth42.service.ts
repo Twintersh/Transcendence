@@ -19,6 +19,8 @@ export class Oauth42Service {
 	}
 
 	login(): void {
+		window.location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-c3a119bea9c389c078428f5be35975fc98eabbf7a1cb01640eb419304569c09a&redirect_uri=http%3A%2F%2Flocalhost%3A4200%2Flanding&response_type=code';
+		/*
 		this.OAuthService.loadDiscoveryDocument().then( () => {
 			this.OAuthService.tryLoginImplicitFlow().then( () => {
 				if (!this.OAuthService.hasValidAccessToken()) {
@@ -29,6 +31,7 @@ export class Oauth42Service {
 					})
 				}
 			});
-		});	
+		});
+		*/	
 	}
 }
