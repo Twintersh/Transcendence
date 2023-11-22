@@ -2,6 +2,8 @@
 
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
 
 @font-face {
 	font-family: 'Gopher'; /* Give your font a name */
@@ -27,27 +29,55 @@
 :root {
 	--yellow: #FFC801;
 	--green: #53A6AC;
-	--purple: #9D95E7;
 	--beige: #FFECDE;
+	--purple: #9D95E7;
 }
 
-.clickableButtons {
+// Override Bootstrap variables if needed
+$primary: #9D95E7;
+$success: #53A6AC;
+$info: #FFC801;
+$warning: #ff6701;
+$danger: #dc3545;
+
+
+/* General Styles */
+body {
+	font-family: 'Gopher', 'arial', sans-serif;
+    background-color: var(--beige);
+    min-height: 100vh;
+}
+
+.btn {
 	font-family: 'Gopher', sans-serif;
 	border:solid 4px #000;
+	color: #000;
 	box-shadow: 5px 5px 0 0 #000;
     transition: 0.15s;
 	border-radius: 4px;
-	padding: 10px 20px;
+	padding: 10px 10px;
 	cursor: pointer;
+
+	&:active {
+		box-shadow: 0px 0px 0px 0px;
+		transform: translate(5px, 5px);
+	}
 }
 
-.clickableButtons:active {
-	box-shadow: 0px 0px 0px 0px;
-	transform: translate(5px, 5px);
+.btn-primary {
+	@include button-variant($primary, darken($primary, 7.5%), darken($primary, 10%), lighten($primary,5%), lighten($primary, 10%), darken($primary,30%));
+}
+
+.btn-secondary {
+	@include button-variant($info, darken($info, 7.5%), darken($info, 10%), lighten($info,5%), lighten($info, 10%), darken($info,30%));
+};
+
+.btn-danger {
+	@include button-variant($danger, darken($danger, 7.5%), darken($danger, 10%), lighten($danger,5%), lighten($danger, 10%), darken($danger,30%));
 }
 
 /* Footer Styles */
-.footer {
+footer {
 	font-family: 'GopherBoldItalic', sans-serif;
 	position: fixed;
 	width: 100vw;
@@ -58,9 +88,6 @@
     text-align: center;
     padding-top: 10px;
 	padding-bottom: 10px;
-}
-footer > p {
-	margin-bottom: 0;
 }
 
 /* Scrollbar Styles */
@@ -79,7 +106,7 @@ footer > p {
 /* Handle */
 ::-webkit-scrollbar-thumb {
 	margin: 20px 20px;
-	border: solid 3px #000;
+	//border: solid 3px #000;
 	box-shadow: 5px 5px 0 0 #000;
 	border-radius: 7.5px;
 	background: var(--yellow);

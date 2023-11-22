@@ -64,14 +64,12 @@
 	margin-bottom: 20px;
 
 	.save {
-		@extend .clickableButtons;
 		margin-right: 10px;
 		background-color: #9D96E7;
 		color: #000;	
 	}
 	
 	.cancel {
-		@extend .clickableButtons;
 		margin-left: 10px;
 		background-color: #F1523C;
 		color: #000;

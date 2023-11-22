@@ -1,31 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pong</title>
-</head>
-<body>
-    <!-- Header Section -->
-		<div class="header">
-			P
-			<main>
-				<img src="../../../../../assets/logo.svg" alt="pongo" width="100" height="100">
-			</main>
-			NG
-		</div>
+<div class="landing">
+	<!-- Header Section -->
+	<header>
+		P
+		<span><img src="../../../../../assets/logo.svg" alt="pongo" width="100" height="100"></span>
+		NG
+	</header>
 
-    <!-- Main Content Section -->
-    <div class="main-content">        
-		<div class="container">
-			<div class="presentation">You space bastard, you killed a pine. You do? Yeah, it's 8:00. Hey, McFly, I thought I told you never to come in here. Well it's gonna cost you. How much money you got on you?</div>
-			<button class="play-button" (click)="openModal()">Play</button>
-        </div>
-    </div>
-	
-    <!-- Footer Section -->
-    <footer class="footer">
-		<p>&copy; 2023 ft_transcendance. All rights reserved. Built by mcochin, rlaforge, twinters and bchabot</p>
-    </footer>
-</body>
-</html>
+	<!-- Main Content Section -->
+	<div class="container presentation">
+		<div class="row justify-content-lg-center">
+			<div class="col-lg-6">
+				<p>You space bastard, you killed a pine. You do? Yeah, it's 8:00. Hey, McFly, I thought I told you never to come in here. Well it's gonna cost you. How much money you got on you?</p>
+			</div>
+			<div class="col-3">
+				<button class="btn btn-primary" (click)="openModal()">Play</button>
+			</div>
+		</div>
+	</div>
+</div>

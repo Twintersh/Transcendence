@@ -14,6 +14,7 @@ const OAuthConfig: AuthConfig = {
 })
 export class Oauth42Service {
 
+
   constructor(readonly OAuthService: OAuthService) {
 		OAuthService.configure(OAuthConfig);
 	}

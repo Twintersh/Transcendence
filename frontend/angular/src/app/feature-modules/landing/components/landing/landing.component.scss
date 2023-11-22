@@ -1,19 +1,7 @@
-@import '../../../../../styles.scss';
-/* General Styles */
-body {
-    font-family: 'Gopher', 'arial', sans-serif;
-    background-color: var(--beige);
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
 /* Header Styles */
-.header {
+header {
 	font-size: 7rem;
-    background-color: #var(--beige);
+    background-color: var(--beige);
     color: #000;
     text-align: center;
     padding: 20px;
@@ -22,57 +10,12 @@ body {
 }
 
 /* Main Content Styles */
-.main-content {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.container {
-	position: relative;
-	left: -10%;
-	max-width: 50%;
-	text-align: left;
-	z-index: 1;
-}
-
 .presentation {
-	font-size: xx-large;
-	position: absolute;
-	bottom: 0;
-	right: 0;
+	font-size: 2rem;
 }
   
 /* Styles for the button */
 .play-button {
-	@extend .clickableButtons;	
-	font-size: xx-large;	
-	position: absolute;
-	right: 0;
-	bottom: 0;
-
-	/* Styles for the button */
-	background-color: var(--purple);
+	font-size: xx-large;
 	padding: 10px 20px;
-}
-
-/* Footer Styles */
-.footer {
-    background-color: var(--purple);
-	font-size: small;
-    color: #000;
-    text-align: center;
-    padding-top: 10px;
-	padding-bottom: 10px;
-}
-footer > p {
-	margin: 0;
-}
-
-.main {
-	display: grid;
-	place-items: center;
-	position: relative;
 }

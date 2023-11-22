@@ -44,7 +44,6 @@
 		}
   
 		.edit-button {
-			@extend .clickableButtons;
 			padding: 8px 16px;
 			background-color: #FFC801;
 			cursor: pointer;
@@ -104,7 +103,6 @@
 			border-left: 1px solid #000;
 			max-height: 65vh;
 			width: 65vw;
-			overflow-y: auto;
 			align-items: center;
 		}
 	}

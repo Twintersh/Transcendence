@@ -15,6 +15,11 @@
 	color: #000;
 }
 
+.modal-body {
+	background-color: var(--green);
+	align-items: center;
+}
+
 .title {
     flex-grow: 1; /* Allow the title to take up all available space */
     margin-left: 25px; /* Remove any default margin that may exist */
@@ -39,18 +44,16 @@
 
 .buttons {
 	font-family: Gopher, sans-serif;
-	margin-top: 20px;
+	margin-top: 5%;
 }
 
 .signUp {
-	@extend .clickableButtons;
 	font-size: larger;
 	background-color: var(--yellow);
 	color: #000;
 }
 
 .sign42 {
-	@extend .clickableButtons;
 	font-size: larger;
 	margin-bottom: 20px;
 	background-color: var(--purple);

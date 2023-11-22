@@ -1,14 +1,14 @@
-<div *ngIf="!displayForm; else loging">
+<div *ngIf="!displayForm; else logging">
 	<div class="modal-header">
-		<h1 class="title">Login</h1>
-		<button class="btn btn-close" type="button" aria-label="Close" (click)="close()"></button>
+		<h1 class="modal-title" id="modal-basic-title">Login</h1>
+		<button class="btn-close" type="button" aria-label="Close" (click)="close()"></button>
 	</div>
-	<div class="modal-content">
-		<div class="buttons" align="center">
-			<button class="signUp" type="button" (click)="signUp()">Sign Up</button>
+	<div class="modal-body">
+		<div class="buttons">
+			<button class="btn btn-primary" type="button" (click)="signUp()">Sign Up</button>
 		</div>
 		<div class="buttons">
-			<button class="sign42" type="button" (click)="sign42()">Sign in with 42</button>
+			<button class="btn btn-secondary" type="button" (click)="sign42()">Sign in with 42</button>
 		</div>
 	</div>
 	<div class="modal-footer">
@@ -16,7 +16,7 @@
 	</div>
 </div>
 
-<ng-template #loging>
+<ng-template #logging>
 	<div class="modal-header">
 		<h1 class="title">Sign Up</h1>
 		<button class="btn btn-close" type="button" aria-label="Close" (click)="close()"></button>
