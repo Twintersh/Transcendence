@@ -1,4 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
+// Override Bootstrap variables if needed
+$primary: #9D95E7;
+$success: #53A6AC;
+$info: #FFC801;
+$warning: #ff6701;
+$danger: #dc3545;
 
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
@@ -32,14 +38,6 @@
 	--beige: #FFECDE;
 	--purple: #9D95E7;
 }
-
-// Override Bootstrap variables if needed
-$primary: #9D95E7;
-$success: #53A6AC;
-$info: #FFC801;
-$warning: #ff6701;
-$danger: #dc3545;
-
 
 /* General Styles */
 body {

@@ -9,15 +9,12 @@ import { UserModule } from './feature-modules/user/user.module';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './feature-modules/home/components/home/home.component';
-import { PageNotFoundComponent } from './core-modules/shell/pagenotfound/pagenotfound.component';
-import { NavbarComponent } from './core-modules/shell/navbar/navbar.component';
+import { SharedModule } from './shared-modules/shared/shared.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
-    PageNotFoundComponent,
-    NavbarComponent
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -25,7 +22,8 @@ import { NavbarComponent } from './core-modules/shell/navbar/navbar.component';
     OAuthModule.forRoot(),
     LandingModule,
     NgbModule,
-    UserModule
+    UserModule,
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]
