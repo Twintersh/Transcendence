@@ -1,7 +1,16 @@
 from rest_framework import serializers
-from .models import User
+from rest_framework.fields import empty
+from .models import User, Match
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = User
         fields = ['id', 'username', 'email', 'password']
+
+class UserLookSerializer(serializers.Serializer):
+    username = serializers.CharField()
+
+class MatchSerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = Match
+        fields = ['id', 'duration', 'wScore', 'lScore']
