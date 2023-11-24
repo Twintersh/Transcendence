@@ -12,4 +12,16 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        return self.username
+        return f"{self.username}"
+
+
+class Match(models.Model):
+    id = models.AutoField(primary_key=True)
+    loser = models.ForeignKey('User', related_name='lostMatches', on_delete=models.CASCADE)
+    winner = models.ForeignKey('User', related_name='wonMatches', on_delete=models.CASCADE)
+    duration = models.IntegerField()
+    wScore = models.PositiveSmallIntegerField()
+    lScore = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return f"{self.winner.username} - {self.loser.username}"
