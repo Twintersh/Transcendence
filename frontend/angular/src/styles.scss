@@ -1,10 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 // Override Bootstrap variables if needed
 $primary: #9D95E7;
-$success: #53A6AC;
-$info: #FFC801;
+$secondary: #FFC801;
+$success: #FE90E7;
 $warning: #ff6701;
 $danger: #dc3545;
+$light: #FFECDE;
 
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
@@ -32,17 +33,9 @@ $danger: #dc3545;
 	font-style: normal;
 }
 
-:root {
-	--yellow: #FFC801;
-	--green: #53A6AC;
-	--beige: #FFECDE;
-	--purple: #9D95E7;
-}
-
 /* General Styles */
 body {
 	font-family: 'Gopher', 'arial', sans-serif;
-    background-color: var(--beige);
     min-height: 100vh;
 }
 
@@ -51,41 +44,26 @@ body {
 	border:solid 4px #000;
 	color: #000;
 	box-shadow: 5px 5px 0 0 #000;
-    transition: 0.15s;
+    transition: 0.15s all;
 	border-radius: 4px;
 	padding: 10px 10px;
 	cursor: pointer;
 
 	&:active {
+		border:solid 4px #000 !important;
 		box-shadow: 0px 0px 0px 0px;
 		transform: translate(5px, 5px);
 	}
-}
 
-.btn-primary {
-	@include button-variant($primary, darken($primary, 7.5%), darken($primary, 10%), lighten($primary,5%), lighten($primary, 10%), darken($primary,30%));
-}
-
-.btn-secondary {
-	@include button-variant($info, darken($info, 7.5%), darken($info, 10%), lighten($info,5%), lighten($info, 10%), darken($info,30%));
-};
-
-.btn-danger {
-	@include button-variant($danger, darken($danger, 7.5%), darken($danger, 10%), lighten($danger,5%), lighten($danger, 10%), darken($danger,30%));
+	&:hover {
+		border:solid 4px #000;
+	}
 }
 
 /* Footer Styles */
 footer {
 	font-family: 'GopherBoldItalic', sans-serif;
-	position: fixed;
-	width: 100vw;
-	bottom: 0;
-    background-color: var(--purple);
 	font-size: small;
-    color: #000;
-    text-align: center;
-    padding-top: 10px;
-	padding-bottom: 10px;
 }
 
 /* Scrollbar Styles */
@@ -108,4 +86,21 @@ footer {
 	box-shadow: 5px 5px 0 0 #000;
 	border-radius: 7.5px;
 	background: var(--yellow);
+}
+
+.app-container {
+	display: flex;
+	flex-direction: column;
+	//height: 100vh; /* Set the height of the app container to the full viewport height */
+}
+
+.navbar-container {
+	background-color: var(--beige); /* Set the background color of the navbar */
+	z-index: 1000; /* Set a high z-index to ensure the navbar is above other content */
+}
+
+.content-container {
+	flex: 1; /* Allow the content container to take up the remaining space */
+	overflow-y: auto; /* Add a vertical scrollbar when the content overflows */
+	padding: 20px; /* Add padding as needed */
 }

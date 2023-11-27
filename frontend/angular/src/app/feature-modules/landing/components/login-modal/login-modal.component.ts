@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient } from '@angular/common/http';
-import { OAuthService } from 'angular-oauth2-oidc';
 import { Oauth42Service } from 'src/app/services/oauth42.service';
 
 @Component({
