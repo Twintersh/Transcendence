@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.fields import empty
-from .models import User, Match
+from .models import User, Match, FriendRequest
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta(object):
@@ -9,6 +9,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserLookSerializer(serializers.Serializer):
     username = serializers.CharField()
+
+class FriendRequestSerializer(serializers.ModelSerializer):
+    fromUser = UserLookSerializer()
+    toUser = UserLookSerializer()
+
+    class Meta(object):
+        model = FriendRequest
+        fields = ['id', 'fromUser', 'toUser']
 
 class MatchSerializer(serializers.ModelSerializer):
     class Meta(object):
