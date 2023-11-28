@@ -1,0 +1,106 @@
+/* You can add global styles to this file, and also import other style files */
+// Override Bootstrap variables if needed
+$primary: #9D95E7;
+$secondary: #FFC801;
+$success: #FE90E7;
+$warning: #ff6701;
+$danger: #dc3545;
+$light: #FFECDE;
+
+/* Importing Bootstrap SCSS file. */
+@import 'bootstrap/scss/bootstrap';
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+
+@font-face {
+	font-family: 'Gopher'; /* Give your font a name */
+	src: local("Gopher"), url('/assets/fonts/Gopher/Gopher-Black.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'GopherBoldItalic'; /* Give your font a name */
+	src : local('Gopher'), url('/assets/fonts/Gopher/GopherDisplay-BoldItalic.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'GopherMedium'; /* Give your font a name */
+	src : local('Gopher'), url('/assets/fonts/Gopher/Gopher-Medium.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+/* General Styles */
+body {
+	font-family: 'Gopher', 'arial', sans-serif;
+    min-height: 100vh;
+}
+
+.btn {
+	font-family: 'Gopher', sans-serif;
+	border:solid 4px #000;
+	color: #000;
+	box-shadow: 5px 5px 0 0 #000;
+    transition: 0.15s all;
+	border-radius: 4px;
+	padding: 10px 10px;
+	cursor: pointer;
+
+	&:active {
+		border:solid 4px #000 !important;
+		box-shadow: 0px 0px 0px 0px;
+		transform: translate(5px, 5px);
+	}
+
+	&:hover {
+		border:solid 4px #000;
+	}
+}
+
+/* Footer Styles */
+footer {
+	font-family: 'GopherBoldItalic', sans-serif;
+	font-size: small;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+	width: 15px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	margin: 20px 20px;
+	background: var(--green);
+	border-radius: 7.5px;
+	box-shadow: 5px 5px 0 0 #000;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	margin: 20px 20px;
+	//border: solid 3px #000;
+	box-shadow: 5px 5px 0 0 #000;
+	border-radius: 7.5px;
+	background: var(--yellow);
+}
+
+.app-container {
+	display: flex;
+	flex-direction: column;
+	//height: 100vh; /* Set the height of the app container to the full viewport height */
+}
+
+.navbar-container {
+	background-color: var(--beige); /* Set the background color of the navbar */
+	z-index: 1000; /* Set a high z-index to ensure the navbar is above other content */
+}
+
+.content-container {
+	flex: 1; /* Allow the content container to take up the remaining space */
+	overflow-y: auto; /* Add a vertical scrollbar when the content overflows */
+	padding: 20px; /* Add padding as needed */
+}

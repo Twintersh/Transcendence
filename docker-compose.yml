@@ -1,0 +1,11 @@
+version: '3'
+services:
+  angular-app:
+    image: angular-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 127.0.0.1:4200:4200
+    volumes:
+      - ./frontend/angular:/var/www/frontend
