@@ -3,9 +3,32 @@ services:
   angular-app:
     image: angular-app
     build:
-      context: .
+      context: containers/angular
       dockerfile: Dockerfile
     ports:
       - 127.0.0.1:4200:4200
     volumes:
       - ./frontend/angular:/var/www/frontend
+    networks:
+      - transcendence
+    # healthcheck :
+    #   test:  nc -w 5 127.0.0.1 4200
+    #   interval: 5s
+    #   retries: 30
+
+  django-app:
+    build:
+      context: containers/django
+      dockerfile: Dockerfile
+    ports:
+      - 127.0.0.1:8000:8000
+    volumes:
+      - ./backend/app/back:/var/www/backend
+    networks:
+      - transcendence
+    # depends_on:
+    #   angular-app:
+    #     condition: service_healthy
+
+networks:
+   transcendence:

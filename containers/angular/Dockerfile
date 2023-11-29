@@ -5,7 +5,7 @@ FROM node:18.17.1
 WORKDIR /var/www/frontend
 
 # Copy the package.json and package-lock.json files
-COPY scripts/angular-entrypoint.sh /usr/bin
+COPY angular-entrypoint.sh /usr/bin
 
 # Install the Angular CLI globally
 RUN chmod 755 /usr/bin/angular-entrypoint.sh
@@ -13,4 +13,4 @@ RUN chmod 755 /usr/bin/angular-entrypoint.sh
 # Start the Angular development server
 EXPOSE 4200
 
-ENTRYPOINT ["angular-entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/angular-entrypoint.sh"]
