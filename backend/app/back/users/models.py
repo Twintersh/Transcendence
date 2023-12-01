@@ -56,6 +56,3 @@ def updateMatches(sender, instance, created=False, **kwargs):
     instance.loser.gameRatio = instance.loser.updateRatio()
     instance.winner.save()
     instance.loser.save()
-
-
-

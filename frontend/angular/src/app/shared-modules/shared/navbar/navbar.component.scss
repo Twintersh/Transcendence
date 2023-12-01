@@ -1,0 +1,38 @@
+.navbar > .container-fluid {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%; // Adjust this based on your design
+}
+
+.navbar-container {
+	display: flex;
+	align-items: center;
+	height: 100%; // Adjust this based on your design
+	background-color: var(--beige);
+}
+
+.navbar-nav {
+	list-style: none;
+	display: flex;
+	flex-direction: row;
+	gap: 20px; // Adjust the gap between items
+}
+
+.nav-item {
+	margin: 0;
+}
+
+.nav-link {
+	color: #333; // Adjust the color as needed
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 16px; // Adjust the font size as needed
+}
+
+.nav-link.active {
+	color: var(--purple); // Adjust the active link color
+	transform: scale(1.5); // Adjust the active link scale
+	padding-left: 20px; // Adjust the active link padding
+	padding-right: 20px; // Adjust the active link padding
+}
