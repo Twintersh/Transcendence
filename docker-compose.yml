@@ -1,0 +1,20 @@
+version: '3'
+services:
+  angular-app:
+    image: angular-app
+    build:
+      context: containers/angular
+      dockerfile: Dockerfile
+    ports:
+      - 127.0.0.1:4200:4200
+    volumes:
+      - ./frontend/angular:/var/www/frontend
+  django-app:
+    image: django-app
+    build:
+      context: containers/django
+      dockerfile: Dockerfile
+    ports:
+      - 127.0.0.1:8000:8000
+    volumes:
+      - ./backend/app/back:/var/www/backend
