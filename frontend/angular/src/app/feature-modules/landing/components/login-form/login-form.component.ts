@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+
 import { User } from 'src/app/models/user.model';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
 	selector: 'login-form',
@@ -12,7 +14,7 @@ export class LoginFormComponent implements OnInit {
 
 	myForm: FormGroup;
 
-	constructor(private fb: FormBuilder, private readonly http: HttpClient) {
+	constructor(private fb: FormBuilder, private readonly http: HttpClient, private authService: AuthService) {
 		this.myForm = this.fb.group({
 			email: new FormControl('', Validators.email),
 			username: new FormControl('', Validators.required),
@@ -23,29 +25,20 @@ export class LoginFormComponent implements OnInit {
 		});
 	}
 
+	get email() {
+		return this.myForm.get('email') as FormControl;
+	}
+
 	ngOnInit(): void {
 	}​
 
 	submitHandler(): void {
-		const {email, username, password} = this.myForm.value;
-		
-		const newUser = {
-			"username": username as string,
-			"email": email as string,
-			"password": password as string
-		};
-
-		const bibux = {
-			"username" : "asdfsdfsdf",
-			"email" : "sadfsadf@gmail.com",
-			"password" : "moasdfsadfsadfmoyii" 
+		if(this.myForm.valid) {
+			this.authService.signup(this.myForm.value).subscribe( (data) => {
+				console.log(data);
+			})
 		}
-
-		const test = JSON.stringify(newUser);
-		console.log(test);
-		const obs = this.http.post('http://127.0.0.1:8000/users/signup/', test);
-		obs.subscribe( (data) => {
-			console.log(data);
-		});
 	}
+
+	
 }

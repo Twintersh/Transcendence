@@ -1,15 +1,5 @@
 @import "../../../../../styles.scss";
 
-.body {
-	font-family: 'Gopher', sans-serif;
-	background-color: #53A6AC;
-	height: 100vh;
-	width: inherit;
-	display: grid;
-	grid-template-rows: 2, 1fr;
-	align-items: start;
-}
-
 .profile-container {
 	display: flex;
 	flex-direction: column;

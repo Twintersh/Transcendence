@@ -1,10 +1,12 @@
-
 <div class="modal-body">
 	<form [formGroup]="myForm">
 
 		<label for="email">Email</label>
-		<input type="email" class="form-control" type='text' formControlName="email" placeholder="Enter email">
-	  
+		<input type="email" class="form-control" type='text' formControlName="email" placeholder="example@example.com">
+		<div *ngIf="email.invalid">
+			tamere la bihec
+		</div>
+
 		<label for="username">Username</label>
 		<input type="username" class="form-control" type='text' formControlName="username" placeholder="Enter username">
 		

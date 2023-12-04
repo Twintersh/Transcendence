@@ -1,11 +1,66 @@
 /* Header Styles */
 header {
-	font-size: 7rem;
-    color: #000;
-    text-align: center;
-    padding: 20px;
+	font-size: 10rem;
+    color: #FD8743;
 	display: flex;
-	justify-content: center;
+    justify-content: center;
+    align-items: center;
+
+	.logo {
+		margin: 0rem 0.5rem;
+	}
+
+	span {
+		text-shadow: 5px 5px 0px black;
+	}
+}
+
+.btn {
+	font-size: 1.5rem;
+	margin-top: 10rem;
+}
+
+.purpleStar, .orangeStar, .star1, .star2, .star4 {
+	position: absolute;
+	z-index: -1;
+	
+}
+
+.purpleStar {
+	top: 23%;
+	left: 6%;
+	animation: pulse 4s ease-in infinite;
+}
+
+.orangeStar {
+	top: 8%;
+	right: 5%;
+	animation: pulse 6s ease-in-out infinite;
+	animation-delay: 0.5s;
+	
+}
+
+.star1 {
+	top: 65%;
+	left: 25%;
+	animation: pulse 5s ease-in-out infinite;
+	animation-delay: 1s;
+	
+}
+
+.star2 {
+	top: 45%;
+	right: 28.5%;
+	animation: pulse 3s ease-in-out infinite;
+	animation-delay: 2s;
+	
+}
+
+.star4 {
+	left: 30%;
+	animation: pulse 2s ease-in-out infinite;
+	animation-delay: 1s;
+	
 }
 
 /* Main Content Styles */
@@ -17,4 +72,44 @@ header {
 .play-button {
 	font-size: xx-large;
 	padding: 10px 20px;
+}
+
+.circle {
+	display: block;
+
+	animation: spin 1000ms linear infinite, 
+		moveLeftToRight 5s linear infinite,
+		bounceBB 1s ease-in infinite;
+
+	transition: all 1s ease;
+
+	position: absolute;
+	left: 0;
+}
+
+/* Spinning the sphere using key frames */
+@keyframes spin {
+	from { 
+		transform: rotate(0deg); 
+	}
+	to { 
+		transform: rotate(360deg); 
+	}
+}
+
+@keyframes moveLeftToRight {
+0%   { left: -100px; }
+100% { left: 100%; }
+}
+
+@keyframes bounceBB {
+	0%   { bottom: 2.8rem}
+	50%   { bottom: 5rem}
+	100% { bottom: 2.8rem}
+}
+
+@keyframes pulse {
+	0%   { transform: scale(1); }
+	50%   { transform: scale(1.1); }
+	100% { transform: scale(1); }
 }
