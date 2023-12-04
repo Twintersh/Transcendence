@@ -9,10 +9,11 @@ services:
       - 127.0.0.1:4200:4200
     volumes:
       - ./frontend/angular:/var/www/frontend
-  django-app:
-    image: django-app
     networks:
       - transcendence
+  
+  django-app:
+    image: django-app
     # healthcheck :
     #   test:  nc -w 5 127.0.0.1 4200
     #   interval: 5s
