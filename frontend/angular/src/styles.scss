@@ -43,7 +43,8 @@ body {
 	background-image: linear-gradient(#e6bfa1a6 .1em, transparent .1em), linear-gradient(90deg, #e6bfa1a6 .1em, transparent .1em);
 	background-size: 4rem 4rem;
 	
-	overflow: hidden;
+	//overflow: hidden;
+	overflow-x: hidden;
 }
 
 .btn {
