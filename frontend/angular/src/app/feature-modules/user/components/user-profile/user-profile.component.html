@@ -4,7 +4,7 @@
             <div class="profile-info" style="text-align: center;">
                 <div class="profile-pic"></div>
                 <div class="user-details">
-                    <h2>Username</h2>
+                    <h2>Username {{ user$ | async }}</h2>
                     <p>Description Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                 </div>
                 <button class="btn btn-secondary" (click)="editProfile()">Edit Profile</button>

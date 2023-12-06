@@ -61,8 +61,11 @@ def updateCredential(request):
 def getUserInfo(request):
     user = request.user
     serializer = UserInfoSerializer(instance=user)
-    avatarSerializer = Avatarserializer(instance=user.avatar)
-    data = [serializer.data, avatarSerializer.data]
+    if hasattr(user, 'avatar') and user.avatar:
+        avatarSerializer = Avatarserializer(instance=user.avatar)
+        data = [serializer.data, avatarSerializer.data]
+    else:
+        data = [serializer.data]
     return Response(data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])

@@ -36,10 +36,10 @@ export class LoginFormComponent implements OnInit {
 			this.authService.signup(this.myForm.value).subscribe( (data) => {
 				if (data) {
 					const token: string = JSON.parse(JSON.stringify(data)).token;
-					this.cookieService.saveCookie('token', token);
+					this.cookieService.saveCookie('authToken', token);
 					window.location.href = '/home';
 				}
-				console.log(this.cookieService.getCookie('token'));
+				console.log(this.cookieService.getCookie('authToken'));
 			})
 		}
 	}
