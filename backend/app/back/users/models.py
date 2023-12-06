@@ -28,7 +28,7 @@ class User(AbstractUser):
         if self.wonMatches.count() == 0:
             self.gameRatio = 0.0
         elif self.lostMatches.count() == 0:
-            self.gameRatio = self.wonMatches.count()
+            self.gameRawtio = self.wonMatches.count()
         else:
             self.gameRatio = self.wonMatches.count() / self.lostMatches.count()
 
