@@ -13,4 +13,4 @@ RUN chmod 755 /usr/bin/angular-entrypoint.sh
 # Start the Angular development server
 EXPOSE 4200
 
-ENTRYPOINT ["angular-entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/angular-entrypoint.sh"]

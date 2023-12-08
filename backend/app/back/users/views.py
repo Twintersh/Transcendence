@@ -160,7 +160,7 @@ def getUserFriends(request):
 # MATCHES
 
 
-@swagger_auto_schema(method='GET')
+
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])

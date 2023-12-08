@@ -1,0 +1,29 @@
+.container-fluid {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 25vw;
+    object-fit: cover;
+}
+
+.card {
+	width: 18rem;
+	animation: 0.5s;
+	border: 4px solid black;
+	border-radius: 10px;
+
+	&:hover {
+		cursor: pointer;
+		box-shadow: black 6px 6px 6px 0px;
+		transform: scale(1.02);
+	}
+
+	&:active {
+		
+	}
+}
