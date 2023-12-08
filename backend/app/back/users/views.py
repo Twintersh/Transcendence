@@ -71,6 +71,89 @@ def getUserInfo(request):
     data = [serializer.data, avatarSerializer.data]
     return Response(data, status=status.HTTP_200_OK)
 
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FileUploadParser])
+def uploadAvatar(request):
+    user = request.user
+    file = request.data['file']
+    try:
+        avatar = get_object_or_404(Avatar, user=user)
+        avatar.image = file
+        avatar.save()
+        return Response("Avatar changed succesfully", status=status.HTTP_201_CREATED)
+    except:
+        avatar = Avatar(user=user, image=file)
+        avatar.save()
+        return Response("Avatar uploaded succesfully", status=status.HTTP_201_CREATED)
+
+
+
+# FRIENDS REQUESTS
+
+
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def sendFriendRequest(request):
+    fromUser = request.user
+    toUserSerializer = UserLookSerializer(data=request.data['toUser'])
+    toUserSerializer.is_valid(raise_exception=True)
+    toUser = get_object_or_404(User, username=toUserSerializer.data['username'])
+    friendRequest, created = FriendRequest.objects.get_or_create(fromUser=fromUser, toUser=toUser)
+    if created :
+        return Response("Friend request sent", status=status.HTTP_201_CREATED)
+    else:
+        return Response("Friend request already sent", status=status.HTTP_304_NOT_MODIFIED)
+    
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def acceptFriendRequest(request):
+    toUser = request.user
+    fromUserSerializer = UserLookSerializer(data=request.data['fromUser'])
+    if fromUserSerializer.is_valid(raise_exception=True):
+        fromUser = get_object_or_404(User, username=fromUserSerializer.data['username'])
+        friendRequest = get_object_or_404(FriendRequest, fromUser=fromUser, toUser=toUser)
+        friendRequest.fromUser.friends.add(toUser)
+        friendRequest.toUser.friends.add(fromUser)
+        friendRequest.delete()
+        return Response("Friends added succesfully", status=status.HTTP_200_OK)
+    
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def getSentFriendRequests(request):
+    user = request.user
+    requests = user.sentRequests.all()
+    friendRequestSerializer = FriendRequestSerializer(instance=requests, many=True)
+    return Response(friendRequestSerializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def getReceivedFriendRequests(request):
+    user = request.user
+    requests = user.receivedRequests.all()
+    friendRequestSerializer = FriendRequestSerializer(instance=requests, many=True)
+    return Response(friendRequestSerializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def getUserFriends(request):
+    user = request.user
+    friends = user.friends.all()
+    friendsSerializer = UserLookSerializer(instance=friends, many=True)
+    return Response(friendsSerializer.data, status=status.HTTP_200_OK)
+
+
+
+# MATCHES
+
+
 @swagger_auto_schema(method='POST')
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
