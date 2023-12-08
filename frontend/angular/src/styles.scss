@@ -37,14 +37,13 @@ $light: #FFECDE;
 /* General Styles */
 body {
 	font-family: 'Gopher', 'arial', sans-serif;
-    min-height: 100vh;
-	
-	background: #333;
+
 	background-image: linear-gradient(#e6bfa1a6 .1em, transparent .1em), linear-gradient(90deg, #e6bfa1a6 .1em, transparent .1em);
 	background-size: 4rem 4rem;
 	
 	//overflow: hidden;
 	overflow-x: hidden;
+	padding: 0.3rem 2rem;
 }
 
 .btn {
@@ -103,10 +102,4 @@ footer {
 .navbar-container {
 	background-color: $light; /* Set the background color of the navbar */
 	z-index: 1000; /* Set a high z-index to ensure the navbar is above other content */
-}
-
-.content-container {
-	flex: 1; /* Allow the content container to take up the remaining space */
-	overflow-y: auto; /* Add a vertical scrollbar when the content overflows */
-	padding: 20px; /* Add padding as needed */
 }

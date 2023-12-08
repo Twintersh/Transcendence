@@ -1,5 +1,10 @@
 export interface User {
-    email: string;
+	id: number;
+    email?: string;
     username: string;
-    password: string;
+    password?: string;
+	MatchesCount?: number;
+	wonMatchesCount?: number;
+	gameRatio?: number;
+	avatar: string;
 }

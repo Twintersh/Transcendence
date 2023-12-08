@@ -1,67 +1,13 @@
-@import "../../../../../styles.scss";
-
-.profile-container {
-	display: flex;
-	flex-direction: column;
-	margin: 20px 20px;
-	justify-content: flex-start;
-
-	.profile-pic {
-		width: 240px;
-		height: 240px;
-		background-image: url(https://www.w3schools.com/howto/img_avatar.png);
-		background-position: center;
-		background-repeat: off;
-		background-size:cover;
-		border-radius: 50%;
-		margin-bottom: 10px;
-		align-self: center;
-		overflow: hidden;
-		transition: 0,3s;
-
-		&:hover {
-			filter: blur(5px);
-			content: 'Edit Profile Picture';
-		}
-	}
-  
-	.user-details {
-		text-align: center;
-		margin-bottom: 10px;
-
-		input {
-			text-align: center;
-			color: #000;
-			transition: 0.3s;
-			margin-top : 20px;
-			margin-bottom: 20px;
-			display: flex;
-			align-items: center;
-			box-shadow: 5px 5px 0 0 #000;
-			border: 3px solid #000;
-
-			&:focus {
-				scale: 1.1;
-			}
-		}
-	}
-}
-
-.buttons {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin-bottom: 20px;
-
-	.save {
-		margin-right: 10px;
-		background-color: #9D96E7;
-		color: #000;	
-	}
-	
-	.cancel {
-		margin-left: 10px;
-		background-color: #F1523C;
-		color: #000;
-	}
+.profile-pic {
+	width: 240px;
+	height: 240px;
+	background-image: url(https://www.w3schools.com/howto/img_avatar.png);
+	background-position: center;
+	background-repeat: off;
+	background-size:cover;
+	border-radius: 50%;
+	margin-bottom: 10px;
+	align-self: center;
+	overflow: hidden;
+	transition: 0,3s;
 }

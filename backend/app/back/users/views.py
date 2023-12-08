@@ -39,6 +39,14 @@ def login(request):
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
+def isAuth(request):
+	if request.user.is_authenticated:
+		return Response("User is authenticated", status=status.HTTP_200_OK)
+	else:
+		return Response("User is not authenticated", status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def logout(request):
     request.user.auth_token.delete()

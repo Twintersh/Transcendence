@@ -4,7 +4,6 @@
 	.profile-pic {
 		width: 240px;
 		height: 240px;
-		background-image: url(https://www.w3schools.com/howto/img_avatar.png);
 		background-position:50% 50%;
 		background-repeat:no-repeat;
 		background-size:cover;
@@ -52,7 +51,8 @@ h2 {
 	margin-bottom: 1rem;
 }
 
-.generalStats {
+.statscontainer {
 	font-family: 'Gopher', sans-serif;
-	border-left: 1px solid #000;
+	display: flex;
+	justify-content: space-evenly;
 }

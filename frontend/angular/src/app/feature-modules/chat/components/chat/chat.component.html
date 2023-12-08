@@ -1,0 +1,16 @@
+<div class="container-fluid h-50">
+	<div class="row">
+		<div class="col col-md-3">
+			<h2>Friends</h2>
+			<div class="friendslist" *ngIf="friends.length > 0">
+				<div *ngFor="let friend of friends">
+					<img src="{{ friend.avatar }}" alt="{{ friend.avatar }}" width="50" height="50">
+					<span>{{ friend.username }}</span>
+				</div>
+			</div>
+		</div>
+		<div class="col col-md-8">
+			<div class = "container-fluid">fenetre message</div>
+		</div>
+	</div>
+</div>

@@ -20,6 +20,21 @@ header {
 	margin-top: 10rem;
 }
 
+.modal {
+	border: 0;
+
+	.modal-content {
+		background-color: #53A6AC;
+		border-bottom: 0;
+	}
+
+	.modal-header {
+		background-color: #53A6AC;
+		border-bottom: 0;
+	}
+}
+
+
 .purpleStar, .orangeStar, .star1, .star2, .star4 {
 	position: absolute;
 	z-index: -1;

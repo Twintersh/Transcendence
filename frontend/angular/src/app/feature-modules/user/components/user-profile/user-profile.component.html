@@ -2,9 +2,11 @@
     <div class="row">
         <div class="col-md-4">
             <div class="profile-info" style="text-align: center;">
-                <div class="profile-pic"></div>
+				<div class="profile-pic" *ngIf="user?.avatar">
+					<img [src]="user?.avatar" alt="User Avatar">
+				  </div>
                 <div class="user-details">
-                    <h2>Username {{ user$ | async }}</h2>
+                    <h2>{{ user?.username }}</h2>
                     <p>Description Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                 </div>
                 <button class="btn btn-secondary" (click)="editProfile()">Edit Profile</button>
@@ -20,8 +22,20 @@
 					<match [game]="game"></match>
 				</div>
 			</div>
-			<div class="generalStats">
-				<h2>Games Stats</h2>
+			<h2>Games Stats</h2>
+			<div class="statscontainer">
+				<div>
+					<p>Games Played</p>
+					<p>{{ user?.MatchesCount }}</p>
+				</div><p>Games Played</p>
+				<div>
+					<p>Games Won</p>
+					<p>{{ user?.wonMatchesCount }}</p>
+				</div>
+				<div>
+					<p>W/L Ratio</p>
+					<p>{{ user?.gameRatio }}</p>
+				</div>
 			</div>
 		</div>
     </div>

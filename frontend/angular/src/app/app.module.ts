@@ -10,6 +10,8 @@ import { UserModule } from './feature-modules/user/user.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './feature-modules/home/components/home/home.component';
 import { SharedModule } from './shared-modules/shared/shared.module';
+import { CommonModule } from '@angular/common';
+import { ChatModule } from './feature-modules/chat/chat.module';
 
 @NgModule({
   declarations: [
@@ -18,12 +20,14 @@ import { SharedModule } from './shared-modules/shared/shared.module';
   ],
   imports: [
     BrowserModule,
+	CommonModule,
     AppRoutingModule,
     OAuthModule.forRoot(),
     LandingModule,
     NgbModule,
     UserModule,
-    SharedModule
+    SharedModule,
+	ChatModule
   ],
   providers: [],
   bootstrap: [AppComponent]
