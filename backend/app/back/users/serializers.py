@@ -59,3 +59,8 @@ class MatchSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Match
         fields = ['id', 'duration', 'wScore', 'lScore']
+
+class CreateMatchSerializer(serializers.Serializer):
+    winner = UserLookSerializer()
+    loser = UserLookSerializer()
+    match = MatchSerializer()

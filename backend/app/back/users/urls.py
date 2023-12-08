@@ -1,6 +1,7 @@
 from django.urls import re_path, include
 from .views import *
 
+
 urlpatterns = [
     re_path('login/', login),
     re_path('signup/', signup),
@@ -14,5 +15,5 @@ urlpatterns = [
     re_path('getSentRequests', getSentFriendRequests),
     re_path('getReceivedRequests', getReceivedFriendRequests),
     re_path('getUserFriends', getUserFriends),
-    re_path('uploadAvatar/', uploadAvatar)
+    re_path('uploadAvatar/', uploadAvatar),
 ]
