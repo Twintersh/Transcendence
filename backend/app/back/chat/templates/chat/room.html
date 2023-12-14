@@ -1,0 +1,63 @@
+<!-- chat/templates/chat/room.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Chat Room</title>
+</head>
+<body>
+    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+    <input id="chat-message-input" type="text" size="100"><br>
+    <input id="chat-message-submit" type="button" value="Send">
+    {{ room_name|json_script:"room-name" }}
+	<script>
+		// Parse the room name from the 'room-name' element's content
+		const roomName = JSON.parse(document.getElementById('room-name').textContent);
+
+		// Create a WebSocket connection to the chat server
+		const chatSocket = new WebSocket(
+			'ws://'
+			+ window.location.host
+			+ '/ws/chat/'
+			+ roomName
+			+ '/'
+		);
+
+		// Handle incoming messages from the chat server
+		chatSocket.onmessage = function(e) {
+			const data = JSON.parse(e.data);
+			// Append the received message to the chat log textarea
+			document.querySelector('#chat-log').value += (data.message + '\n');
+		};
+
+		// Handle the WebSocket connection close event
+		chatSocket.onclose = function(e) {
+			console.error('Chat socket closed unexpectedly');
+		};
+
+		// Set focus on the chat message input field
+		document.querySelector('#chat-message-input').focus();
+
+		// Handle keyup event on the chat message input field
+		document.querySelector('#chat-message-input').onkeyup = function(e) {
+			if (e.keyCode === 13) {  // enter, return
+				// Simulate a click on the chat message submit button when enter key is pressed
+				document.querySelector('#chat-message-submit').click();
+			}
+		};
+
+		// Handle click event on the chat message submit button
+		document.querySelector('#chat-message-submit').onclick = function(e) {
+			const messageInputDom = document.querySelector('#chat-message-input');
+			const message = messageInputDom.value;
+			// Send the message to the chat server as a JSON string
+			chatSocket.send(JSON.stringify({
+				'message': message
+			}));
+			// Clear the chat message input field
+			messageInputDom.value = '';
+		};
+
+	</script>
+</body>
+</html>
