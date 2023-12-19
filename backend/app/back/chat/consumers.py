@@ -1,11 +1,19 @@
 # chat/consumers.py
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from .models import Message
+from .models import Message, Room
 from channels.db import database_sync_to_async
 # from . import send_chat_history
 
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+
 class ChatConsumer(AsyncWebsocketConsumer):
+	authentication_classes = [SessionAuthentication, TokenAuthentication]
+	permission_classes = [IsAuthenticated]
+
 	async def connect(self):
 		self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
 		self.room_group_name = "chat_%s" % self.room_name
@@ -41,7 +49,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 	async def send_chat_history(self):
 			# Load the last N messages from the database
-			history = Message.objects.filter(room_name=self.room_name).order_by('timestamp')[:10]
+			room = Room.objects.get(id=self.room_name)
+			history = Message.objects.filter(room=room).order_by('timestamp')[:10]
 			# Send each message to the WebSocket
 			async for message in history:
 				await self.send(text_data=json.dumps({
