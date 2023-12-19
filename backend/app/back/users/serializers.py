@@ -16,7 +16,7 @@ class UserLoginSerializer(serializers.Serializer):
     extra_kwargs = {
         'password' : {'write_only':True}
     }
-    
+
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = User
@@ -58,3 +58,8 @@ class MatchSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Match
         fields = ['id', 'duration', 'wScore', 'lScore']
+
+class CreateMatchSerializer(serializers.Serializer):
+    winner = UserLookSerializer()
+    loser = UserLookSerializer()
+    match = MatchSerializer()

@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view, authentication_classes, permission_classes, parser_classes
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.parsers import MultiPartParser, FileUploadParser
 from rest_framework.response import Response
 from rest_framework import status
@@ -15,6 +16,7 @@ from .serializers import *
 
 # USER BASIC
 
+@swagger_auto_schema(method='POST', request_body=UserRegisterSerializer)
 @api_view(['POST'])
 def signup(request):
     serializer = UserRegisterSerializer(data=request.data)
@@ -26,6 +28,7 @@ def signup(request):
         token = Token.objects.create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
 
+@swagger_auto_schema(method='POST', request_body=UserLoginSerializer)
 @api_view(['POST'])
 def login(request):
     serializer = UserLoginSerializer(data=request.data)
@@ -37,6 +40,7 @@ def login(request):
     update_last_login(User, user)
     return Response({'token': token.key}, status=status.HTTP_200_OK)
 
+@swagger_auto_schema(method='GET')
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 def isAuth(request):
@@ -52,6 +56,7 @@ def logout(request):
     request.user.auth_token.delete()
     return Response("User logged out", status=status.HTTP_200_OK)
 
+@swagger_auto_schema(method='POST', request_body=UserUpdateSerializer)
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -62,6 +67,7 @@ def updateCredential(request):
     serializer.save()
     return Response("Credentials updated", status=status.HTTP_200_OK)
 
+@swagger_auto_schema(method='GET')
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -159,20 +165,45 @@ def getUserFriends(request):
 # MATCHES
 
 
+@swagger_auto_schema(method='POST')
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FileUploadParser])
+def uploadAvatar(request):
+    user = request.user
+    file = request.data['file']
+    try:
+        avatar = get_object_or_404(Avatar, user=user)
+        avatar.image = file
+        avatar.save()
+        return Response("Avatar changed succesfully", status=status.HTTP_201_CREATED)
+    except:
+        avatar = Avatar(user=user, image=file)
+        avatar.save()
+        return Response("Avatar uploaded succesfully", status=status.HTTP_201_CREATED)
+
+
+
+# FRIENDS REQUESTS
+
+
+@swagger_auto_schema(method='POST', request_body=UserLookSerializer)
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def sendFriendRequest(request):
     fromUser = request.user
     toUserSerializer = UserLookSerializer(data=request.data['toUser'])
-    if toUserSerializer.is_valid(raise_exception=True):
-        toUser = get_object_or_404(User, username=toUserSerializer.data['username'])
-        friendRequest, created = FriendRequest.objects.get_or_create(fromUser=fromUser, toUser=toUser)
+    toUserSerializer.is_valid(raise_exception=True)
+    toUser = get_object_or_404(User, username=toUserSerializer.data['username'])
+    friendRequest, created = FriendRequest.objects.get_or_create(fromUser=fromUser, toUser=toUser)
     if created :
         return Response("Friend request sent", status=status.HTTP_201_CREATED)
     else:
         return Response("Friend request already sent", status=status.HTTP_304_NOT_MODIFIED)
     
+@swagger_auto_schema(method='POST', request_body=UserLookSerializer)
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -188,6 +219,7 @@ def acceptFriendRequest(request):
         return Response("Friends added succesfully", status=status.HTTP_200_OK)
     
 
+@swagger_auto_schema(method='GET')
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -197,6 +229,7 @@ def getSentFriendRequests(request):
     friendRequestSerializer = FriendRequestSerializer(instance=requests, many=True)
     return Response(friendRequestSerializer.data, status=status.HTTP_200_OK)
 
+@swagger_auto_schema(method='GET')
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -206,6 +239,7 @@ def getReceivedFriendRequests(request):
     friendRequestSerializer = FriendRequestSerializer(instance=requests, many=True)
     return Response(friendRequestSerializer.data, status=status.HTTP_200_OK)
 
+@swagger_auto_schema(method='GET')
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -214,6 +248,10 @@ def getUserFriends(request):
     friends = user.friends.all()
     friendsSerializer = UserLookSerializer(instance=friends, many=True)
     return Response(friendsSerializer.data, status=status.HTTP_200_OK)
+
+
+
+# MATCHES
 
 
 
@@ -229,19 +267,16 @@ def getUserMatches(request):
     serializerList = [wonMatchesSerializer.data, lostMatchesSerializer.data]
     return Response(serializerList, status=status.HTTP_200_OK)
 
+@swagger_auto_schema(method='POST', request_body=CreateMatchSerializer)
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def createMatch(request):
-    winnerSerializer = UserLookSerializer(data=request.data.get('winner', {}))
-    loserSerializer = UserLookSerializer(data=request.data.get('loser', {}))
-    matchSerializer = MatchSerializer(data=request.data)
-    if winnerSerializer.is_valid(raise_exception=True):
-        winner = get_object_or_404(User, username=winnerSerializer.data['username'])
-        if loserSerializer.is_valid(raise_exception=True):
-            loser = get_object_or_404(User, username=loserSerializer.data['username'])
-            if matchSerializer.is_valid(raise_exception=True):
-                matchSerializer.save(winner=winner, loser=loser)
-                return Response("Match created and added to corresponding Users", status=status.HTTP_200_OK)
+    serializer = CreateMatchSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    winner = get_object_or_404(User, username=serializer.data['winner']['username'])
+    loser = get_object_or_404(User, username=serializer.data['loser']['username'])
+    Match.objects.create(**serializer.data['match'], winner=winner, loser=loser)
+    return Response("Match created and added to corresponding Users", status=status.HTTP_200_OK)
         
     

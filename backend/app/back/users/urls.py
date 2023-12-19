@@ -1,6 +1,7 @@
 from django.urls import re_path, include
 from .views import *
 
+
 urlpatterns = [
     re_path('login/', login),
     re_path('signup/', signup),
