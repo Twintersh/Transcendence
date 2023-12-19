@@ -36,7 +36,6 @@ export class UserProfileComponent implements OnInit {
 				this.user = response[0];
 				if (this.user)
 					this.user.avatar = response[1].image;
-				console.log('Fetch res :', response[1]);
 				console.log('Fetch data user success:', this.user);
 			},
 			error: (error) => {

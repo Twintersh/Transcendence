@@ -9,25 +9,13 @@ import { Observable, map, of, catchError } from 'rxjs';
 })
 export class UserService {
 
-	private user!: string;
-
 	constructor(private readonly http: HttpClient, private readonly cookieService: CookieService) { }
 
 	public getUserInfos(): Observable<User | null> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		return this.http.get<User>('http://127.0.0.1:8000/users/getUserInfo/', { headers }).pipe(
-			map((data: User) => {
-				console.log('User information fetched:', data);
-				return data;
-			}),
-			catchError((error) => {
-				console.error('Error fetching user information:', error);
-				// Return an observable with a default value or rethrow the error
-				return of(null); // or throwError(error) if you want to rethrow the error
-			})
-		);
+		return this.http.get<User>('http://127.0.0.1:8000/users/getUserInfo/', { headers });
 	}
 
 	public updateUserInfos(data: any): void {
