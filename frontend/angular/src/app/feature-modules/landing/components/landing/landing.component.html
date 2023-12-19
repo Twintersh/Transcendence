@@ -36,8 +36,10 @@
 				<h1 class="modal-title fs-5" id="exampleModalToggleLabel">Sign Up</h1>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<button class="btn btn-primary" type="button" data-bs-target="#signUp" data-bs-toggle="modal">Sign Up</button>
-			<button class="btn btn-secondary" type="button" (click)="sign42()">Sign in with 42</button>
+			<div class="modal-body">
+				<button class="btn btn-primary modal-btn" type="button" data-bs-target="#signUp" data-bs-toggle="modal">Sign Up</button>
+				<button class="btn btn-secondary modal-btn" type="button" (click)="sign42()">Sign in with 42</button>
+			</div>
 			<div class="modal-footer">
 				<span>Already registered? Sign <a data-bs-target="#signIn" data-bs-toggle="modal">in</a></span>
 			</div>

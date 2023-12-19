@@ -18,13 +18,16 @@ export class LandingComponent implements OnInit {
 	}
 
 	isAuth(): void {
-		this.authService.isAuth().subscribe((res) => {
-			if (res)
-				window.location.href = 'http://localhost:4200/home';
+		this.authService.isAuth().subscribe( {
+			next: (res) => {
+				if (res) {
+					window.location.href = 'http://localhost:4200/home';
+				}
+			}
 		})
 	};
 
 	sign42() {
-		window.location.href = 'http://localhost:3000/auth/42';
+		this.router.navigateByUrl('http://localhost:3000/auth/42');
 	}
 }

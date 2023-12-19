@@ -9,6 +9,7 @@ $danger: #dc3545;
 $light: #FFECDE;
 
 /* Importing Bootstrap SCSS file. */
+@import 'ngx-toastr/toastr';
 @import 'bootstrap/scss/bootstrap';
 @import "../node_modules/bootstrap/scss/functions";
 @import "../node_modules/bootstrap/scss/variables";

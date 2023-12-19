@@ -15,23 +15,18 @@ header {
 	}
 }
 
-.btn {
-	font-size: 1.5rem;
-	margin-top: 10rem;
+.modal-content, .modal-header, .modal-footer, .modal-body {
+	text-align: center;
+	border: 0;
+	background-color: #53A6AC;
+	border-bottom: 0;
 }
 
-.modal {
-	border: 0;
-
-	.modal-content {
-		background-color: #53A6AC;
-		border-bottom: 0;
-	}
-
-	.modal-header {
-		background-color: #53A6AC;
-		border-bottom: 0;
-	}
+.modal-btn {
+	font-size: 1.5rem;
+	padding: 0.5rem 0.5rem;
+	width: fit-content;
+	margin: 1rem 5rem;
 }
 
 
@@ -82,12 +77,6 @@ header {
 .presentation {
 	font-size: 2rem;
 }
-  
-/* Styles for the button */
-.play-button {
-	font-size: xx-large;
-	padding: 10px 20px;
-}
 
 .circle {
 	display: block;
@@ -113,18 +102,18 @@ header {
 }
 
 @keyframes moveLeftToRight {
-0%   { left: -100px; }
-100% { left: 100%; }
+	0% { left: -100px; }
+	100% { left: 100%; }
 }
 
 @keyframes bounceBB {
-	0%   { bottom: 2.8rem}
-	50%   { bottom: 5rem}
+	0% { bottom: 2.8rem}
+	50% { bottom: 5rem}
 	100% { bottom: 2.8rem}
 }
 
 @keyframes pulse {
-	0%   { transform: scale(1); }
-	50%   { transform: scale(1.1); }
+	0% { transform: scale(1); }
+	50% { transform: scale(1.1); }
 	100% { transform: scale(1); }
 }

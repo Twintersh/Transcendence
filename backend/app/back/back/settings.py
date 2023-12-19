@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'rest_framework_swagger',
     'drf_yasg',
 	'chat',
     'users'
@@ -72,7 +71,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'back.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

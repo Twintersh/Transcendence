@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../../services/auth.service'
-import { map, catchError, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'navbar',
@@ -13,6 +12,11 @@ export class NavbarComponent implements OnInit {
 
 	constructor(private router: Router, public authService: AuthService) {
 		this.router.setUpLocationChangeListener();
+		router.events.subscribe((event) => {
+			if (event instanceof NavigationEnd) {
+				this.isAuth();
+			}
+		});
 	}
 
 	ngOnInit() {

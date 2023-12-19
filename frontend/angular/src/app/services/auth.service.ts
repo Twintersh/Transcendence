@@ -4,7 +4,7 @@ import { User } from '../models/user.model';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, Router, UrlTree } from '@angular/router';
 import { CookieService } from './cookie.service';
 import { catchError, map } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -42,24 +42,7 @@ export class AuthService {
 	login(loginData: { email: string; password: string }): Observable<any> {
 		const headers = new HttpHeaders();
 
-		return this.http.post('http://127.0.0.1:8000/users/login/', loginData, { headers }).pipe(
-			map((response: any) => {
-				this.cookieService.saveCookie('authToken', response.token);
-				console.log('Login successful');
-				return response;
-			}),
-			catchError((error) => {
-				console.error('Login failed', error);
-
-			// Check if the error response contains validation errors
-			if (error.error && typeof error.error === 'object') {
-				// Handle validation errors and display them to the user
-				console.log('Validation Errors:', error.error);
-			}
-
-			throw error;
-			})
-		);
+		return this.http.post('http://127.0.0.1:8000/users/login/', loginData, { headers });
 	}
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
@@ -70,14 +53,16 @@ export class AuthService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 		
+		if (!token) {
+			return of(false);
+		}
+
 		return this.http.get<boolean>('http://127.0.0.1:8000/users/isAuth/', { headers }).pipe(
-			map(() => {
-				console.log('User is authenticated');
-				return true;}), // If the request succeeds, the user is authenticated
-			catchError(() => {
-				// If there's an error (e.g., not authenticated), navigate to the landing page
-				console.log('User is not authenticated');
-				this.router.navigate(['/landing']);
+			catchError((error) => {
+				if (error.status === 403) {
+					console.log('Unauthorized error. Redirecting to landing page...');
+					this.router.navigate(['/landing']);
+				}
 				return of(false);
 			})
 		);

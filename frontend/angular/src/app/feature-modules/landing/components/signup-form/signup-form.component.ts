@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from 'src/app/services/auth.service';
 import { CookieService } from 'src/app/services/cookie.service';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'signup-form',
@@ -13,7 +14,7 @@ export class SignUpFormComponent {
 
 	myForm: FormGroup;
 
-	constructor(private fb: FormBuilder, private readonly http: HttpClient, private authService: AuthService, private cookieService: CookieService) {
+	constructor(private fb: FormBuilder, private readonly http: HttpClient, private authService: AuthService, private cookieService: CookieService, private router: Router) {
 		this.myForm = this.fb.group({
 			email: new FormControl('', Validators.email),
 			username: new FormControl('', Validators.required),
@@ -34,7 +35,7 @@ export class SignUpFormComponent {
 				if (data) {
 					const token: string = JSON.parse(JSON.stringify(data)).token;
 					this.cookieService.saveCookie('authToken', token);
-					window.location.href = '/home';
+					this.router.navigate(['/home']);
 				}
 				console.log(this.cookieService.getCookie('authToken'));
 			})

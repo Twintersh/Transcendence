@@ -12,7 +12,6 @@ const routes: Routes = [
 	{ path: 'landing', component: LandingComponent },
 	{ path: 'user', component: UserProfileComponent, canActivate: [AuthService] },
 	{ path: 'chat', component: ChatComponent, canActivate: [AuthService] },
-	{ path: '', redirectTo: '/landing', pathMatch: 'full' },
 	{ path: '**', component: PageNotFoundComponent, pathMatch: 'full' }
 ];
 
