@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>orGasme Rooms</title>
+</head>
+<body>
+	Inputs<br>
+	<textarea id="inputs-log" cols="30" rows="20"></textarea><br>
+	<script>
+		const gameSocket = new WebSocket(
+		'ws://'
+		+ window.location.host
+		+ '/ws/game/test/'
+		);
+		
+		gameSocket.onmessage = function(e) {
+			const data = JSON.parse(e.data);
+			console.log(data)
+			document.querySelector('#inputs-log').value += (data.input + '\n');
+		};
+
+		function sendInputs(e) {
+			console.log(e.keyCode);
+			gameSocket.send(JSON.stringify({
+				'message': e.keyCode
+			}));
+		};
+		document.addEventListener('keydown', sendInputs, false);
+	</script>
+</body>
+</html>

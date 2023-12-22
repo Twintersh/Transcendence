@@ -22,6 +22,7 @@ CORS_ALLOW_ALL_ORIGINS: True
 # Application definition
 
 INSTALLED_APPS = [
+	'channels',
 	'daphne',
 	'corsheaders',
     'django.contrib.admin',
@@ -35,7 +36,8 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'drf_yasg',
 	'chat',
-    'users'
+    'users',
+	'game'
 ]
 
 MIDDLEWARE = [
@@ -127,7 +129,7 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ASGI_APPLICATION = "back.asgi.application"
+ASGI_APPLICATION = "back.routing.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
