@@ -41,11 +41,17 @@ body {
 
 	background-image: linear-gradient(#e6bfa1a6 .1em, transparent .1em), linear-gradient(90deg, #e6bfa1a6 .1em, transparent .1em);
 	background-size: 4rem 4rem;
-	
-	//overflow: hidden;
+
 	overflow-x: hidden;
 	padding: 0.3rem 2rem;
 }
+
+
+
+
+//////////////////////
+/*		BUTTONS		*/
+//////////////////////
 
 .btn {
 	font-family: 'Gopher', sans-serif;
@@ -66,11 +72,18 @@ body {
 	}
 }
 
-/* Footer Styles */
-footer {
-	font-family: 'GopherBoldItalic', sans-serif;
-	font-size: small;
+.btn-lg	{
+	--bs-btn-padding-y: 1rem;
+	--bs-btn-padding-x: 5rem;
 }
+
+
+
+
+
+//////////////////////////
+/*		SCROLL-BAR		*/
+//////////////////////////
 
 /* Scrollbar Styles */
 ::-webkit-scrollbar {
@@ -92,6 +105,21 @@ footer {
 	box-shadow: 5px 5px 0 0 #000;
 	border-radius: 7.5px;
 	background: $secondary;
+}
+
+
+
+
+
+//////////////////////
+/*		OTHER		*/
+//////////////////////
+
+
+/* Footer Styles */
+footer {
+	font-family: 'GopherBoldItalic', sans-serif;
+	font-size: small;
 }
 
 .app-container {
