@@ -1,19 +1,92 @@
 <div class="landing">
+	<div class="container">
+		<img class="star5" src="assets/purplestar.png" alt="star" width="200" height="200">
+		<img class="star1" src="assets/star1.png" alt="star" width="100" height="100">
+		<img class="star2" src="assets/star2.png" alt="star" width="125" height="150">
+		<img class="star6" src="assets/star3.png" alt="star" width="150" height="150">
+		<img class="star4" src="assets/star4.png" alt="star" width="125" height="125">
+	</div>
 	<!-- Header Section -->
 	<header>
-		P
-		<span><img src="../../../../../assets/logo.svg" alt="pongo" width="100" height="100"></span>
-		NG
+		<span>P</span>
+		<img class="logo" src="assets/logo.svg" alt="pongo" width="140" height="140">
+		<span>NG</span>
 	</header>
 
 	<!-- Main Content Section -->
 	<div class="container presentation">
-		<div class="row justify-content-lg-center">
-			<div class="col-lg-6">
+		<div class="row justify-content-lg-center align-items-end">
+			<div class="col-xl-7">
 				<p>You space bastard, you killed a pine. You do? Yeah, it's 8:00. Hey, McFly, I thought I told you never to come in here. Well it's gonna cost you. How much money you got on you?</p>
 			</div>
-			<div class="col-3">
-				<button class="btn btn-primary" (click)="openModal()">Play</button>
+			<div class="col-xl-3">
+				<button class="btn btn-primary btn-lg w-100" data-bs-target="#loginModal" data-bs-toggle="modal">Play</button>
+			</div>
+		</div>
+		<div class="fixed-bottom">
+			<img class="logo circle" src="assets/ballgreen.svg" alt="pongi" width="120" height="120">
+		</div>
+	</div>
+</div>
+
+
+<!-- Authentification modal -->
+<div class="modal fade" id="loginModal" aria-hidden="true" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-3">Authentification</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-lg-5 text-center pt-4">
+						<button class="btn btn-primary m-3 fs-4" type="button" data-bs-target="#signUp" data-bs-toggle="modal">Sign Up</button>
+						<button class="btn btn-secondary m-3 fs-5" type="button" (click)="sign42()">Log in with 42</button>
+					</div>
+					<div class="col-lg-7">
+						<img class="logo w-100" src="assets/logo.svg" alt="pongo">
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<span>Already registered? <a data-bs-target="#signIn" data-bs-toggle="modal">Login!</a></span>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Sign up modal -->
+<div class="modal fade" id="signUp" aria-hidden="true" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-3">Sign Up</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<signup-form></signup-form>
+			<div class="modal-footer">
+				<span>Already registered? <a data-bs-target="#signIn" data-bs-toggle="modal">Login!</a></span>
+			</div>
+			</div>
+	</div>
+</div>
+
+
+<!-- Login modal -->
+<div class="modal fade" id="signIn" aria-hidden="true" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-3">Log In</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<login-form></login-form>
+				</div>
+			<div class="modal-footer">
+				<span>Not registered? <a data-bs-target="#loginModal" data-bs-toggle="modal">Sign up</a></span>
 			</div>
 		</div>
 	</div>

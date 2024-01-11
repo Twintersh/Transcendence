@@ -2,6 +2,8 @@ version: '3'
 services:
   angular-app:
     image: angular-app
+    networks:
+      - transcendence
     build:
       context: containers/angular
       dockerfile: Dockerfile
@@ -9,14 +11,11 @@ services:
       - 127.0.0.1:4200:4200
     volumes:
       - ./frontend/angular:/var/www/frontend
+  
   django-app:
     image: django-app
     networks:
       - transcendence
-    # healthcheck :
-    #   test:  nc -w 5 127.0.0.1 4200
-    #   interval: 5s
-    #   retries: 30
     build:
       context: containers/django
       dockerfile: Dockerfile
@@ -24,8 +23,11 @@ services:
       - 127.0.0.1:8000:8000
     volumes:
       - ./backend/app/back:/var/www/backend
-    networks:
-      - transcendence
+    # healthcheck :
+    #   test:  nc -w 5 127.0.0.1 4200
+    #   interval: 5s
+    #   retries: 30
+    
     # depends_on:
     #   angular-app:
     #     condition: service_healthy

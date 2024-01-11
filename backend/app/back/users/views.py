@@ -43,6 +43,14 @@ def login(request):
 @swagger_auto_schema(method='GET')
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
+def isAuth(request):
+	if request.user.is_authenticated:
+		return Response("User is authenticated", status=status.HTTP_200_OK)
+	else:
+		return Response("User is not authenticated", status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def logout(request):
     request.user.auth_token.delete()
@@ -67,8 +75,11 @@ def updateCredential(request):
 def getUserInfo(request):
     user = request.user
     serializer = UserInfoSerializer(instance=user)
-    avatarSerializer = Avatarserializer(instance=user.avatar)
-    data = [serializer.data, avatarSerializer.data]
+    if hasattr(user, 'avatar') and user.avatar:
+        avatarSerializer = Avatarserializer(instance=user.avatar)
+        data = [serializer.data, avatarSerializer.data]
+    else:
+        data = [serializer.data]
     return Response(data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])

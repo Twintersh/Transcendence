@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { LoginModalComponent } from '../login-modal/login-modal.component';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../../../services/auth.service'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'landing',
@@ -8,12 +8,26 @@ import { LoginModalComponent } from '../login-modal/login-modal.component';
   styleUrls: ['./landing.component.scss']
 })
 
-export class LandingComponent {
-	constructor(private readonly ngbModal: NgbModal) {
+export class LandingComponent implements OnInit {
+
+	constructor(private authService: AuthService, private router: Router) {
 	}
 
-	openModal(): void {
-		console.log('loginModal()');
-		this.ngbModal.open(LoginModalComponent, { size: 'md', centered: true });
+	ngOnInit() {
+		this.isAuth();
+	}
+
+	isAuth(): void {
+		this.authService.isAuth().subscribe( {
+			next: (res) => {
+				if (res) {
+					window.location.href = 'http://localhost:4200/home';
+				}
+			}
+		})
+	};
+
+	sign42() {
+		this.router.navigateByUrl('http://localhost:3000/auth/42');
 	}
 }
