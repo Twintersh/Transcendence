@@ -20,14 +20,13 @@ class UserLoginSerializer(serializers.Serializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = User
-        fields = ['first_name', 'last_name', 'password']
+        fields = ['username', 'password']
         extra_kwargs = {
         'password' : {'write_only':True}
         }
 
     def update(self, instance, validated_data):
-        instance.first_name = validated_data['first_name']
-        instance.last_name = validated_data['last_name']
+        instance.username = validated_data['username']
         password = validated_data['password']
         if password:
             instance.set_password(validated_data['password'])

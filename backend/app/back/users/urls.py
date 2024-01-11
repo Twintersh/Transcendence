@@ -12,8 +12,9 @@ urlpatterns = [
     # re_path('createMatch/', createMatch),
     re_path('sendFriendRequest/', sendFriendRequest),
     re_path('acceptFriendRequest/', acceptFriendRequest),
-    re_path('getSentRequests', getSentFriendRequests),
+    re_path('getSentRequests/', getSentFriendRequests),
     re_path('getReceivedRequests', getReceivedFriendRequests),
-    re_path('getUserFriends', getUserFriends),
+    re_path('getUserFriends/', getUserFriends),
     re_path('uploadAvatar/', uploadAvatar),
+	re_path('isAuth/', isAuth)
 ]

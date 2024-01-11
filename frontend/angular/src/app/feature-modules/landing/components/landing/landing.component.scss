@@ -1,20 +1,145 @@
 /* Header Styles */
 header {
-	font-size: 7rem;
-    color: #000;
-    text-align: center;
-    padding: 20px;
+	font-size: 10rem;
+    color: #FD8743;
 	display: flex;
-	justify-content: center;
+    justify-content: center;
+    align-items: center;
+
+	.logo {
+
+
+		//border-radius: 50%;
+   		//box-shadow: 5px 5px 0px black;                             //CSS BOX SHADOW INSTEAD OF JPG SHADOW
+
+
+		margin: 0rem 0.5rem;
+	}
+
+	span {
+		text-shadow: 5px 5px 0px black;
+	}
+}
+
+.modal-content, .modal-header, .modal-footer, .modal-body {
+	border-color: black;
+    border-width: 4px;
+	background-color: #53A6AC;
+}
+
+.modal-footer {
+	border-top: 0;
+}
+
+.modal-header {
+	border-bottom: 0;
 }
 
 /* Main Content Styles */
 .presentation {
 	font-size: 2rem;
+	margin-top: 10vh;
 }
-  
-/* Styles for the button */
-.play-button {
-	font-size: xx-large;
-	padding: 10px 20px;
+
+.modal-footer {
+	a {
+		color: #FD8743;
+		text-decoration: underline;
+	}
+}
+
+
+
+
+
+
+//////////////////////////////
+/*		ANIMATED CLASS		*/
+//////////////////////////////
+
+.star5, .star6, .star1, .star2, .star4 {
+	position: absolute;
+	z-index: -1;
+	
+}
+
+.star5 {
+	top: 23%;
+	left: 6%;
+	animation: pulse 8s ease-in infinite;
+}
+
+.star6 {
+	top: 8%;
+	right: 5%;
+	animation: pulse 12s ease-in-out infinite;
+	animation-delay: 0.5s;
+	
+}
+
+.star1 {
+	bottom: 15%;
+	left: 25%;
+	animation: pulse 10s ease-in-out infinite;
+	animation-delay: 1s;
+	
+}
+
+.star2 {
+	bottom: 30%;
+	right: 28.5%;
+	animation: pulse 6s ease-in-out infinite;
+	animation-delay: 2s;
+	
+}
+
+.star4 {
+	left: 30%;
+	animation: pulse 4s ease-in-out infinite;
+	animation-delay: 1s;
+	
+}
+
+.circle {
+	animation:	spin 2.5s linear infinite, 
+				moveLeftToRight 15s linear infinite,
+				bounceBB 2s ease-in-out infinite;
+
+	position: relative;
+}
+
+
+
+
+
+
+//////////////////////////
+/*		ANIMATIONS		*/
+//////////////////////////
+
+/* Spinning the sphere using key frames */
+@keyframes spin {
+	from { 
+		transform: rotate(0deg); 
+	}
+	to { 
+		transform: rotate(360deg); 
+	}
+}
+
+@keyframes moveLeftToRight {
+	0% { left: -25%; }
+	100% { left: 150%; }
+}
+
+@keyframes bounceBB {
+	0% { bottom: 2.8rem}
+	50% { bottom: 5rem}
+	100% { bottom: 2.8rem}
+}
+
+@keyframes pulse {
+	0% { transform: scale(1); }
+	50% { transform: scale(1.5); }
+	100% { transform: scale(1); }
 }
