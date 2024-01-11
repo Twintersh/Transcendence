@@ -8,15 +8,12 @@
 	width: 18rem;
 	animation: 0.5s;
 	border: 4px solid black;
+	transition: all 1s;
 	border-radius: 10px;
 
 	&:hover {
 		cursor: pointer;
 		box-shadow: black 6px 6px 6px 0px;
-		transform: scale(1.02);
-	}
-
-	&:active {
-		
+		transform: scale(1.01);
 	}
 }

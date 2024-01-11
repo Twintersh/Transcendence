@@ -7,6 +7,12 @@ header {
     align-items: center;
 
 	.logo {
+
+
+		//border-radius: 50%;
+   		//box-shadow: 5px 5px 0px black;                             //CSS BOX SHADOW INSTEAD OF JPG SHADOW
+
+
 		margin: 0rem 0.5rem;
 	}
 
@@ -16,80 +22,100 @@ header {
 }
 
 .modal-content, .modal-header, .modal-footer, .modal-body {
-	text-align: center;
-	border: 0;
+	border-color: black;
+    border-width: 4px;
 	background-color: #53A6AC;
+}
+
+.modal-footer {
+	border-top: 0;
+}
+
+.modal-header {
 	border-bottom: 0;
 }
 
-.modal-btn {
-	font-size: 1.5rem;
-	padding: 0.5rem 0.5rem;
-	width: fit-content;
-	margin: 1rem 5rem;
+/* Main Content Styles */
+.presentation {
+	font-size: 2rem;
+	margin-top: 10vh;
+}
+
+.modal-footer {
+	a {
+		color: #FD8743;
+		text-decoration: underline;
+	}
 }
 
 
-.purpleStar, .orangeStar, .star1, .star2, .star4 {
+
+
+
+
+//////////////////////////////
+/*		ANIMATED CLASS		*/
+//////////////////////////////
+
+.star5, .star6, .star1, .star2, .star4 {
 	position: absolute;
 	z-index: -1;
 	
 }
 
-.purpleStar {
+.star5 {
 	top: 23%;
 	left: 6%;
-	animation: pulse 4s ease-in infinite;
+	animation: pulse 8s ease-in infinite;
 }
 
-.orangeStar {
+.star6 {
 	top: 8%;
 	right: 5%;
-	animation: pulse 6s ease-in-out infinite;
+	animation: pulse 12s ease-in-out infinite;
 	animation-delay: 0.5s;
 	
 }
 
 .star1 {
-	top: 65%;
+	bottom: 15%;
 	left: 25%;
-	animation: pulse 5s ease-in-out infinite;
+	animation: pulse 10s ease-in-out infinite;
 	animation-delay: 1s;
 	
 }
 
 .star2 {
-	top: 45%;
+	bottom: 30%;
 	right: 28.5%;
-	animation: pulse 3s ease-in-out infinite;
+	animation: pulse 6s ease-in-out infinite;
 	animation-delay: 2s;
 	
 }
 
 .star4 {
 	left: 30%;
-	animation: pulse 2s ease-in-out infinite;
+	animation: pulse 4s ease-in-out infinite;
 	animation-delay: 1s;
 	
 }
 
-/* Main Content Styles */
-.presentation {
-	font-size: 2rem;
-}
-
 .circle {
-	display: block;
+	animation:	spin 2.5s linear infinite, 
+				moveLeftToRight 15s linear infinite,
+				bounceBB 2s ease-in-out infinite;
 
-	animation: spin 1000ms linear infinite, 
-		moveLeftToRight 5s linear infinite,
-		bounceBB 1s ease-in infinite;
-
-	transition: all 1s ease;
-
-	position: absolute;
-	left: 0;
+	position: relative;
 }
+
+
+
+
+
+
+//////////////////////////
+/*		ANIMATIONS		*/
+//////////////////////////
 
 /* Spinning the sphere using key frames */
 @keyframes spin {
@@ -102,8 +128,8 @@ header {
 }
 
 @keyframes moveLeftToRight {
-	0% { left: -100px; }
-	100% { left: 100%; }
+	0% { left: -25%; }
+	100% { left: 150%; }
 }
 
 @keyframes bounceBB {
@@ -114,6 +140,6 @@ header {
 
 @keyframes pulse {
 	0% { transform: scale(1); }
-	50% { transform: scale(1.1); }
+	50% { transform: scale(1.5); }
 	100% { transform: scale(1); }
 }

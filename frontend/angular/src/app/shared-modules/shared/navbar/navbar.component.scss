@@ -13,8 +13,19 @@
 	}
 }
 
+.navbar-nav {
+	gap: 10px;
+	margin-left: 10px;
+}
+
+.navbar{
+	.button {
+		margin-top: 20%;
+	}
+}
+
 ul {
-	font-size: 1.5rem;
+	font-size: 2rem;
 	color: black;
 }
 
