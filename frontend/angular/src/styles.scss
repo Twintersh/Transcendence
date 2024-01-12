@@ -1,12 +1,5 @@
-/* You can add global styles to this file, and also import other style files */
-// Override Bootstrap variables if needed
-$primary: #9D95E7;
-$secondary: #FFC801;
-$tertiary: #53A6AC;
-$success: #FE90E7;
-$warning: #ff6701;
-$danger: #dc3545;
-$light: #FFECDE;
+/* Importing Colors file. */
+@import 'colors.scss';
 
 /* Importing Bootstrap SCSS file. */
 @import 'ngx-toastr/toastr';
@@ -46,7 +39,10 @@ body {
 	padding: 0.3rem 2rem;
 }
 
-
+.selectDisable {
+	user-select: none;
+	pointer-events: none;
+}
 
 
 //////////////////////
