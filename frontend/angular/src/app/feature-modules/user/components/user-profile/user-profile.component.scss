@@ -1,47 +1,44 @@
-.profile-info {
-	font-family: 'Gopher', sans-serif;
 
-	.profile-pic {
-		width: 240px;
-		height: 240px;
-		background-position:50% 50%;
-		background-repeat:no-repeat;
-		background-size:cover;
-		border-radius: 50%;
+.backpanel {
+	border: solid 4px black;
+    padding: 1rem;
+    background-color: #53A6AC;
+
+}
+
+.profile-pic {
+	width: 240px;
+	height: 240px;
+	background-position:50% 50%;
+	background-repeat:no-repeat;
+	background-size:cover;
+	border-radius: 50%;
+	margin-bottom: 1rem;
+}
+
+.user-details {
+	text-align: center;
+	margin-bottom: 1rem;
+
+	h2 {
 		margin-bottom: 1rem;
 	}
 
-	.user-details {
-		text-align: center;
-		margin-bottom: 1rem;
-
-		h2 {
-			margin-bottom: 1rem;
-		}
-
-		p {
-			margin-top: 1rem;
-		}
-	}
-
-	.edit-button {
-		padding: 8px 16px;
-		background-color: #FFC801;
-		cursor: pointer;
-		transition: background-color 0.3s;
-	}
-	
-	.achievements {
-		font-family: 'Gopher', sans-serif;
-		margin-top: 2rem;
+	p {
+		margin-top: 1rem;
 	}
 }
 
+.achievements {
+	margin-top: 2rem;
+}
+
+
 
 h2 {
-	font-family: 'Gopher', sans-serif;
 	border: solid 4px #000;
 	box-shadow: 5px 5px 0px 0px #000;
+	background-color: antiquewhite;
 }
 
 .gameList {
@@ -52,7 +49,6 @@ h2 {
 }
 
 .statscontainer {
-	font-family: 'Gopher', sans-serif;
 	display: flex;
 	justify-content: space-evenly;
 }

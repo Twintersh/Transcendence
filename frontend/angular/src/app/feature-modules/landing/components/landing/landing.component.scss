@@ -21,6 +21,15 @@ header {
 	}
 }
 
+
+.landing-header {
+	height: 83vh;
+}
+
+.landing-content {
+	margin-bottom: 15rem;
+}
+
 .modal-content, .modal-header, .modal-footer, .modal-body {
 	border-color: black;
     border-width: 4px;
@@ -79,8 +88,8 @@ header {
 }
 
 .star1 {
-	bottom: 15%;
-	left: 25%;
+	bottom: 16%;
+	left: 30%;
 	animation: pulse 10s ease-in-out infinite;
 	animation-delay: 1s;
 	
@@ -95,7 +104,7 @@ header {
 }
 
 .star4 {
-	left: 30%;
+	left: 32%;
 	animation: pulse 4s ease-in-out infinite;
 	animation-delay: 1s;
 	

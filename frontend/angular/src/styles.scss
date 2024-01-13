@@ -33,10 +33,10 @@ body {
 	font-family: 'Gopher', 'arial', sans-serif;
 
 	background-image: linear-gradient(#e6bfa1a6 .1em, transparent .1em), linear-gradient(90deg, #e6bfa1a6 .1em, transparent .1em);
+	background-position: center;
 	background-size: 4rem 4rem;
 
 	overflow-x: hidden;
-	padding: 0.3rem 2rem;
 }
 
 .selectDisable {
@@ -81,27 +81,30 @@ body {
 /*		SCROLL-BAR		*/
 //////////////////////////
 
-/* Scrollbar Styles */
-::-webkit-scrollbar {
-	width: 15px;
-}
 
-/* Track */
-::-webkit-scrollbar-track {
-	margin: 20px 20px;
-	background: $tertiary;
-	border-radius: 7.5px;
-	box-shadow: 5px 5px 0 0 #000;
-}
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-	margin: 20px 20px;
-	//border: solid 3px #000;
-	box-shadow: 5px 5px 0 0 #000;
-	border-radius: 7.5px;
-	background: $secondary;
-}
+
+// /* Scrollbar Styles */
+// ::-webkit-scrollbar {
+// 	width: 15px;
+// }
+
+// /* Track */
+// ::-webkit-scrollbar-track {
+// 	margin: 20px 20px;
+// 	background: $tertiary;
+// 	border-radius: 7.5px;
+// 	box-shadow: 5px 5px 0 0 #000;
+// }
+
+// /* Handle */
+// ::-webkit-scrollbar-thumb {
+// 	margin: 20px 20px;
+// 	//border: solid 3px #000;
+// 	box-shadow: 5px 5px 0 0 #000;
+// 	border-radius: 7.5px;
+// 	background: $secondary;
+// }
 
 
 
