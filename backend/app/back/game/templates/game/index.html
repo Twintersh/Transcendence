@@ -6,49 +6,120 @@
 </head>
 <body>
 	<div id="screen" style="position: relative; width: 640px; height: 480px; margin:0 auto; background-color: rgb(0, 0, 0);">
-		<div id="paddle1" style="height: 480px; width: 10px; position: absolute; left: 10px; background-color: rgb(0, 255, 0);"></div>
-		<div id="paddle2" style="height: 480px; width: 10px; position: absolute; left: 620px; background-color: rgb(255, 0, 0);"></div>
-		<div id="ball" style="position: absolute; width: 7px; height: 7px; border-radius: 50%; background-color: rgb(254, 255, 168);"></div>
+		<div id="paddle1" style="height: 100px; width: 15px; position: absolute; left: 10px; background-color: #ff964f;"></div>
+		<div id="paddle2" style="height: 100px; width: 15px; position: absolute; left: 615px; background-color: #ff964f;"></div>
+		<div id="ball" style="position: absolute; width: 21px; height: 21px; border-radius: 50%; background-color: #779ecb;"></div>
 	</div>
-	{% comment %} <button id="playButton" onclick="createMatch()">Play!</button> {% endcomment %}
-	{% comment %} Inputs<br>
-	<textarea id="inputs-log" cols="30" rows="20"></textarea><br> {% endcomment %}
+
+	<!-- <canvas id="pongCanvas" width="640" height="480" style="position: relative; margin:0 auto;"></canvas> -->
+	<button id="playButton" onclick="getMatch('5720b1e2ed4b775949a406d45899e9e997282a6a')">Play tom</button>
+	<button id="playButton" onclick="getMatch('2b97e61cc656b21d1764465383fe43765976013e')">Play moise</button>
 	<script>
-		const	 gameSocket = new WebSocket(
-		'ws://'
-		+ window.location.host
-		+ '/ws/game/123be79d-01a1-4280-b444-7058ff373ed2/'
-		);
+		// const canva = document.getElementById("pongCanvas");
+		// const ctx = canva.getContext("2d");
+		// ctx.fillStyle = "indigo";
+		// ctx.fillRect(0, 0, canva.width, canva.height);
 
-		gameSocket.addEventListener('message', function(e) {
-			const data = JSON.parse(e.data);
-			var paddle1 = document.getElementById("paddle1");
-			var paddle2 = document.getElementById("paddle2");
-			var ball = document.getElementById("ball");
-	
-			// console.log(data.paddle1Y)
-			paddle1.style.top = data.paddle1Y + 'px';
-			paddle2.style.top = data.paddle2Y + 'px';
-			ball.style.top = data.ballY + 'px';
-			ball.style.left = data.ballX + 'px';
-		});
+		// const paddleWidth = 15, paddleHeight = 70;
+		// let paddle2y = canva.height / 2 - paddleHeight / 2;
+		// let paddle1y = canva.height / 2 - paddleHeight / 2;
+		// let paddle1X = canva.width - 10
+		// let paddle2X = 10
+		// let ballRadius = 21;
+		// let ballX = canva.width / 2;
+		// let ballY = canva.height / 2;
 
-		// gameSocket.onmessage = function(e) {
-		// };
+		// function drawPaddle1(y) {
+		// 	ctx.fillStyle = "#000";
+		// 	ctx.fillRect(paddle1X, y, paddleWidth, paddleHeight);
+		// }
+
+		// function drawPaddle2(y) {
+		// 	ctx.fillStyle = "#000";
+		// 	ctx.fillRect(paddle2X, y, paddleWidth, paddleHeight);
+		// }
+
+		// function drawBall(x, y) {
+		// 	ctx.beginPath();
+		// 	ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+		// 	ctx.fillStyle = "#779ecb";
+		// 	ctx.fill();
+		// 	ctx.closePath();
+		// }
+
+		var matchSocket = 0;
+
+// tom 5720b1e2ed4b775949a406d45899e9e997282a6a
+// moise 2b97e61cc656b21d1764465383fe43765976013e
+
+		function getMatch(token) {
+			const queueSocket = new WebSocket('ws://' + window.location.host +'/ws/game/queue/' + '?token=' + token);
+			
+			queueSocket.onopen = function(e) {
+				queueSocket.send(JSON.stringify({
+					'message': 'join',
+				}));
+			};
+
+			queueSocket.onmessage = function(e) {
+				const data = JSON.parse(e.data);
+				console.log(data.response);
+				if (data.response == 'match_found') {
+					console.log('match found');
+					launchMatch(data.match_id, token);
+					queueSocket.close();
+				}
+			};	
+		}
+
+		function launchMatch(match_id, token) {
+			const matchSocket = new WebSocket(
+				'ws://'
+				+ window.location.host
+				+ '/ws/game/'
+				+ match_id
+				+ '/?token='
+				+ token
+				);
+				
+			matchSocket.onopen = function(e) {
+				document.addEventListener('keydown', sendInputs, false);
+				document.addEventListener('keyup', sendInputs, false);
+				console.log('matchSocket open');
+			};
+
+			matchSocket.onmessage = function(e) {
+				const data = JSON.parse(e.data);
+				var paddle1 = document.getElementById("paddle1");
+				var paddle2 = document.getElementById("paddle2");
+				var ball = document.getElementById("ball");
+				console.log("antilag");
+				
+				// ctx.fillRect(0, 0, canva.width, canva.height)
+
+				// drawPaddle1(data.paddle1Y);
+				// drawPaddle2(data.paddle2Y);
+				// drawBall(data.ballX, data.ballY);
+
+				paddle1.style.top = data.paddle1Y + 'px';
+				paddle2.style.top = data.paddle2Y + 'px';
+				ball.style.top = data.ballY + 'px';
+				ball.style.left = data.ballX + 'px';
+			};
+			
+			function sendInputs(e) {
+				if (e.keyCode != 83 && e.keyCode != 87)
+					return 
+				input = e.keyCode;
+				if (e.type == 'keyup')
+					input = 0;
+				console.log(input);
+				matchSocket.send(JSON.stringify({
+					'message': input,
+				}));
+			};
+		}
 		
-		function sendInputs(e) {
-			if (e.keyCode != 83 && e.keyCode != 87)
-				return 
-			input = e.keyCode;
-			if (e.type == 'keyup')
-				input = 0;
-			gameSocket.send(JSON.stringify({
-				'message': input,
-			}));
-		};
-
-		document.addEventListener('keydown', sendInputs, false);
-		document.addEventListener('keyup', sendInputs, false);
-	</script>
+		</script>
 </body>
 </html>

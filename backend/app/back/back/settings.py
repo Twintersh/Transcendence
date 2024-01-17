@@ -52,8 +52,6 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware"
 ]
 
-
-
 ROOT_URLCONF = 'back.urls'
 
 TEMPLATES = [
@@ -140,3 +138,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+QUEUE_MANAGER = []
+ENGINES = {}
