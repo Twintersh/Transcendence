@@ -2,8 +2,8 @@
 .backpanel {
 	box-shadow: 0.75rem 0.75rem black;
 	border: solid 4px black;
-    padding: 1rem;
-    background-color: #53A6AC;
+	padding: 1rem;
+	background-color: #53A6AC;
 
 }
 
@@ -17,14 +17,9 @@
 	margin-bottom: 1rem;
 }
 
-.user-details {
+.usercard {
 	top: 20px;
 }
-
-.achievements {
-	margin-top: 2rem;
-}
-
 
 
 h2 {
@@ -36,4 +31,25 @@ h2 {
 .gameList {
     min-height: 80vh;
     margin-bottom: 10rem;
+}
+
+//////////////////////////
+/*		ANIMATIONS		*/
+//////////////////////////
+
+
+
+.spinning {
+	animation:	spin 2.5s linear infinite;
+	position: relative;
+}
+
+/* Spinning the sphere using key frames */
+@keyframes spin {
+	from { 
+		transform: rotate(0deg); 
+	}
+	to { 
+		transform: rotate(360deg); 
+	}
 }

@@ -1,37 +1,13 @@
-.col {
+.backpanel {
 	box-shadow: 0.75rem 0.75rem black;
-	border: 0.35rem solid black;
-	border-radius: 0.5rem;
-	max-height: 75vh;
-	margin: 0rem 2rem;
-	overflow-y: auto;
+	border: solid 4px black;
+    padding: 1rem;
+    background-color: #53A6AC;
+
 }
 
-.header {
-	border-radius: 0.5rem;
-	max-height: 75vh;
-
-	h3 {
-		font-family: 'Gopher', sans-serif;
-		font-size: 2rem;
-		padding: 1rem 1rem;
-	}
-}
-
-.friendslist {
-	padding: 1rem 1rem;
-
-	span {
-		font-family: 'Gopher', sans-serif;
-		font-size: 1.5rem;
-		padding-left: 1rem;
-	}
-
-	img {
-		margin: 0.35rem;
-		width: 3rem;
-		height: 3rem;
-		border-radius: 50%;
-	}
-
+h2 {
+	border: solid 4px #000;
+	box-shadow: 5px 5px 0px 0px #000;
+	background-color: #9D95E7;
 }
