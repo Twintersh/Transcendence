@@ -110,15 +110,26 @@ header {
 	
 }
 
-.circle {
+
+.paddle-anim {
+	animation:	moveLeftToRight 15s linear infinite,
+				bounceBB 0.75s ease-in-out infinite;
+	position: absolute;
+}
+
+.pongo-anim {
+	animation:	spin 2.25s linear infinite, 
+				moveLeftToRight 15s linear infinite,
+				bounceBB 1.85s ease-in-out infinite;
+	position: absolute;
+}
+
+.pongi-anim {
 	animation:	spin 2.5s linear infinite, 
 				moveLeftToRight 15s linear infinite,
 				bounceBB 2s ease-in-out infinite;
-
-	position: relative;
+	position: absolute;
 }
-
-
 
 
 
@@ -138,7 +149,7 @@ header {
 }
 
 @keyframes moveLeftToRight {
-	0% { left: -25%; }
+	0% { left: -150%; }
 	100% { left: 150%; }
 }
 
