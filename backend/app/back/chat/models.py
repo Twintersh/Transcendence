@@ -1,5 +1,5 @@
 # chat/models.py
-
+import uuid
 from django.db import models
 from django.conf import settings
 from django.db import models
@@ -8,6 +8,7 @@ from users.models import User
 
 
 class Room(models.Model):
+	id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
 	users = models.ManyToManyField(User, related_name='ChatRooms', blank=True)
 
 	def __str__(self):
@@ -20,4 +21,4 @@ class Message(models.Model):
 	timestamp = models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):
-		return f'{self.sender.username} in {self.room_name}: {self.content}'
+		return f'{self.sender.username} in {self.room.id}: {self.content}'

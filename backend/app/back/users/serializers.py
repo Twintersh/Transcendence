@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.fields import empty
 from .models import User, FriendRequest, Avatar
+from game.models import Match
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta(object):
@@ -58,12 +59,7 @@ class FriendRequestSerializer(serializers.ModelSerializer):
         model = FriendRequest
         fields = ['id', 'fromUser', 'toUser']
 
-# class MatchSerializer(serializers.ModelSerializer):
-#     class Meta(object):
-#         model = Match
-#         fields = ['id', 'duration', 'wScore', 'lScore']
-
-# class CreateMatchSerializer(serializers.Serializer):
-#     winner = UserLookSerializer()
-#     loser = UserLookSerializer()
-#     match = MatchSerializer()
+class MatchSerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = Match
+        fields = ['id', 'duration', 'wScore', 'lScore']

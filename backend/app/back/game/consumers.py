@@ -11,6 +11,7 @@ from .pong import PongEngine
 from asgiref.sync import async_to_sync, sync_to_async
 from .models import Match
 from users.models import User
+from django.shortcuts import get_object_or_404
 
 
 @sync_to_async
@@ -77,6 +78,19 @@ class QueueManager(AsyncWebsocketConsumer):
 
 
 @database_sync_to_async
+def updateMatch(id, content):
+	curMatch = get_object_or_404(Match, id=id)
+	curMatch.wScore = content.wScore
+	curMatch.lScore = content.lScore
+	curMatch.duration = content.duration
+	if content.winner == 'P1':
+		curMatch.winner = curMatch.player1
+	else:
+		curMatch.winner = curMatch.player2
+	curMatch.save()
+
+
+@database_sync_to_async
 def getPlayerID(id, user):
 	match = Match.objects.get(id=id)
 	if user == match.player1:
@@ -118,11 +132,9 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		keyInput = content["message"]
 		settings.ENGINES[self.group_name].setPlayerInputs(self.playerID, keyInput)
 
-	# async def gameUpdates(self, event):
-	# 	await self.send(text_data=json.dumps(
-	# 		{
-	# 			"paddle1Y": event["paddle1Y"],
-	# 			"paddle2Y": event["paddle2Y"],
-	# 			"ballX": event["ballX"],
-	# 			"ballY": event["ballY"],
-	# 		}))
+	async def endGame(self, event):
+		content = event['content']
+		if self.playerID == 1:
+			await updateMatch(self.room_name, content)
+		await self.close()
+	
