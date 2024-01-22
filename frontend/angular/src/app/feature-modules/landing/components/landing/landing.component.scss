@@ -21,6 +21,15 @@ header {
 	}
 }
 
+
+.landing-header {
+	height: 83vh;
+}
+
+.landing-content {
+	margin-bottom: 13rem;
+}
+
 .modal-content, .modal-header, .modal-footer, .modal-body {
 	border-color: black;
     border-width: 4px;
@@ -45,6 +54,7 @@ header {
 	a {
 		color: #FD8743;
 		text-decoration: underline;
+		cursor: pointer;
 	}
 }
 
@@ -78,8 +88,8 @@ header {
 }
 
 .star1 {
-	bottom: 15%;
-	left: 25%;
+	bottom: 16%;
+	left: 30%;
 	animation: pulse 10s ease-in-out infinite;
 	animation-delay: 1s;
 	
@@ -94,21 +104,32 @@ header {
 }
 
 .star4 {
-	left: 30%;
+	left: 32%;
 	animation: pulse 4s ease-in-out infinite;
 	animation-delay: 1s;
 	
 }
 
-.circle {
+
+.paddle-anim {
+	animation:	moveLeftToRight 15s linear infinite,
+				bounceBB 0.75s ease-in-out infinite;
+	position: absolute;
+}
+
+.pongo-anim {
+	animation:	spin 2.25s linear infinite, 
+				moveLeftToRight 15s linear infinite,
+				bounceBB 1.85s ease-in-out infinite;
+	position: absolute;
+}
+
+.pongi-anim {
 	animation:	spin 2.5s linear infinite, 
 				moveLeftToRight 15s linear infinite,
 				bounceBB 2s ease-in-out infinite;
-
-	position: relative;
+	position: absolute;
 }
-
-
 
 
 
@@ -128,7 +149,7 @@ header {
 }
 
 @keyframes moveLeftToRight {
-	0% { left: -25%; }
+	0% { left: -150%; }
 	100% { left: 150%; }
 }
 
@@ -139,7 +160,7 @@ header {
 }
 
 @keyframes pulse {
-	0% { transform: scale(1); }
-	50% { transform: scale(1.5); }
-	100% { transform: scale(1); }
+	0% { transform: scale(0.9); }
+	50% { transform: scale(1.25); }
+	100% { transform: scale(0.9); }
 }
