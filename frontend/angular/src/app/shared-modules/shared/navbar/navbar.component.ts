@@ -25,15 +25,13 @@ export class NavbarComponent implements OnInit {
 
 	isAuth(): void {
 		this.authService.isAuth().subscribe((res) => {
-			this.isAuthenticated = res;	
-			if (this.router.url.includes('landing'))
-				this.isAuthenticated = false;
+			this.isAuthenticated = res;
 		})
 	};
 	
 	logout(): void {
 		this.authService.logout();
 		this.isAuthenticated = false;
-		this.router.navigate(['/landing']);
+		this.router.navigate(['']);
 	}
 }

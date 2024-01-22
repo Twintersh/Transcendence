@@ -16,12 +16,13 @@ SECRET_KEY = 'django-insecure-dmwp774*exw0fl2%n0@_^aehi(0$-a#9_*49+t2)i!9z*mkccs
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-CORS_ALLOW_ALL_ORIGINS: True
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Application definition
 
 INSTALLED_APPS = [
+	'channels',
 	'daphne',
 	'corsheaders',
     'django.contrib.admin',
@@ -34,7 +35,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_yasg',
 	'chat',
-    'users'
+    'users',
+	'game'
 ]
 
 MIDDLEWARE = [
@@ -49,8 +51,6 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware"
 ]
-
-
 
 ROOT_URLCONF = 'back.urls'
 
@@ -129,7 +129,7 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ASGI_APPLICATION = "back.asgi.application"
+ASGI_APPLICATION = "back.routing.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
@@ -138,3 +138,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+QUEUE_MANAGER = []
+ENGINES = {}

@@ -61,7 +61,7 @@ export class AuthService {
 			catchError((error) => {
 				if (error.status === 403) {
 					console.log('Unauthorized error. Redirecting to landing page...');
-					this.router.navigate(['/landing']);
+					this.router.navigate(['']);
 				}
 				return of(false);
 			})
