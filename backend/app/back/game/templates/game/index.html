@@ -17,32 +17,32 @@
 	<script>
 		const canva = document.getElementById("pongCanvas");
 		const ctx = canva.getContext("2d");
-		ctx.fillStyle = "indigo";
+		ctx.fillStyle = "black";
 		ctx.fillRect(0, 0, canva.width, canva.height);
 
 		const paddleWidth = 15, paddleHeight = 100;
 		let paddle2y = canva.height / 2 - paddleHeight / 2;
 		let paddle1y = canva.height / 2 - paddleHeight / 2;
-		let paddle1X = canva.width - 10
-		let paddle2X = 10
+		let paddle1X = canva.width - 10 - paddleWidth;
+		let paddle2X = 10;
 		let ballRadius = 10.5;
 		let ballX = canva.width / 2;
 		let ballY = canva.height / 2;
 
 		function drawPaddle1(y) {
-			ctx.fillStyle = "#000";
+			ctx.fillStyle = "#FFFFFF";
 			ctx.fillRect(paddle1X, y, paddleWidth, paddleHeight);
 		}
 
 		function drawPaddle2(y) {
-			ctx.fillStyle = "#000";
+			ctx.fillStyle = "#FFFFFF";
 			ctx.fillRect(paddle2X, y, paddleWidth, paddleHeight);
 		}
 
 		function drawBall(x, y) {
 			ctx.beginPath();
 			ctx.arc(x, y, ballRadius, 0, Math.PI*2);
-			ctx.fillStyle = "#FFFFFF";
+			ctx.fillStyle = "red";
 			ctx.fill();
 			ctx.closePath();
 		}
@@ -98,6 +98,7 @@
 				
 				ctx.fillStyle = "blue";
 				ctx.fillRect(0, 0, canva.width, canva.height)
+				console.log(data.ballX);
 				
 				drawBall(data.ballX, data.ballY);
 				drawPaddle1(data.paddle1Y);

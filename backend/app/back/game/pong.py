@@ -11,19 +11,16 @@ import json
 channel_layer = get_channel_layer()
 tick_rate = 1/50
 
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-HEIGHT = 480
 WIDTH = 640
+HEIGHT = 480
 MAX_ANGLE = 55 # default value : 55
 
 paddleHeight=100 # default value: 100
-paddleWidth=15 # default value: 10
+paddleWidth=15 # default value: 15
 paddleSpeed=10 # default value: 10
 
-ballSize=21 # default value: 7
-ballSpeed=5 # default value: 5
-ballAcceleration=1.2 # default value: 1.2
+ballSize=21 # default value: 21
+ballSpeed=8 # default value: 5
 ballMaxSpeed=7 # default value: 7
 
 pointsToWin=5 # default value: 5
@@ -40,7 +37,7 @@ class Ball:
 		self.speedY = speed/2
 		self.speed = speed
 	
-	def move(self, paddles, score):
+	def move(self, score):
 		if (self.posx >= WIDTH or self.posx <= 0):
 			if (self.posx >= WIDTH):
 				score[0] += 1
@@ -48,7 +45,7 @@ class Ball:
 				score[1] += 1 
 			self.posx = WIDTH / 2
 			self.posy = random.randint(HEIGHT * 0.25, HEIGHT * 0.75)
-		if (self.posy >= HEIGHT - ballSize or self.posy <= 0):
+		if (self.posy >= HEIGHT - ballSize/2 or self.posy <= ballSize/2):
 			self.speedY *= -1
 		self.posx += self.speedX
 		self.posy += self.speedY
@@ -60,13 +57,12 @@ class Ball:
 			angle = 0.1
 
 		self.speedY = self.speed * sin(radians(angle))
-		self.speedX = self.speed
+		self.speedX *= -1
 
 		if (self.posx >= WIDTH/2):
-			self.speedX *= -1
-			self.posx = paddle.posx - self.size - 1
+			self.posx = paddle.posx - self.size/2 - 1
 		else:
-			self.posx = paddle.posx + paddle.width - 1
+			self.posx = paddle.posx + self.size/2 + paddle.width - 1
 
 class Stricker:
 	def __init__(self, posX, posY, width, height, speed):
@@ -95,7 +91,7 @@ class PongEngine(threading.Thread):
 
 		self.paddle1 = Stricker(10, HEIGHT/2, paddleWidth, paddleHeight, paddleSpeed)
 		self.paddle2 = Stricker(WIDTH - paddleWidth - 10, HEIGHT/2, paddleWidth, paddleHeight, paddleSpeed)
-		self.ball = Ball(WIDTH/2, HEIGHT/2, ballSize, ballSpeed)
+		self.ball = Ball(WIDTH/2, HEIGHT/2 - paddleHeight/2, ballSize, ballSpeed)
 
 	def setWebsocket1(self, websocket):
 		self.websocket1 = websocket
@@ -111,12 +107,9 @@ class PongEngine(threading.Thread):
 		return (False)
 
 	def collide(self, circle, paddle):
-		space = 0
-		# if (circle.posx >= WIDTH/2):
-		# 	space = ballSize
-		if (circle.posx + space >= paddle.posx and circle.posx - space <= paddle.posx  + paddle.width):
-			if (circle.posy + space >= paddle.posy and circle.posy - space <= paddle.posy + paddle.height):
-				self.sendUpdates()
+		delta = circle.size/2
+		if (circle.posx + delta >= paddle.posx and circle.posx - delta <= paddle.posx  + paddle.width):
+			if (circle.posy + delta >= paddle.posy and circle.posy - delta <= paddle.posy + paddle.height):
 				return (True)
 		return (False)
 
@@ -124,13 +117,13 @@ class PongEngine(threading.Thread):
 	def run(self):
 		self.start = time()
 		print("Started engine loop...")
-		score = [0, 0]
+		self.score = [0, 0]
 		self.running = True
 		inputs = [0, 0]
 		move = [0, 0]
 	
 		while (self.running):
-			if time() - self.start > 0.016:
+			if time() - self.start > tick_rate:
 				with self.inputLock:
 					inputs = self.input.copy()
 
@@ -152,14 +145,14 @@ class PongEngine(threading.Thread):
 
 				self.paddle1.check()
 				self.paddle2.check()
-				self.ball.move([self.paddle1, self.paddle2], score)
+				self.ball.move(self.score)
 
-				if (score[0] >= pointsToWin or score[1] >= pointsToWin):
+				if (self.score[0] >= pointsToWin or self.score[1] >= pointsToWin):
 					self.running = False
 
 				self.sendUpdates()
 				self.start = time()
-		return (score)
+		return (self.score)
 
 	def sendUpdates(self):
 			async_to_sync(self.websocket1.send)(text_data=json.dumps({
@@ -167,17 +160,15 @@ class PongEngine(threading.Thread):
 				"paddle2Y": self.paddle2.posy,
 				"ballX": self.ball.posx,
 				"ballY": self.ball.posy,
+				"Score": self.score
 			}))
 			async_to_sync(self.websocket2.send)(text_data=json.dumps({
 				"paddle1Y": self.paddle1.posy,
 				"paddle2Y": self.paddle2.posy,
 				"ballX": self.ball.posx,
 				"ballY": self.ball.posy,
+				"Score": self.score
 			}))
-
-			# async_to_sync(self.channel_layer.group_send)(self.group_name, {
-			# 	"type": "gameUpdates",
-			# })
 
 	def setPlayerInputs(self, player, keyinput):
 		with self.inputLock:
