@@ -10,7 +10,11 @@
 		<div id="paddle2" style="height: 100px; width: 15px; position: absolute; left: 615px; background-color: #ff964f;"></div>
 		<div id="ball" style="position: absolute; width: 21px; height: 21px; border-radius: 50%; background-color: #779ecb;"></div>
 	</div> -->
-
+	<div>
+		<a id="Score1"></a>
+		<a>   -------   </a>
+		<a id="Score2"></a>
+	</div>
 	<canvas id="pongCanvas" width="640" height="480" style="position: relative; margin:0 auto;"></canvas>
 	<button id="playButton" onclick="getMatch('5720b1e2ed4b775949a406d45899e9e997282a6a')">Play tom</button>
 	<button id="playButton" onclick="getMatch('2b97e61cc656b21d1764465383fe43765976013e')">Play moise</button>
@@ -23,8 +27,8 @@
 		const paddleWidth = 15, paddleHeight = 100;
 		let paddle2y = canva.height / 2 - paddleHeight / 2;
 		let paddle1y = canva.height / 2 - paddleHeight / 2;
-		let paddle1X = canva.width - 10 - paddleWidth;
-		let paddle2X = 10;
+		let paddle1X = 10;
+		let paddle2X = canva.width - 10 - paddleWidth;
 		let ballRadius = 10.5;
 		let ballX = canva.width / 2;
 		let ballY = canva.height / 2;
@@ -73,6 +77,10 @@
 		}
 
 		function launchMatch(match_id, token) {
+			scoreArray = [];
+			const score1 = document.getElementById('Score1');
+			const score2 = document.getElementById('Score2');
+
 			const matchSocket = new WebSocket(
 				'ws://'
 				+ window.location.host
@@ -90,11 +98,10 @@
 
 			matchSocket.onmessage = function(e) {
 				const data = JSON.parse(e.data);
-				// var paddle1 = document.getElementById("paddle1");
-				// var paddle2 = document.getElementById("paddle2");
-				// var ball = document.getElementById("ball");
 				console.log("antilag");
-
+				scoreArray = data.Score;
+				score1.textContent = scoreArray[0];
+				score2.textContent = scoreArray[1];
 				
 				ctx.fillStyle = "blue";
 				ctx.fillRect(0, 0, canva.width, canva.height)
@@ -103,20 +110,14 @@
 				drawBall(data.ballX, data.ballY);
 				drawPaddle1(data.paddle1Y);
 				drawPaddle2(data.paddle2Y);
-
-				// paddle1.style.top = data.paddle1Y + 'px';
-				// paddle2.style.top = data.paddle2Y + 'px';
-				// ball.style.top = data.ballY + 'px';
-				// ball.style.left = data.ballX + 'px';
 			};
-			
+
 			function sendInputs(e) {
-				if (e.keyCode != 83 && e.keyCode != 87)
-					return 
+				// if (e.keyCode != 83 && e.keyCode != 87)
+				// 	return 
 				input = e.keyCode;
 				if (e.type == 'keyup')
 					input = 0;
-				console.log(input);
 				matchSocket.send(JSON.stringify({
 					'message': input,
 				}));

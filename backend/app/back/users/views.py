@@ -14,7 +14,6 @@ from rest_framework.authtoken.models import Token
 
 from .serializers import *
 
-
 # USER BASIC
 
 @swagger_auto_schema(method='POST', request_body=UserRegisterSerializer)
@@ -76,12 +75,12 @@ def updateCredential(request):
 def getUserInfo(request):
     user = request.user
     serializer = UserInfoSerializer(instance=user)
-    if hasattr(user, 'avatar') and user.avatar:
-        avatarSerializer = Avatarserializer(instance=user.avatar)
-        data = [serializer.data, avatarSerializer.data]
-    else:
-        data = [serializer.data]
-    return Response(data, status=status.HTTP_200_OK)
+    # if hasattr(user, 'avatar') and user.avatar:
+    #     avatarSerializer = Avatarserializer(instance=user.avatar)
+    #     data = [serializer.data, avatarSerializer.data]
+    # else:
+    # data = [serializer.data]
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(method='POST')
@@ -183,10 +182,7 @@ def getUserFriends(request):
 @permission_classes([IsAuthenticated])
 def getUserMatches(request):
     user = request.user
-    wonMatches = user.wonMatches.all()
-    lostMatches = user.lostMatches.all()
-    wonMatchesSerializer = MatchSerializer(instance=wonMatches, many=True)
-    lostMatchesSerializer = MatchSerializer(instance=lostMatches, many=True)
-    serializerList = [wonMatchesSerializer.data, lostMatchesSerializer.data]
-    return Response(serializerList, status=status.HTTP_200_OK)
+    Matches = user.p1Matches.all() + user.p2Matches.all()
+    MatchesSerializer = MatchSerializer(instance=Matches, many=True)
+    return Response(MatchesSerializer, status=status.HTTP_200_OK)
 

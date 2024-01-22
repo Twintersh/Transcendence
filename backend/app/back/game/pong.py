@@ -4,7 +4,7 @@ from turtle import update
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from time import sleep, time
-from math import sin, radians
+from math import sin, radians, floor, ceil
 import random
 import json
 
@@ -20,13 +20,18 @@ paddleWidth=15 # default value: 15
 paddleSpeed=10 # default value: 10
 
 ballSize=21 # default value: 21
-ballSpeed=8 # default value: 5
+ballSpeed=10 # default value: 5
 ballMaxSpeed=7 # default value: 7
 
 pointsToWin=5 # default value: 5
 
 # clock = pygame.time.Clock()
 FPS=60
+
+def roundNb(nb):
+	if (nb - floor(nb) >= 0.5):
+		return (ceil(nb))
+	return (floor(nb))
 
 class Ball:
 	def __init__(self, posX, posY, size, speed):
@@ -88,6 +93,7 @@ class PongEngine(threading.Thread):
 		self.channel_layer = get_channel_layer()
 		self.inputLock = threading.Lock()
 		self.input = [0, 0]
+		self.playerReady = [False, False]
 
 		self.paddle1 = Stricker(10, HEIGHT/2, paddleWidth, paddleHeight, paddleSpeed)
 		self.paddle2 = Stricker(WIDTH - paddleWidth - 10, HEIGHT/2, paddleWidth, paddleHeight, paddleSpeed)
@@ -115,15 +121,21 @@ class PongEngine(threading.Thread):
 
 
 	def run(self):
-		self.start = time()
 		print("Started engine loop...")
+		start = time()
 		self.score = [0, 0]
 		self.running = True
 		inputs = [0, 0]
 		move = [0, 0]
-	
+
+		while True:
+			if (self.playerReady[0] and self.playerReady[1]):
+				break
+			sleep(0.1)
+
+		gameStart = time()
 		while (self.running):
-			if time() - self.start > tick_rate:
+			if time() - start > tick_rate:
 				with self.inputLock:
 					inputs = self.input.copy()
 
@@ -151,8 +163,29 @@ class PongEngine(threading.Thread):
 					self.running = False
 
 				self.sendUpdates()
-				self.start = time()
+				start = time()
+
+		duration = time() - gameStart
+		self.sendEndGame(duration)
 		return (self.score)
+	
+	def sendEndGame(self, duration):
+		if self.score[0] > self.score[1]:
+			content = {
+				'winner' : 'P1',
+				'duration' : roundNb(duration),
+				'wScore' : self.score[0],
+				'lScore' : self.score[1]
+			}
+		else:
+			content = {
+				'winner' : 'P2',
+				'duration' : roundNb(duration),
+				'wScore' : self.score[1],
+				'lScore' : self.score[0]
+			}
+		async_to_sync(self.websocket1.channel_layer.group_send)(self.group_name, {'type' : 'endGame', 'content' : content})
+		
 
 	def sendUpdates(self):
 			async_to_sync(self.websocket1.send)(text_data=json.dumps({
@@ -173,3 +206,6 @@ class PongEngine(threading.Thread):
 	def setPlayerInputs(self, player, keyinput):
 		with self.inputLock:
 			self.input[player - 1] = keyinput
+			if (keyinput == 32):
+				self.playerReady[player - 1] = True
+
