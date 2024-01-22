@@ -8,8 +8,8 @@ import { ChatComponent } from './feature-modules/chat/components/chat/chat.compo
 import { AuthService } from './services/auth.service';
 
 const routes: Routes = [
+	{ path: '', component: LandingComponent },
 	{ path: 'home', component: HomeComponent, canActivate: [AuthService] },
-	{ path: 'landing', component: LandingComponent },
 	{ path: 'user', component: UserProfileComponent, canActivate: [AuthService] },
 	{ path: 'chat', component: ChatComponent, canActivate: [AuthService] },
 	{ path: '**', component: PageNotFoundComponent, pathMatch: 'full' }
