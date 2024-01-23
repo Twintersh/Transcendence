@@ -16,8 +16,8 @@
 		<a id="Score2"></a>
 	</div>
 	<canvas id="pongCanvas" width="640" height="480" style="position: relative; margin:0 auto;"></canvas>
-	<button id="playButton" onclick="getMatch('5720b1e2ed4b775949a406d45899e9e997282a6a')">Play tom</button>
-	<button id="playButton" onclick="getMatch('2b97e61cc656b21d1764465383fe43765976013e')">Play moise</button>
+	<button id="playButton" onclick="getMatch('256b2ccafa34a35a7dd9a7b5ac75e1294c238bd8')">Play tom</button>
+	<button id="playButton" onclick="getMatch('f44c54dd904d41da988161d9794bd5db410537ee')">Play moise</button>
 	<script>
 		const canva = document.getElementById("pongCanvas");
 		const ctx = canva.getContext("2d");
@@ -53,8 +53,8 @@
 
 		var matchSocket = 0;
 
-// tom 5720b1e2ed4b775949a406d45899e9e997282a6a
-// moise 2b97e61cc656b21d1764465383fe43765976013e
+// tom 256b2ccafa34a35a7dd9a7b5ac75e1294c238bd8
+// moise f44c54dd904d41da988161d9794bd5db410537ee
 
 		function getMatch(token) {
 			const queueSocket = new WebSocket('ws://' + window.location.host +'/ws/game/queue/' + '?token=' + token);

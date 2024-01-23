@@ -35,6 +35,7 @@ class QueueManager(AsyncWebsocketConsumer):
 	async def connect(self):
 		self.room_group_name = "queue"
 		if not self.scope['user'].is_authenticated:
+			print("cheh")
 			return
 		await self.accept()
 		await self.channel_layer.group_add(self.room_group_name, self.channel_name)
@@ -63,17 +64,13 @@ class QueueManager(AsyncWebsocketConsumer):
 		if len(settings.QUEUE_MANAGER) >= 2:
 			print("getting players")
 			players = []
-			tmp = str(randint(0, 10000))
 			for i, player in enumerate(settings.QUEUE_MANAGER):
 				print(player)
 				if i < 2:
-					await self.channel_layer.group_add(tmp, player['channel_name'])
 					players.append(player)
 			response = await makeMatch(players)
-			await self.channel_layer.group_send(tmp, {'type' : 'sendResponse', 'content' : response})
 			for player in players:
-				print("removing player")
-				await self.channel_layer.group_discard(tmp, player['channel_name'])
+				await self.channel_layer.send(player['channel_name'], {"type" : "sendResponse", "content" : response})
 
 
 
