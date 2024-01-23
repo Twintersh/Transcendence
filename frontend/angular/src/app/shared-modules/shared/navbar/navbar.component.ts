@@ -26,6 +26,8 @@ export class NavbarComponent implements OnInit {
 	isAuth(): void {
 		this.authService.isAuth().subscribe((res) => {
 			this.isAuthenticated = res;
+			if (this.router.url.includes('game'))
+				this.isAuthenticated = false;
 		})
 	};
 	
