@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, Router, UrlTree } from '@angular/router';
 import { CookieService } from './cookie.service';
-import { catchError, map } from 'rxjs/operators';
-import { Observable, of, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
