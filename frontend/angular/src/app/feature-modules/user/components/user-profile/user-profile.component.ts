@@ -33,13 +33,20 @@ export class UserProfileComponent implements OnInit {
 		this.user$ = this.getUserInfos();
 		this.user$.subscribe({
 			next: (response: any) => {
-				this.user = response[0];
-				if (this.user)
-					this.user.avatar = response[1].image;
-				console.log('Fetch data user success:', this.user);
+				this.user = response;
 			},
 			error: (error) => {
 			  console.error('Fetch data user failed:', error);
+			},
+		});
+		this.userService.getUserAvatar().subscribe({
+			next: (response: any) => {
+				if (this.user) {
+					this.user.avatar = 'http://127.0.0.1:8000' + response.avatar;
+				}
+			},
+			error: (error) => {
+			  console.error('Fetch data avatar failed:', error);
 			},
 		});
 	}

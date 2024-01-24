@@ -75,12 +75,22 @@ def updateCredential(request):
 def getUserInfo(request):
     user = request.user
     serializer = UserInfoSerializer(instance=user)
-    # if hasattr(user, 'avatar') and user.avatar:
-    #     avatarSerializer = Avatarserializer(instance=user.avatar)
-    #     data = [serializer.data, avatarSerializer.data]
-    # else:
-    # data = [serializer.data]
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@swagger_auto_schema(method='GET')
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FileUploadParser])
+def getUserAvatar(request):
+    user = request.user
+    
+    if hasattr(user, 'avatar') and user.avatar:
+        image_serializer = Avatarserializer(instance=user.avatar)
+        image_url = image_serializer.data['image']
+        return Response({'avatar': image_url}, status=status.HTTP_200_OK)
+    else:
+        return Response({'detail': 'User has no avatar'}, status=status.HTTP_404_NOT_FOUND)
 
 
 @swagger_auto_schema(method='POST')
@@ -175,14 +185,13 @@ def getUserFriends(request):
 
 # # MATCHES
 
-
 @swagger_auto_schema(method='GET')
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def getUserMatches(request):
     user = request.user
-    Matches = user.p1Matches.all() + user.p2Matches.all()
+    Matches = user.matches.all()
     MatchesSerializer = MatchSerializer(instance=Matches, many=True)
     return Response(MatchesSerializer, status=status.HTTP_200_OK)
 

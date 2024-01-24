@@ -4,14 +4,10 @@
 		<div class="col-md-4">
 			<div class="usercard sticky-top">
 				<div class="backpanel">
-					<div class="profile-pic" *ngIf="user?.avatar">
-						<img [src]="user?.avatar" alt="User Avatar">
-					</div>
-					
 					<h2>{{ user?.username }}</h2>
 					<div class="row my-4">
 						<div class="col-md-5">
-							<img class="img-fluid" src="https://www.w3schools.com/howto/img_avatar.png">
+							<img class="img-fluid" *ngIf="user?.avatar" [src]="user?.avatar">
 						</div>
 						<div class="col-md-7">
 							<p>{{ user?.username }}, you really are Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>

@@ -19,8 +19,7 @@ export class AuthService {
 		return this.http.post('http://127.0.0.1:8000/users/signup/', newUser)
 	}	
 
-	public signup42(newUser: User) {
-		return this.http.post('http://127.0.0.1:8000/users/sign42/', newUser)
+	public signup42() {
 	}
 
 	public logout(): void {

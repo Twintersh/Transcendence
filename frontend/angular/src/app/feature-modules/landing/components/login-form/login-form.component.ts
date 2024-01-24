@@ -42,6 +42,7 @@ export class LoginFormComponent implements OnInit {
 				next: (response) => {
 					this.cookieService.saveCookie('authToken', response.token);
 					this.toastService.showSuccess('Login successful');
+					this.myForm.reset();
 					this.router.navigate(['/home']);
 				},
 				error: (error) => {

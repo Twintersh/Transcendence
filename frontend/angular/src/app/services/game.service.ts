@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CookieService } from './cookie.service';
 import { Router } from '@angular/router';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -14,8 +15,10 @@ export class GameService {
 	}
 
 	getMatch(token: string) {
+		//debugger;
 		console.log('getMatch');
-		const url: string = 'ws://' + "localhost:8000" +'/ws/game/queue/' + '?token=' + token;
+		const url: string = 'wss://' + "0.0.0.0:8000" +'/ws/game/queue/' + '?token=' + token;
+		console.log(url);
 		const queueSocket = new WebSocket(url);
 		console.log(queueSocket);
 
@@ -47,12 +50,12 @@ export class GameService {
 	launchMatch(match_id: number, token: string) {
 		const matchSocket = new WebSocket(
 			'ws://'
-			+ window.location.host
+			+ "localhost:8000"
 			+ '/ws/game/'
 			+ match_id
 			+ '/?token='
 			+ token
-			);
+		);
 			
 		matchSocket.onopen = function(e) {
 		//	document.addEventListener('keydown', sendInputs, false);
