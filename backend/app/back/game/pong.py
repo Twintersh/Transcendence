@@ -5,6 +5,7 @@ from time import sleep, time
 from math import sin, radians, floor, ceil
 import random
 import json
+import numpy as np
 
 channel_layer = get_channel_layer()
 tick_rate = 1/50
@@ -18,7 +19,7 @@ paddleWidth=15 # default value: 15
 paddleSpeed=10 # default value: 10
 
 ballSize=21 # default value: 21
-ballSpeed=10 # default value: 5
+ballSpeed=12 # default value: 5
 ballMaxSpeed=7 # default value: 7
 
 pointsToWin=5 # default value: 5
@@ -30,14 +31,13 @@ def roundNb(nb):
 	if (nb - floor(nb) >= 0.5):
 		return (ceil(nb))
 	return (floor(nb))
-
 class Ball:
 	def __init__(self, posX, posY, size, speed):
 		self.posx = posX
 		self.posy = posY
 		self.size = size
-		self.speedX = speed
-		self.speedY = speed/2
+		self.speedX = speed/2
+		self.speedY = 0.01
 		self.speed = speed
 	
 	def move(self, score):
@@ -47,7 +47,9 @@ class Ball:
 			else:
 				score[1] += 1 
 			self.posx = WIDTH / 2
-			self.posy = random.randint(HEIGHT * 0.25, HEIGHT * 0.75)
+			self.speedY = 0.1
+			self.speedX = np.sign(self.speedX) * -self.speed/3
+			self.posy = HEIGHT / 2
 		if (self.posy >= HEIGHT - ballSize/2 or self.posy <= ballSize/2):
 			self.speedY *= -1
 		self.posx += self.speedX
@@ -60,7 +62,7 @@ class Ball:
 			angle = 0.1
 
 		self.speedY = self.speed * sin(radians(angle))
-		self.speedX *= -1
+		self.speedX = np.sign(self.speedX) * -self.speed
 
 		if (self.posx >= WIDTH/2):
 			self.posx = paddle.posx - self.size/2 - 1
@@ -157,8 +159,8 @@ class PongEngine(threading.Thread):
 				self.paddle2.check()
 				self.ball.move(self.score)
 
-				if (self.score[0] >= pointsToWin or self.score[1] >= pointsToWin):
-					self.running = False
+				# if (self.score[0] >= pointsToWin or self.score[1] >= pointsToWin):
+				# 	self.running = False
 
 				self.sendUpdates()
 				start = time()

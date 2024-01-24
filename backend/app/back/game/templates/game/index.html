@@ -16,8 +16,10 @@
 		<a id="Score2"></a>
 	</div>
 	<canvas id="pongCanvas" width="640" height="480" style="position: relative; margin:0 auto;"></canvas>
-	<button id="playButton" onclick="getMatch('256b2ccafa34a35a7dd9a7b5ac75e1294c238bd8')">Play tom</button>
-	<button id="playButton" onclick="getMatch('f44c54dd904d41da988161d9794bd5db410537ee')">Play moise</button>
+	<button id="playButton" onclick="getMatch('d634d4b280837e71aee6831a710912fd2f222753')">Play tom</button>
+	<button id="playButton" onclick="getMatch('989b4dae78b75e10ba81f999cc7161d73e0a70cc')">Play moise</button>
+	<button id="playButton" onclick="getMatch('47ba826407bbc472ee112b4fd164a9a22c5e55c1')">Play guest</button>
+	<button id="playButton" onclick="getMatch('5b9ba4f37a6c84c3c34695038cfb655d899feac7')">Play guest2</button>
 	<script>
 		const canva = document.getElementById("pongCanvas");
 		const ctx = canva.getContext("2d");
@@ -53,12 +55,20 @@
 
 		var matchSocket = 0;
 
-// tom 256b2ccafa34a35a7dd9a7b5ac75e1294c238bd8
-// moise f44c54dd904d41da988161d9794bd5db410537ee
+// tom		d634d4b280837e71aee6831a710912fd2f222753
+// moise	989b4dae78b75e10ba81f999cc7161d73e0a70cc
+// guest	47ba826407bbc472ee112b4fd164a9a22c5e55c1
+// guest2	5b9ba4f37a6c84c3c34695038cfb655d899feac7
 
 		function getMatch(token) {
+			console.log('getMatch 😊');
 			const queueSocket = new WebSocket('ws://' + window.location.host +'/ws/game/queue/' + '?token=' + token);
+			console.log(window.location.host)
 			
+			setInterval(function() {
+				queueSocket.send(JSON.stringify({'message': 'heartbeat'}));
+			}, 10000);
+
 			queueSocket.onopen = function(e) {
 				queueSocket.send(JSON.stringify({
 					'message': 'join',
@@ -67,13 +77,12 @@
 
 			queueSocket.onmessage = function(e) {
 				const data = JSON.parse(e.data);
-				console.log(data.response);
 				if (data.response == 'match_found') {
 					console.log('match found');
+					queueSocket.close(); 
 					launchMatch(data.match_id, token);
-					queueSocket.close();
 				}
-			};	
+			};
 		}
 
 		function launchMatch(match_id, token) {
@@ -89,7 +98,11 @@
 				+ '/?token='
 				+ token
 				);
-				
+			
+			setInterval(function() {
+				matchSocket.send(JSON.stringify({'message': 'heartbeat'}));
+			}, 10000);
+
 			matchSocket.onopen = function(e) {
 				document.addEventListener('keydown', sendInputs, false);
 				document.addEventListener('keyup', sendInputs, false);
@@ -123,6 +136,9 @@
 				}));
 			};
 		}
+
+	// pour le local on pourrait log juste connecter le user au websocket avec un guest token
+	// comme ça on a pas besoin de trop modifier le code du pong
 		
 		</script>
 </body>

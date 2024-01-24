@@ -5,7 +5,7 @@ from users.models import User
 import uuid
 
 class Match(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     player1 = models.ForeignKey(User, related_name='p1Matches', on_delete=models.CASCADE)
     player2 = models.ForeignKey(User, related_name='p2Matches', on_delete=models.CASCADE)
     duration = models.IntegerField(null=True)
