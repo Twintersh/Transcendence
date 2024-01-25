@@ -75,11 +75,6 @@ def updateCredential(request):
 def getUserInfo(request):
     user = request.user
     serializer = UserInfoSerializer(instance=user)
-    # if hasattr(user, 'avatar') and user.avatar:
-    #     avatarSerializer = Avatarserializer(instance=user.avatar)
-    #     data = [serializer.data, avatarSerializer.data]
-    # else:
-    # data = [serializer.data]
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -113,7 +108,8 @@ def uploadAvatar(request):
 @permission_classes([IsAuthenticated])
 def sendFriendRequest(request):
     fromUser = request.user
-    toUserSerializer = UserLookSerializer(data=request.data['toUser'])
+    toUserSerializer = UserLookSerializer(data=request.data)
+    print(request.data)
     toUserSerializer.is_valid(raise_exception=True)
     toUser = get_object_or_404(User, username=toUserSerializer.data['username'])
     friendRequest, created = FriendRequest.objects.get_or_create(fromUser=fromUser, toUser=toUser)
@@ -129,7 +125,7 @@ def sendFriendRequest(request):
 @permission_classes([IsAuthenticated])
 def acceptFriendRequest(request):
     toUser = request.user
-    fromUserSerializer = UserLookSerializer(data=request.data['fromUser'])
+    fromUserSerializer = UserLookSerializer(data=request.data)
     if fromUserSerializer.is_valid(raise_exception=True):
         fromUser = get_object_or_404(User, username=fromUserSerializer.data['username'])
         friendRequest = get_object_or_404(FriendRequest, fromUser=fromUser, toUser=toUser)
@@ -173,7 +169,31 @@ def getUserFriends(request):
 
 
 
-# # MATCHES
+#   BLOCKED
+
+@swagger_auto_schema(method='POST')
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def blockUser(request):
+    user = request.user
+    toBlockSerializer = UserLookSerializer(data=request.data)
+    toBlockSerializer.is_valid(raise_exception=True)
+    toBlock = get_object_or_404(User, username=toBlockSerializer.data['username'])
+    user.blocked.add(toBlock)
+    return Response("User blocked succesfully", status=status.HTTP_200_OK)
+
+@swagger_auto_schema(method='GET')
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def getBlockedUsers(request):
+     user = request.user
+     users = user.blocked.all()
+     serializer = UserLookSerializer(instance=users, many=True)
+     return Response(serializer.data, status=status.HTTP_200_OK)
+
+#   MATCHES
 
 
 @swagger_auto_schema(method='GET')
@@ -182,7 +202,7 @@ def getUserFriends(request):
 @permission_classes([IsAuthenticated])
 def getUserMatches(request):
     user = request.user
-    Matches = user.p1Matches.all() + user.p2Matches.all()
+    Matches = user.p1Matches.all() | user.p2Matches.all()
     MatchesSerializer = MatchSerializer(instance=Matches, many=True)
-    return Response(MatchesSerializer, status=status.HTTP_200_OK)
+    return Response(MatchesSerializer.data, status=status.HTTP_200_OK)
 
