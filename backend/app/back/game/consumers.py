@@ -80,6 +80,8 @@ class QueueManager(AsyncWebsocketConsumer):
 @database_sync_to_async
 def updateMatch(id, content):
 	curMatch = get_object_or_404(Match, id=id)
+	curMatch.player1.inGame = False
+	curMatch.player2.inGame = False
 	curMatch.wScore = content['wScore']
 	curMatch.lScore = content['lScore']
 	curMatch.duration = content['duration']
@@ -94,8 +96,10 @@ def updateMatch(id, content):
 def getPlayerID(id, user):
 	match = Match.objects.get(id=id)
 	if user == match.player1:
+		user.inGame = True
 		return 1
 	elif user == match.player2:
+		user.inGame = True
 		return 2
 	return 0
 
