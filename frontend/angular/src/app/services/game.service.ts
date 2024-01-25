@@ -17,7 +17,7 @@ export class GameService {
 	getMatch(token: string) {
 		//debugger;
 		console.log('getMatch');
-		const url: string = 'wss://' + "0.0.0.0:8000" +'/ws/game/queue/' + '?token=' + token;
+		const url: string = 'ws://' + "127.0.0.1:8000" +'/ws/game/queue/' + '?token=' + token;
 		console.log(url);
 		const queueSocket = new WebSocket(url);
 		console.log(queueSocket);

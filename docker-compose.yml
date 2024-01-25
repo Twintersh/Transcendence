@@ -2,6 +2,7 @@ version: '3'
 services:
   angular-app:
     image: angular-app
+    container_name: angular
     networks:
       - transcendence
     build:
@@ -14,6 +15,7 @@ services:
   
   django-app:
     image: django-app
+    container_name: django
     networks:
       - transcendence
     build:
@@ -27,12 +29,12 @@ services:
     #   test:  nc -w 5 127.0.0.1 4200
     #   interval: 5s
     #   retries: 30
-    
-    # depends_on:
-    #   angular-app:
-    #     condition: service_healthy
+    depends_on:
+     - redis
+
   redis: 
     image: redislabs/redismod
+    container_name: redis
     networks:
       - transcendence
     ports:

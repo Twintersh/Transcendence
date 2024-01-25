@@ -28,6 +28,8 @@ export class UserService {
 	public getUserAvatar(): Observable<any> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+		console.log('getUserAvatar');
+		console.log(headers);
 
 		return this.http.get<any>('http://127.0.0.1:8000/users/getUserAvatar/', { headers });
 	}
