@@ -20,8 +20,10 @@ def getRoomName(request):
 	serializer = UserLookSerializer(data=request.data)
 	serializer.is_valid(raise_exception=True)
 	toUser = get_object_or_404(User, username=serializer.data['username'])
+	if user.blocked.filter(id=toUser.id).exists():
+		return Response({"User blocked"}, status=status.HTTP_401_UNAUTHORIZED)
 	if toUser.blocked.filter(id=user.id).exists():
-		return Response("User blocked", status=status.HTTP_401_UNAUTHORIZED)
+		return Response({"Blocked by user"}, status=status.HTTP_401_UNAUTHORIZED)
 	try:
 		room = Room.objects.filter(users=user).get(users=toUser)
 		room_id = room.id
