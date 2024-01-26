@@ -18,9 +18,7 @@ export class GameService {
 		//debugger;
 		console.log('getMatch');
 		const url: string = 'ws://' + "127.0.0.1:8000" +'/ws/game/queue/' + '?token=' + token;
-		console.log(url);
 		const queueSocket = new WebSocket(url);
-		console.log(queueSocket);
 
 		queueSocket.onopen = function(e) {
 			console.log('queueSocket open');
@@ -39,7 +37,6 @@ export class GameService {
 			const data = JSON.parse(e.data);
 			console.log(data.response);
 			if (data.response == 'match_found') {
-				console.log('match found');
 				this.router.navigate(['/game/', data.match_id.toString()]);
 				this.launchMatch(data.match_id, token);
 				queueSocket.close();
@@ -56,6 +53,8 @@ export class GameService {
 			+ '/?token='
 			+ token
 		);
+
+		console.log(matchSocket);
 			
 		matchSocket.onopen = function(e) {
 		//	document.addEventListener('keydown', sendInputs, false);
