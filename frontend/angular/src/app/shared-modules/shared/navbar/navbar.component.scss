@@ -1,38 +1,34 @@
-.navbar > .container-fluid {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100%; // Adjust this based on your design
-}
+@import '../../../../styles.scss';
 
-.navbar-container {
+.navbar-brand {
 	display: flex;
-	align-items: center;
-	height: 100%; // Adjust this based on your design
-	background-color: var(--beige);
+
+	span {
+		text-shadow: 5px 5px 0px black;
+		font-size: 4rem;
+		color: #FD8743;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
 }
 
 .navbar-nav {
-	list-style: none;
-	display: flex;
-	flex-direction: row;
-	gap: 20px; // Adjust the gap between items
+	gap: 10px;
+	margin-left: 10px;
 }
 
-.nav-item {
-	margin: 0;
+.navbar{
+	.button {
+		margin-top: 20%;
+	}
 }
 
-.nav-link {
-	color: #333; // Adjust the color as needed
-	text-decoration: none;
-	font-weight: bold;
-	font-size: 16px; // Adjust the font size as needed
+ul {
+	font-size: 2rem;
+	color: black;
 }
 
-.nav-link.active {
-	color: var(--purple); // Adjust the active link color
-	transform: scale(1.5); // Adjust the active link scale
-	padding-left: 20px; // Adjust the active link padding
-	padding-right: 20px; // Adjust the active link padding
+.offcanvas {
+	background-color: $tertiary;
 }

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.fields import empty
-from .models import User, Match, FriendRequest, Avatar
+from .models import User, FriendRequest, Avatar
+from game.models import Match
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta(object):
@@ -16,18 +17,17 @@ class UserLoginSerializer(serializers.Serializer):
     extra_kwargs = {
         'password' : {'write_only':True}
     }
-    
+
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = User
-        fields = ['first_name', 'last_name', 'password']
+        fields = ['username', 'password']
         extra_kwargs = {
         'password' : {'write_only':True}
         }
 
     def update(self, instance, validated_data):
-        instance.first_name = validated_data['first_name']
-        instance.last_name = validated_data['last_name']
+        instance.username = validated_data['username']
         password = validated_data['password']
         if password:
             instance.set_password(validated_data['password'])
@@ -41,6 +41,10 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
 class UserLookSerializer(serializers.Serializer):
     username = serializers.CharField()
+
+class UserMatchSerializer(serializers.Serializer):
+    player1 = serializers.CharField()
+    player2 = serializers.CharField()
 
 class Avatarserializer(serializers.ModelSerializer):
     class Meta(object):
@@ -56,6 +60,7 @@ class FriendRequestSerializer(serializers.ModelSerializer):
         fields = ['id', 'fromUser', 'toUser']
 
 class MatchSerializer(serializers.ModelSerializer):
+    winner = UserLookSerializer()
     class Meta(object):
         model = Match
-        fields = ['id', 'duration', 'wScore', 'lScore']
+        fields = ['id', 'duration', 'wScore', 'lScore', 'winner']

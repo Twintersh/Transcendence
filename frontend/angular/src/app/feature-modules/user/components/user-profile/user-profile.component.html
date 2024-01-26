@@ -1,28 +1,42 @@
-<div class="body">
-	<div class="profile-container">
-		<div class="profile-info">
-			<div class="profile-pic">
+<div class="container-fluid text-center">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="profile-info" style="text-align: center;">
+				<div class="profile-pic" *ngIf="user?.avatar">
+					<img [src]="user?.avatar" alt="User Avatar">
+				  </div>
+                <div class="user-details">
+                    <h2>{{ user?.username }}</h2>
+                    <p>Description Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+                <button class="btn btn-secondary" (click)="editProfile()">Edit Profile</button>
+				<div class="achievements">
+					<p>Achievements</p>
+				</div>
 			</div>
-			<div class="user-details">
-				<h2>Username</h2>
-				<p>Description Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-			</div>
-			<button class="btn btn-secondary" (click)="editProfile()">Edit Profile</button>
 		</div>
-		<div class="achievements">	
-			<p>Achievements</p>
-		</div>
-	</div>
-	
-	<div class="stats-container">
-		<div class="gameList">
+        <div class="col-md-8">
 			<h2>Game History</h2>
-			<div class="matchcontainer" *ngFor="let game of gameList">
-				<match [game]="game"></match>
+			<div class="gameList">
+				<div class="matchcontainer" *ngFor="let game of gameList">
+					<match [game]="game"></match>
+				</div>
+			</div>
+			<h2>Games Stats</h2>
+			<div class="statscontainer">
+				<div>
+					<p>Games Played</p>
+					<p>{{ user?.MatchesCount }}</p>
+				</div><p>Games Played</p>
+				<div>
+					<p>Games Won</p>
+					<p>{{ user?.wonMatchesCount }}</p>
+				</div>
+				<div>
+					<p>W/L Ratio</p>
+					<p>{{ user?.gameRatio }}</p>
+				</div>
 			</div>
 		</div>
-		<div class="generalStats">
-			<h2>Games Stats</h2>
-		</div>
-	</div>
+    </div>
 </div>

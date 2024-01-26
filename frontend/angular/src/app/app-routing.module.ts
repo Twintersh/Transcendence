@@ -4,12 +4,14 @@ import { HomeComponent } from './feature-modules/home/components/home/home.compo
 import { LandingComponent } from './feature-modules/landing/components/landing/landing.component';
 import { PageNotFoundComponent } from './shared-modules/shared/pagenotfound/pagenotfound.component';
 import { UserProfileComponent } from './feature-modules/user/components/user-profile/user-profile.component';
+import { ChatComponent } from './feature-modules/chat/components/chat/chat.component';
+import { AuthService } from './services/auth.service';
 
 const routes: Routes = [
-	{ path: 'home', component: HomeComponent },
+	{ path: 'home', component: HomeComponent, canActivate: [AuthService] },
 	{ path: 'landing', component: LandingComponent },
-	{ path: 'user', component: UserProfileComponent},
-	{ path: '', redirectTo: '/landing', pathMatch: 'full' },
+	{ path: 'user', component: UserProfileComponent, canActivate: [AuthService] },
+	{ path: 'chat', component: ChatComponent, canActivate: [AuthService] },
 	{ path: '**', component: PageNotFoundComponent, pathMatch: 'full' }
 ];
 
@@ -18,4 +20,5 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

@@ -34,25 +34,3 @@ class FriendRequest(models.Model):
 class Avatar(models.Model):
     user = models.OneToOneField('User', related_name='avatar', on_delete=models.CASCADE, blank=True, null=True)
     image = models.FileField(upload_to='avatars', blank=True, default='default.jpg')
-
-class Match(models.Model):
-    id = models.AutoField(primary_key=True)
-    loser = models.ForeignKey('User', related_name='lostMatches', on_delete=models.CASCADE)
-    winner = models.ForeignKey('User', related_name='wonMatches', on_delete=models.CASCADE)
-    duration = models.IntegerField()
-    wScore = models.PositiveSmallIntegerField()
-    lScore = models.PositiveSmallIntegerField()
-
-    def __str__(self):
-        return f"{self.winner.username} - {self.loser.username}"
-
-@receiver([post_save, post_delete], sender=Match)
-def updateMatches(sender, instance, created=False, **kwargs):
-    instance.winner.MatchesCount = instance.winner.wonMatches.count() + instance.winner.lostMatches.count()
-    instance.loser.MatchesCount = instance.loser.wonMatches.count() + instance.loser.lostMatches.count()
-    instance.winner.wonMatchesCount = instance.winner.wonMatches.count()
-    instance.loser.wonMatchesCount = instance.loser.wonMatches.count()
-    instance.winner.gameRatio = instance.winner.updateRatio()
-    instance.loser.gameRatio = instance.loser.updateRatio()
-    instance.winner.save()
-    instance.loser.save()

@@ -1,25 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<body class="body">
-	<div class="profile-container">
-			<div class="profile-pic">
-			</div>
-			<div class="user-details">
-				<div class="form-input">
-					<input type="username" class="form-control" id="InputUsername" aria-describedby="Username" placeholder="New username">
-				</div>
-				<div class="form-input">
-					<input type="bio" class="form-control" id="InputBio" aria-describedby="Username" placeholder="New bio">
-				</div>
-				<div class="form-input">
-					<input type="password" class="form-control" id="InputPassword" aria-describedby="Password" placeholder="New password">
-				</div>
-				<div class="form-input">
-					<input type="confirmPassword" class="form-control" id="InputConfirmPassword" aria-describedby="Confirm Password" placeholder="Confirm password">
-				</div>
-			</div>
-	</div>
-	<div class="buttons">
-		<button class="btn btn-primary">Save</button><button class="btn btn-danger" (click)="close()">Cancel</button>
-	</div>
-</body>
+<div class="container text-center">
+		<div class="profile-pic" >
+		</div>
+		<button class="btn btn-primary" type="button" (click)="uploader.click()">Upload</button>
+		<input hidden type="file" #uploader (change)="updateAvatar($event)"/>
+		<form [formGroup]="editForm">
+			<label for="username">Username</label>
+			<input type="username" class="form-control" type='text' formControlName="username" placeholder="Enter new username">
+
+			<label for="password">Password</label>
+			<input type="password" class="form-control" type='text' formControlName="password" placeholder="Enter new password">
+			<label for="password">Confirm Password</label>
+			<input type="password" class="form-control" type='text' formControlName="confirmPassword" placeholder="Confirm new password">
+		</form>
+		<div class="buttons">
+			<button type="submit" class="btn btn-primary submit" (click)="submitHandler()">Submit</button><button class="btn btn-danger" (click)="close()">Cancel</button>
+		</div>
+</div>
