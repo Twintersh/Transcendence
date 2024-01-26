@@ -9,6 +9,8 @@ from django.utils.translation import gettext as _
 class User(AbstractUser):
     email = models.EmailField(_('email'), unique=True, blank=False, null=False)
     friends = models.ManyToManyField('User', blank=True)
+    blocked = models.ManyToManyField('User', related_name='blocked_by', blank=True)
+    inGame = models.BooleanField(default=False)
     gameRatio = models.DecimalField(max_digits=2, decimal_places=1, default=0.0)
     wonMatchesCount = models.IntegerField(default=0)
     MatchesCount = models.IntegerField(default=0)
