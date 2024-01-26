@@ -175,6 +175,18 @@ def getUserFriends(request):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
+def unBlockUser(request):
+    user = request.user
+    toBlockSerializer = UserLookSerializer(data=request.data)
+    toBlockSerializer.is_valid(raise_exception=True)
+    toBlock = get_object_or_404(User, username=toBlockSerializer.data['username'])
+    user.blocked.remove(toBlock)
+    return Response("User unblocked succesfully", status=status.HTTP_200_OK)
+
+@swagger_auto_schema(method='POST')
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def blockUser(request):
     user = request.user
     toBlockSerializer = UserLookSerializer(data=request.data)

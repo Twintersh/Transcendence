@@ -16,6 +16,7 @@ urlpatterns = [
     re_path('getUserFriends/', getUserFriends),
     re_path('getBlockedUsers/', getBlockedUsers),
     re_path('blockUser/', blockUser),
+    re_path('unBlockUser/', unBlockUser),
     re_path('uploadAvatar/', uploadAvatar),
 	re_path('isAuth/', isAuth)
 ]
