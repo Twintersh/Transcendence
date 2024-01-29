@@ -24,7 +24,6 @@ export class NavbarComponent implements OnInit {
 	ngOnInit() {
 		this.isAuth();
 		this.userService.getUserAvatar().subscribe((res) => {
-			console.log('res:', res);
 			this.userAvatar = 'http://127.0.0.1:8000' + res.avatar;
 		});
 	}

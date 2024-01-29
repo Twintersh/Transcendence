@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CookieService } from './cookie.service';
+import { WebSocketService } from './websocket.service';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +11,14 @@ import { Router } from '@angular/router';
 export class GameService {
 
 	matchSocket: number = 0;
+	private gameElements$: Subject<any> = new Subject<any>();
 
-	constructor(private readonly http: HttpClient, private readonly cookieService: CookieService, private readonly router: Router) {
-
-	}
+	constructor(
+		private readonly http: HttpClient,
+		private readonly cookieService: CookieService,
+		private readonly router: Router,
+		private readonly webSocketService: WebSocketService
+	) { }
 
 	getMatch(token: string) {
 		//debugger;
@@ -33,57 +39,52 @@ export class GameService {
 
 		queueSocket.onmessage = (e) => {
 			console.log('queueSocket message');
-			console.log(e.data);
 			const data = JSON.parse(e.data);
 			console.log(data.response);
 			if (data.response == 'match_found') {
-				this.router.navigate(['/game/', data.match_id.toString()]);
-				this.launchMatch(data.match_id, token);
 				queueSocket.close();
+				this.router.navigate(['/game/', data.match_id.toString()]);
+				//this.launchMatch(data.match_id, token);
 			}
 		};
 	}
 
-	launchMatch(match_id: number, token: string) {
-		const matchSocket = new WebSocket(
-			'ws://'
-			+ "localhost:8000"
-			+ '/ws/game/'
-			+ match_id
-			+ '/?token='
-			+ token
-		);
+	launchMatch(match_id: string) {
+		const token: string = this.cookieService.getCookie("authToken");
+		const matchSocket: string = 'ws://localhost:8000/ws/game/' + match_id + '/?token=' + token;
 
-		console.log(matchSocket);
+		const gameSocket = this.webSocketService.connect(matchSocket);
 			
-		matchSocket.onopen = function(e) {
-		//	document.addEventListener('keydown', sendInputs, false);
-		//	document.addEventListener('keyup', sendInputs, false);
-			console.log('matchSocket open');
-		};
-
-		matchSocket.onmessage = function(e) {
-			const data = JSON.parse(e.data);
-			console.log("antilag");
-			/*
-			paddle1.style.top = data.paddle1Y + 'px';
-			paddle2.style.top = data.paddle2Y + 'px';
-			ball.style.top = data.ballY + 'px';
-			ball.style.left = data.ballX + 'px';
-			*/
-		};
-		/*
-		function sendInputs(e) {
-			if (e.keyCode != 83 && e.keyCode != 87)
-				return 
-			input = e.keyCode;
-			if (e.type == 'keyup')
-				input = 0;
-			console.log(input);
-			matchSocket.send(JSON.stringify({
-				'message': input,
-			}));
-		};
-		*/
+		this.webSocketService.messages$.subscribe((data) => {
+			this.gameElements$.next(data);
+		});
+		
+		// Additional setup for keyboard events (optional)
+		document.addEventListener('keydown', this.sendInputs.bind(this), false);
+		document.addEventListener('keyup', this.sendInputs.bind(this), false);
+		console.log('WebSocket connection initiated');
+	}
+		
+	// Send keyboard inputs to the server
+	private sendInputs(e: KeyboardEvent): void {
+		if (e.keyCode !== 83 && e.keyCode !== 87) {
+		return;
+		}
+	
+		var input: number = e.keyCode;
+		if (e.type === 'keyup') {
+			input = 0;
+		}
+	
+		// Send keyboard input to the server using WebSocketService
+		this.webSocketService.send({
+			type: 'keyboard_input',
+			input: input,
+		});
+	}
+	
+	// Get an observable for game elements' positions
+	getGameElements(): Subject<any> {
+		return this.gameElements$;
 	}
 }

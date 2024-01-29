@@ -1,37 +1,50 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WebSocketService {
-	private queueSocket: WebSocket;
+	private socket: WebSocket = {} as WebSocket;
+	public messages$: Subject<any> = new Subject<any>();
 
 	constructor() {
-		// Initialize the WebSocket connection
-		this.queueSocket = new WebSocket('wss://' + window.location.host + '/ws/game/queue/');
-		this.queueSocket.onopen = this.onOpen.bind(this);
-		this.queueSocket.onmessage = this.onMessage.bind(this);
-		this.queueSocket.onclose = this.onClose.bind(this);
-		this.queueSocket.onerror = this.onError.bind(this);
 	}
 
-	private onOpen(event: Event) {
-		// Handle the WebSocket connection opened
-		console.log('WebSocket connection opened:', event);
+	connect(url: string): void {
+		this.socket = new WebSocket(url);
+
+		this.socket.onopen = () => {
+			console.log('WebSocket connection established.');
+		};
+
+		this.socket.onclose = (event) => {
+			console.log('WebSocket connection closed:', event);
+		};
+
+		this.socket.onerror = (error) => {
+			console.error('WebSocket error:', error);
+		};
 	}
 
-	private onMessage(event: MessageEvent) {
-		// Handle incoming messages
-		console.log('WebSocket message received:', event.data);
+	send(message: any) {
+		// Send data to the server
+		console.log(message);
+		this.socket.send(JSON.stringify({
+			'message' : message,
+		}));
 	}
 
-	private onClose(event: CloseEvent) {
-		// Handle the WebSocket connection closed
-		console.log('WebSocket connection closed:', event);
+	receive() {
+		// Receive data from the server
+		this.socket.onmessage = (event) => {
+			console.log(event.data);
+			this.messages$.next(JSON.parse(event.data));
+		};
 	}
 
-	private onError(event: Event) {
-		// Handle WebSocket errors
-		console.error('WebSocket error:', event);
+	close() {
+		// Close the WebSocket connection
+		this.socket.close();
 	}
 }
