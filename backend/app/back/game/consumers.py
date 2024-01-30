@@ -10,7 +10,7 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.permissions import IsAuthenticated
 from .pong import PongEngine
 from asgiref.sync import async_to_sync, sync_to_async
-from .models import Match
+from .models import Match, Tournament
 from users.models import User
 from django.shortcuts import get_object_or_404
 
@@ -26,6 +26,62 @@ def makeMatch(players):
 	else:
 		message = {'response' : 'match_found', 'match_id' : id}
 	return message
+
+from .tournament import TournamentEngine
+
+@database_sync_to_async
+def MakeTournament():
+	tournament = Tournament.objects.create()
+	return tournament.id
+
+@database_sync_to_async
+def addTournamentLoosers(tournament_id, looser):
+	tournament = get_object_or_404(Tournament, id=tournament_id)
+	tournament.loosers.add(looser)
+
+class TournamentManager(AsyncWebsocketConsumer):
+	async def connect(self):
+		self.group_name = "tournament"
+		if not self.scope['user'].is_authenticated:
+			return
+		await self.accept()
+
+	async def receive(self, text_data):
+		message = json.loads(text_data)["message"]
+		if message == "heartbeat":
+			return
+		elif message == 'join':
+			settings.TOURNAMENT.append({
+					"user" : self.scope["user"].username,
+					"channel_name" : self.channel_name,
+				})
+			if len(settings.TOURNAMENT) == 4:
+				self.tournament_id = await sync_to_async(MakeTournament)()
+				print("🔥")
+				tour = TournamentEngine(settings.TOURNAMENT, self.channel_layer, self.tournament_id)
+				tour.start()
+
+				await self.channel_layer.group_send(
+					self.group_name,
+					{
+						"type": "getTournamentId",
+						"content": self.tournament_id
+					}
+				)
+				settings.TOURNAMENT = []
+
+	async def getTournamentId(self, event):
+		self.tournament_id = event['content']
+
+	async def disconnect(self, exit_code):
+		await addTournamentLoosers(self.tournament_id, self.scope['user'])
+		await self.channel_layer.group_discard(self.group_name, self.channel_name)
+		raise StopConsumer("Disconected")
+
+	async def get_match_id(self, event):
+		match_id = event['match_id']
+		await self.send(text_data=json.dumps(match_id))
+
 
 # WebSocket consumer for managing the queue of players waiting for a match
 class QueueManager(AsyncWebsocketConsumer):
@@ -127,8 +183,19 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		settings.ENGINES[self.group_name].setPlayerInputs(self.playerID, keyInput)
 
 	async def endGame(self, event):
-		# Handle the end of the game event
 		content = event['content']
+		# send to the front if the player won or lost
+		if self.playerID == 1 and content['winner'] == 'P1' or self.playerID == 2 and content['winner'] == 'P2':
+			await self.send(text_data=json.dumps({
+				'type': 'results',
+				'content': 'win'
+				}))
+		else:
+			await self.send(text_data=json.dumps({
+				'type': 'results',
+				'content': 'lose'
+				}))
+
 		if self.playerID == 1:
 			# Update the match details in the database
 			await updateMatch(self.room_name, content)

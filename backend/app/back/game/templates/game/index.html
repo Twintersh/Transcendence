@@ -16,10 +16,10 @@
 		<a id="Score2"></a>
 	</div>
 	<canvas id="pongCanvas" width="640" height="480" style="position: relative; margin:0 auto;"></canvas>
-	<button id="playButton" onclick="getMatch('d634d4b280837e71aee6831a710912fd2f222753')">Play tom</button>
-	<button id="playButton" onclick="getMatch('989b4dae78b75e10ba81f999cc7161d73e0a70cc')">Play moise</button>
-	<button id="playButton" onclick="getMatch('47ba826407bbc472ee112b4fd164a9a22c5e55c1')">Play guest</button>
-	<button id="playButton" onclick="getMatch('5b9ba4f37a6c84c3c34695038cfb655d899feac7')">Play guest2</button>
+	<button id="playButton" onclick="getTournament('d634d4b280837e71aee6831a710912fd2f222753')">Play tom</button>
+	<button id="playButton" onclick="getTournament('989b4dae78b75e10ba81f999cc7161d73e0a70cc')">Play moise</button>
+	<button id="playButton" onclick="getTournament('47ba826407bbc472ee112b4fd164a9a22c5e55c1')">Play guest</button>
+	<button id="playButton" onclick="getTournament('5b9ba4f37a6c84c3c34695038cfb655d899feac7')">Play guest2</button>
 	<script>
 		const canva = document.getElementById("pongCanvas");
 		const ctx = canva.getContext("2d");
@@ -60,82 +60,120 @@
 // guest	47ba826407bbc472ee112b4fd164a9a22c5e55c1
 // guest2	5b9ba4f37a6c84c3c34695038cfb655d899feac7
 
-		function getMatch(token) {
-			console.log('getMatch 😊');
-			const queueSocket = new WebSocket('ws://' + window.location.host +'/ws/game/queue/' + '?token=' + token);
-			console.log(window.location.host)
+		function getTournament(token){
+			console.log('getTournament');
+			const tournamentSocket = new WebSocket('ws://' + window.location.host +'/ws/game/tournament/' + '?token=' + token);
 			
+			tournamentSocket.onopen = function(e) {
+				tournamentSocket.send(JSON.stringify({'message': 'join'})); 
+			}
+
+			tournamentSocket.onclose = function(e) {
+				console.log('tournamentSocket closed');
+			}
+
 			setInterval(function() {
-				queueSocket.send(JSON.stringify({'message': 'heartbeat'}));
+				if (tournamentSocket.readyState == 1){
+					tournamentSocket.send(JSON.stringify({'message': 'heartbeat'}));
+				}
 			}, 10000);
 
-			queueSocket.onopen = function(e) {
-				queueSocket.send(JSON.stringify({
-					'message': 'join',
-				}));
-			};
-
-			queueSocket.onmessage = function(e) {
+			tournamentSocket.onmessage = function(e) {
 				const data = JSON.parse(e.data);
 				if (data.response == 'match_found') {
-					console.log('match found');
-					queueSocket.close(); 
 					launchMatch(data.match_id, token);
 				}
-			};
+			}
+
+			// In the tournament context, the launchMatch function is inside the getTournament method.
+			// This way the tournament can remove the loosers from the match
+			function launchMatch(match_id, token) {
+				scoreArray = [];
+				const score1 = document.getElementById('Score1');
+				const score2 = document.getElementById('Score2');
+
+				const matchSocket = new WebSocket(
+					'ws://'
+					+ window.location.host
+					+ '/ws/game/'
+					+ match_id
+					+ '/?token='
+					+ token
+					);
+				
+				setInterval(function() {
+					if (matchSocket.readyState == 1){
+						matchSocket.send(JSON.stringify({'message': 'heartbeat'}));
+					}
+				}, 10000);
+
+				matchSocket.onopen = function(e) {
+					document.addEventListener('keydown', sendInputs, false);
+					document.addEventListener('keyup', sendInputs, false);
+					console.log('matchSocket open');
+				};
+	
+				matchSocket.onmessage = function(e) {
+					const data = JSON.parse(e.data);
+					console.log("antilag");
+					if (data.type == 'results') {
+						if (data.content == 'lose')
+							tournamentSocket.close();
+						matchSocket.close();
+						console.log('match ended');
+						return;
+					}
+
+					scoreArray = data.Score;
+					score1.textContent = scoreArray[0];
+					score2.textContent = scoreArray[1];
+					
+					ctx.fillStyle = "blue";
+					ctx.fillRect(0, 0, canva.width, canva.height)
+					console.log(data.ballX);
+					
+					drawBall(data.ballX, data.ballY);
+					drawPaddle1(data.paddle1Y);
+					drawPaddle2(data.paddle2Y);
+				};
+	
+				function sendInputs(e) {
+					// if (e.keyCode != 83 && e.keyCode != 87)
+					// 	return 
+					input = e.keyCode;
+					if (e.type == 'keyup')
+						input = 0;
+					matchSocket.send(JSON.stringify({
+						'message': input,
+					}));
+				};
+			}
 		}
 
-		function launchMatch(match_id, token) {
-			scoreArray = [];
-			const score1 = document.getElementById('Score1');
-			const score2 = document.getElementById('Score2');
-
-			const matchSocket = new WebSocket(
-				'ws://'
-				+ window.location.host
-				+ '/ws/game/'
-				+ match_id
-				+ '/?token='
-				+ token
-				);
+		// function getMatch(token) {
+		// 	console.log('getMatch');
+		// 	const queueSocket = new WebSocket('ws://' + window.location.host +'/ws/game/queue/' + '?token=' + token);
 			
-			setInterval(function() {
-				matchSocket.send(JSON.stringify({'message': 'heartbeat'}));
-			}, 10000);
+		// 	setInterval(function() {
+		// 		queueSocket.send(JSON.stringify({'message': 'heartbeat'}));
+		// 	}, 10000);
 
-			matchSocket.onopen = function(e) {
-				document.addEventListener('keydown', sendInputs, false);
-				document.addEventListener('keyup', sendInputs, false);
-				console.log('matchSocket open');
-			};
+		// 	queueSocket.onopen = function(e) {
+		// 		queueSocket.send(JSON.stringify({
+		// 			'message': 'join',
+		// 		}));
+		// 	};
 
-			matchSocket.onmessage = function(e) {
-				const data = JSON.parse(e.data);
-				console.log("antilag");
-				scoreArray = data.Score;
-				score1.textContent = scoreArray[0];
-				score2.textContent = scoreArray[1];
-				
-				ctx.fillStyle = "blue";
-				ctx.fillRect(0, 0, canva.width, canva.height)
-				console.log(data.ballX);
-				
-				drawBall(data.ballX, data.ballY);
-				drawPaddle1(data.paddle1Y);
-				drawPaddle2(data.paddle2Y);
-			};
+		// 	queueSocket.onmessage = function(e) {
+		// 		const data = JSON.parse(e.data);
+		// 		if (data.response == 'match_found') {
+		// 			console.log('match found');
+		// 			queueSocket.close(); 
+		// 			launchMatch(data.match_id, token);
+		// 		}
+		// 	};
+		// }
 
-			function sendInputs(e) {
-				// if (e.keyCode != 83 && e.keyCode != 87)
-				// 	return 
-				input = e.keyCode;
-				if (e.type == 'keyup')
-					input = 0;
-				matchSocket.send(JSON.stringify({
-					'message': input,
-				}));
-			};
-		}
 
 	// pour le local on pourrait log juste connecter le user au websocket avec un guest token
 	// comme ça on a pas besoin de trop modifier le code du pong

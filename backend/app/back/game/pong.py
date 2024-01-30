@@ -3,7 +3,6 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from time import sleep, time
 from math import sin, radians, floor, ceil
-import random
 import json
 import numpy as np
 
@@ -22,7 +21,7 @@ ballSize=21 # default value: 21
 ballSpeed=12 # default value: 5
 ballMaxSpeed=7 # default value: 7
 
-pointsToWin=5 # default value: 5
+pointsToWin=1 # default value: 5
 
 # clock = pygame.time.Clock()
 FPS=60
@@ -159,8 +158,8 @@ class PongEngine(threading.Thread):
 				self.paddle2.check()
 				self.ball.move(self.score)
 
-				# if (self.score[0] >= pointsToWin or self.score[1] >= pointsToWin):
-				# 	self.running = False
+				if (self.score[0] >= pointsToWin or self.score[1] >= pointsToWin):
+					self.running = False
 
 				self.sendUpdates()
 				start = time()
@@ -184,11 +183,11 @@ class PongEngine(threading.Thread):
 				'wScore' : self.score[1],
 				'lScore' : self.score[0]
 			}
-		async_to_sync(self.websocket1.channel_layer.group_send)(self.group_name, {'type' : 'endGame', 'content' : content})
-		
+		async_to_sync(self.channel_layer.group_send)(self.group_name, {'type' : 'endGame', 'content' : content})
 
 	def sendUpdates(self):
 			async_to_sync(self.websocket1.send)(text_data=json.dumps({
+				"type": "update",
 				"paddle1Y": self.paddle1.posy,
 				"paddle2Y": self.paddle2.posy,
 				"ballX": self.ball.posx,
@@ -196,6 +195,7 @@ class PongEngine(threading.Thread):
 				"Score": self.score
 			}))
 			async_to_sync(self.websocket2.send)(text_data=json.dumps({
+				"type": "update",
 				"paddle1Y": self.paddle1.posy,
 				"paddle2Y": self.paddle2.posy,
 				"ballX": self.ball.posx,
