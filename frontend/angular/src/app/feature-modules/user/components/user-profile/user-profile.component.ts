@@ -53,7 +53,14 @@ export class UserProfileComponent implements OnInit {
 
 	editProfile(): void {
 		console.log('editProfile');
-		this.offcanvas.open(EditOffcanvasComponent, { animation: true, backdrop: true });
+		this.offcanvas.open(EditOffcanvasComponent, { animation: true, backdrop: true }).result.then(
+			(result) => {
+				console.log(`Closed with: ${result}`);
+			},
+			(reason) => {
+				console.log(`Dismissed ${reason}`);
+			}
+		);
 	}
 
 	getUserInfos(): Observable<User | null> {
