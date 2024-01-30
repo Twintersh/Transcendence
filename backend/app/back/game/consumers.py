@@ -29,10 +29,11 @@ def makeMatch(players):
 
 from .tournament import TournamentEngine
 
-@database_sync_to_async
-def MakeTournament():
-	tournament = Tournament.objects.create()
-	return tournament.id
+# def MakeTournament():
+# 	tournament = Tournament.objects.create()
+# 	if not tournament:
+# 		return 0
+# 	return tournament.id
 
 @database_sync_to_async
 def addTournamentLoosers(tournament_id, looser):
@@ -41,6 +42,7 @@ def addTournamentLoosers(tournament_id, looser):
 
 class TournamentManager(AsyncWebsocketConsumer):
 	async def connect(self):
+		self.tournament_id = 0
 		self.group_name = "tournament"
 		if not self.scope['user'].is_authenticated:
 			return
@@ -53,13 +55,17 @@ class TournamentManager(AsyncWebsocketConsumer):
 		elif message == 'join':
 			settings.TOURNAMENT.append({
 					"user" : self.scope["user"].username,
-					"channel_name" : self.channel_name,
+					"channel_name" : self.channel_name, 
 				})
 			if len(settings.TOURNAMENT) == 4:
-				self.tournament_id = await sync_to_async(MakeTournament)()
-				print("🔥")
-				tour = TournamentEngine(settings.TOURNAMENT, self.channel_layer, self.tournament_id)
-				tour.start()
+				# la ligne du démon
+				tournament = await sync_to_async(Tournament.objects.create)()
+				
+				self.tournament_id = tournament.id
+				print(self.tournament.id)
+				if (self.tournament_id != 0):
+					tour = TournamentEngine(settings.TOURNAMENT, self.channel_layer, self.tournament_id)
+					tour.start()
 
 				await self.channel_layer.group_send(
 					self.group_name,
@@ -71,10 +77,11 @@ class TournamentManager(AsyncWebsocketConsumer):
 				settings.TOURNAMENT = []
 
 	async def getTournamentId(self, event):
-		self.tournament_id = event['content']
+		self.tournament_id = event['content'] 
 
 	async def disconnect(self, exit_code):
-		await addTournamentLoosers(self.tournament_id, self.scope['user'])
+		if self.tournament_id != 0:
+			await addTournamentLoosers(self.tournament_id, self.scope['user'])
 		await self.channel_layer.group_discard(self.group_name, self.channel_name)
 		raise StopConsumer("Disconected")
 
@@ -121,7 +128,7 @@ class QueueManager(AsyncWebsocketConsumer):
 				if i < 2:
 					players.append(player)
 			response = await makeMatch(players)
-			for player in players:
+			for player in players: 
 				await self.channel_layer.send(player['channel_name'], {"type" : "sendResponse", "content" : response})
 
 # Function to update the match details asynchronously

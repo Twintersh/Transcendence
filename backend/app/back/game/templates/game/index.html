@@ -16,10 +16,10 @@
 		<a id="Score2"></a>
 	</div>
 	<canvas id="pongCanvas" width="640" height="480" style="position: relative; margin:0 auto;"></canvas>
-	<button id="playButton" onclick="getTournament('d634d4b280837e71aee6831a710912fd2f222753')">Play tom</button>
-	<button id="playButton" onclick="getTournament('989b4dae78b75e10ba81f999cc7161d73e0a70cc')">Play moise</button>
-	<button id="playButton" onclick="getTournament('47ba826407bbc472ee112b4fd164a9a22c5e55c1')">Play guest</button>
-	<button id="playButton" onclick="getTournament('5b9ba4f37a6c84c3c34695038cfb655d899feac7')">Play guest2</button>
+	<button id="playButton" onclick="getTournament('c9563b05da4742946b6b09102ce902bc4c0ce2e5')">Play tom</button>
+	<button id="playButton" onclick="getTournament('e6246144acdca72df99421f27c134d3f385634b8')">Play moise</button>
+	<button id="playButton" onclick="getTournament('b85d89c90b59987f12798acfb0e58ae3c84751fb')">Play guest</button>
+	<button id="playButton" onclick="getTournament('7a05f5277db819925617ffcf3237d70ed6301d28')">Play guest2</button>
 	<script>
 		const canva = document.getElementById("pongCanvas");
 		const ctx = canva.getContext("2d");
@@ -55,10 +55,10 @@
 
 		var matchSocket = 0;
 
-// tom		d634d4b280837e71aee6831a710912fd2f222753
-// moise	989b4dae78b75e10ba81f999cc7161d73e0a70cc
-// guest	47ba826407bbc472ee112b4fd164a9a22c5e55c1
-// guest2	5b9ba4f37a6c84c3c34695038cfb655d899feac7
+	// c9563b05da4742946b6b09102ce902bc4c0ce2e5 > tom
+	// e6246144acdca72df99421f27c134d3f385634b8 > moise
+	// b85d89c90b59987f12798acfb0e58ae3c84751fb > guest
+	// 7a05f5277db819925617ffcf3237d70ed6301d28 > guest2
 
 		function getTournament(token){
 			console.log('getTournament');
@@ -74,6 +74,7 @@
 
 			setInterval(function() {
 				if (tournamentSocket.readyState == 1){
+					console.log('tournamentSocket heartbeat')
 					tournamentSocket.send(JSON.stringify({'message': 'heartbeat'}));
 				}
 			}, 10000);

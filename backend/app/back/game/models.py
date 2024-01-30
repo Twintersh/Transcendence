@@ -12,13 +12,12 @@ class Match(models.Model):
 	winner = models.ForeignKey(User, related_name='wonMatches', on_delete=models.CASCADE, null=True)
 	wScore = models.PositiveSmallIntegerField(null=True)
 	lScore = models.PositiveSmallIntegerField(null=True)
-
+ 
 	def __str__(self) -> str:
 		return (f"{self.player1.username} - {self.player2.username}")
 
 class Tournament(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-	engine = models.CharField(max_length=100, null=True)
 	players = models.ManyToManyField(User, related_name='tournaments', blank=True)
 	matches = models.ManyToManyField(Match, related_name='tournaments', blank=True)
 	loosers = models.ManyToManyField(User, related_name='loosers', blank=True)
