@@ -1,10 +1,8 @@
-import threading
-from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-from time import sleep, time
+from asgiref.sync import async_to_sync
+from time import time
 from math import sin, radians, floor, ceil
 import random
-import json
 
 channel_layer = get_channel_layer()
 tick_rate = 1/50
@@ -18,13 +16,10 @@ paddleWidth=15 # default value: 15
 paddleSpeed=10 # default value: 10
 
 ballSize=21 # default value: 21
-ballSpeed=10 # default value: 5
+ballSpeed=3 # default value: 5
 ballMaxSpeed=7 # default value: 7
 
 pointsToWin=5 # default value: 5
-
-# clock = pygame.time.Clock()
-FPS=60
 
 def roundNb(nb):
 	if (nb - floor(nb) >= 0.5):
@@ -32,178 +27,130 @@ def roundNb(nb):
 	return (floor(nb))
 
 class Ball:
-	def __init__(self, posX, posY, size, speed):
-		self.posx = posX
-		self.posy = posY
-		self.size = size
-		self.speedX = speed
-		self.speedY = speed/2
-		self.speed = speed
+	def __init__(self, paddle1, paddle2):
+		self.paddle1 = paddle1
+		self.paddle2 = paddle2
+		self.x = WIDTH / 2
+		self.y = HEIGHT / 2 - paddleHeight / 2
+		self.speedX = ballSpeed
+		self.speedY = ballSpeed/2
+		self.time = time()
 	
-	def move(self, score):
-		if (self.posx >= WIDTH or self.posx <= 0):
-			if (self.posx >= WIDTH):
-				score[0] += 1
-			else:
-				score[1] += 1 
-			self.posx = WIDTH / 2
-			self.posy = random.randint(HEIGHT * 0.25, HEIGHT * 0.75)
-		if (self.posy >= HEIGHT - ballSize/2 or self.posy <= ballSize/2):
-			self.speedY *= -1
-		self.posx += self.speedX
-		self.posy += self.speedY
-
 	def hit(self, paddle):
-		hitPoint = self.posy - (paddle.posy + paddle.height/2)
-		angle = (2 * MAX_ANGLE * hitPoint) / paddle.height
+		hitPoint = self.y - (paddle.y + paddleHeight/2)
+		angle = (2 * MAX_ANGLE * hitPoint) / paddleHeight
 		if (angle == 0):
 			angle = 0.1
 
-		self.speedY = self.speed * sin(radians(angle))
+		self.speedY = ballSpeed * sin(radians(angle))
 		self.speedX *= -1
 
-		if (self.posx >= WIDTH/2):
-			self.posx = paddle.posx - self.size/2 - 1
+		if (self.x >= WIDTH/2):
+			self.x = paddle.x - ballSize/2 - 7
 		else:
-			self.posx = paddle.posx + self.size/2 + paddle.width - 1
+			self.x = paddle.x + ballSize/2 + paddleWidth + 7
 
-class Stricker:
-	def __init__(self, posX, posY, width, height, speed):
-		self.posx = posX
-		self.posy = posY - height/2
-		self.width = width
-		self.height = height
-		self.speed = speed
+	def collide(self, paddle):
+		if (self.x + ballSize >= paddle.x and self.x - ballSize <= paddle.x + paddleWidth):
+			if (self.y + ballSize >= paddle.y and self.y - ballSize <= paddle.y + paddleHeight):
+				return (True)
+		return (False)
+	
+	def move(self):
+		if self.collide(self.paddle2):
+			self.hit(self.paddle2)
+		if self.collide(self.paddle1):
+			self.hit(self.paddle1)
 
-	def check(self):
-		if (self.posy < 0):
-			self.posy = 0
-		if (self.posy + self.height > HEIGHT):
-			self.posy = HEIGHT-self.height
+		if (self.x >= WIDTH or self.x <= 0):
+			if (self.x >= WIDTH):
+				self.paddle1.score += 1
+			else:
+				self.paddle2.score += 1
+			self.x = WIDTH / 2
+			self.y = random.randint(int(HEIGHT * 0.25), int(HEIGHT * 0.75))
+		if (self.y >= HEIGHT - ballSize/2 or self.y <= ballSize/2):
+			self.speedY *= -1
+		self.x += self.speedX
+		self.y += self.speedY
 
-class PongEngine(threading.Thread):
+
+
+class Paddle:
+	def __init__(self, player):
+		if player == "p1":
+			self.x = 10
+		else:
+			self.x = WIDTH - 10 - paddleWidth
+		self.y = HEIGHT / 2 - paddleHeight / 2
+		self.dir = 0
+		self.score = 0
+
+	def move(self):
+		if (self.y < 0):
+			self.y = 0
+		elif (self.y + paddleHeight > HEIGHT):
+			self.y = HEIGHT - paddleHeight
+		else:
+			self.y += self.dir * paddleSpeed
+
+
+class PongEngine():
 	def __init__(self, groupe_name, **kwargs):
-		super(PongEngine, self).__init__(daemon=True, name="PongEngine", **kwargs)
-		self.websocket1 = None
-		self.websocket2 = None
-		self.nbPlayers = 0
 		self.group_name = groupe_name
-		self.channel_layer = get_channel_layer()
-		self.inputLock = threading.Lock()
 		self.input = [0, 0]
 		self.playerReady = [False, False]
 
-		self.paddle1 = Stricker(10, HEIGHT/2, paddleWidth, paddleHeight, paddleSpeed)
-		self.paddle2 = Stricker(WIDTH - paddleWidth - 10, HEIGHT/2, paddleWidth, paddleHeight, paddleSpeed)
-		self.ball = Ball(WIDTH/2, HEIGHT/2 - paddleHeight/2, ballSize, ballSpeed)
+		super().__init__(**kwargs)
 
-	def setWebsocket1(self, websocket):
-		self.websocket1 = websocket
-		self.nbPlayers += 1
+def run(queue, group_name):
+	paddle1 = Paddle("p1")
+	paddle2 = Paddle("p2")
+	ball = Ball(paddle1, paddle2)
+	loop = time()
+	start = time()
 
-	def setWebsocket2(self, websocket):
-		self.websocket2 = websocket
-		self.nbPlayers += 1
+	while True:
+		if not queue.empty():
+			inputs = queue.get()
+			if inputs == 'kill':
+				return
+			if inputs[0] == 1:
+				paddle1.dir = inputs[1]
+			elif inputs[0] == 2:
+				paddle2.dir = inputs[1]
+		if time() - start > 0.01:
+			paddle1.move()
+			paddle2.move()
+			ball.move()
+			start = time()
 
-	def ready(self):
-		if (self.nbPlayers == 2):
-			return (True)
-		return (False)
+		if (paddle1.score >= 5 or paddle2.score >= 5):
+			break ;
+		state = {
+			"paddle1" : {"x" : paddle1.x, "y" : paddle1.y, "score" : paddle1.score},
+			"paddle2" : {"x" : paddle2.x, "y" : paddle2.y, "score" : paddle2.score},
+			"ball" : {"x" : ball.x, "y" : ball.y}
+		}
+		async_to_sync(channel_layer.group_send)(group_name, {'type' : 'sendUpdates', 'content' : state})
+	duration = time() - loop
+	sendEndGame([paddle1.score, paddle2.score], duration, group_name)
 
-	def collide(self, circle, paddle):
-		delta = circle.size/2
-		if (circle.posx + delta >= paddle.posx and circle.posx - delta <= paddle.posx  + paddle.width):
-			if (circle.posy + delta >= paddle.posy and circle.posy - delta <= paddle.posy + paddle.height):
-				return (True)
-		return (False)
-
-
-	def run(self):
-		print("Started engine loop...")
-		start = time()
-		self.score = [0, 0]
-		self.running = True
-		inputs = [0, 0]
-		move = [0, 0]
-
-		while True:
-			if (self.playerReady[0] and self.playerReady[1]):
-				break
-			sleep(0.1)
-
-		gameStart = time()
-		while (self.running):
-			if time() - start > tick_rate:
-				with self.inputLock:
-					inputs = self.input.copy()
-
-				for i in range(2):
-					if (inputs[i] == 87):
-						move[i] = -1
-					elif (inputs[i] == 83):
-						move[i] = 1
-					else:
-						move[i] = 0
-
-				self.paddle1.posy += move[0] * self.paddle1.speed
-				self.paddle2.posy += move[1] * self.paddle2.speed
-
-				if self.collide(self.ball, self.paddle2):
-					self.ball.hit(self.paddle2)
-				if self.collide(self.ball, self.paddle1):
-					self.ball.hit(self.paddle1)
-
-				self.paddle1.check()
-				self.paddle2.check()
-				self.ball.move(self.score)
-
-				if (self.score[0] >= pointsToWin or self.score[1] >= pointsToWin):
-					self.running = False
-
-				self.sendUpdates()
-				start = time()
-
-		duration = time() - gameStart
-		self.sendEndGame(duration)
-		return (self.score)
 	
-	def sendEndGame(self, duration):
-		if self.score[0] > self.score[1]:
-			content = {
-				'winner' : 'P1',
-				'duration' : roundNb(duration),
-				'wScore' : self.score[0],
-				'lScore' : self.score[1]
-			}
-		else:
-			content = {
-				'winner' : 'P2',
-				'duration' : roundNb(duration),
-				'wScore' : self.score[1],
-				'lScore' : self.score[0]
-			}
-		async_to_sync(self.websocket1.channel_layer.group_send)(self.group_name, {'type' : 'endGame', 'content' : content})
-		
-
-	def sendUpdates(self):
-			async_to_sync(self.websocket1.send)(text_data=json.dumps({
-				"paddle1Y": self.paddle1.posy,
-				"paddle2Y": self.paddle2.posy,
-				"ballX": self.ball.posx,
-				"ballY": self.ball.posy,
-				"Score": self.score
-			}))
-			async_to_sync(self.websocket2.send)(text_data=json.dumps({
-				"paddle1Y": self.paddle1.posy,
-				"paddle2Y": self.paddle2.posy,
-				"ballX": self.ball.posx,
-				"ballY": self.ball.posy,
-				"Score": self.score
-			}))
-
-	def setPlayerInputs(self, player, keyinput):
-		with self.inputLock:
-			self.input[player - 1] = keyinput
-			if (keyinput == 32):
-				self.playerReady[player - 1] = True
+def sendEndGame(score, duration, group_name):
+	if score[0] > score[1]:
+		content = {
+			'winner' : 'P1',
+			'duration' : roundNb(duration),
+			'wScore' : score[0],
+			'lScore' : score[1]
+		}
+	else:
+		content = {
+			'winner' : 'P2',
+			'duration' : roundNb(duration),
+			'wScore' : score[1],
+			'lScore' : score[0]
+		}
+	async_to_sync(channel_layer.group_send)(group_name, {'type' : 'endGame', 'content' : content})
 

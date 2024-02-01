@@ -1,18 +1,13 @@
 import json
-from random import randint
 from django.conf import settings
-import threading
-from channels.generic.websocket import AsyncWebsocketConsumer, SyncConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
-from rest_framework.decorators import authentication_classes, permission_classes
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
-from .pong import PongEngine
 from asgiref.sync import async_to_sync, sync_to_async
 from .models import Match
 from users.models import User
 from django.shortcuts import get_object_or_404
 
+from .processes import ProcessPool, QueuePool
 
 @sync_to_async
 def makeMatch(players):
@@ -97,6 +92,10 @@ def getPlayerID(id, user):
 	return 0
 
 class PlayerConsumer(AsyncWebsocketConsumer):
+	def __init__(self, *args, **kwargs):
+		self.process = None
+		self.queue  = None
+		super().__init__(*args, **kwargs)
 
 	async def connect(self):
 		self.room_name = self.scope["url_route"]["kwargs"]["game"]
@@ -108,29 +107,45 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		await self.channel_layer.group_add(self.group_name, self.channel_name)
 		await self.accept()
 
-		if not self.group_name in settings.ENGINES:
-			print(self.playerID)
-			settings.ENGINES[self.group_name] = PongEngine(self.group_name)
+		if not self.group_name in QueuePool.queues:
+			QueuePool.new_queue(self)
+	
+		self.queue = QueuePool.queues[self.group_name]
+
+		if not self.group_name in ProcessPool.processes:
+			ProcessPool.new_thread(self)
+	
+		self.process = ProcessPool.processes[self.group_name]
 
 		if self.playerID == 1:
-			settings.ENGINES[self.group_name].setWebsocket1(self)
+			self.process['paddle1'] = True
 		elif self.playerID == 2:
-			settings.ENGINES[self.group_name].setWebsocket2(self)
+			self.process['paddle2'] = True
 
-		if settings.ENGINES[self.group_name].ready():
-			settings.ENGINES[self.group_name].start()
-			print(f"Connected in room : {str(self.room_name)}")
+
+		if self.process['paddle1'] and self.process['paddle2']:
+			self.process['process'].start()
+			print("Running thread")
+		print(f"Connected in room : {str(self.room_name)}")
 
 	async def disconnect(self, close_code):
+		self.queue.put('kill')
+		self.process['process'].join()
 		await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
 	async def receive(self, text_data):
 		content = json.loads(text_data)
-		keyInput = content["message"]
-		settings.ENGINES[self.group_name].setPlayerInputs(self.playerID, keyInput)
+		dir = content["message"]
+		self.queue.put([self.playerID, dir])
+
+
+	async def sendUpdates(self, event):
+		state = event['content']
+		await self.send(json.dumps(state))
 
 	async def endGame(self, event):
 		content = event['content']
+		self.process['process'].join()
 		if self.playerID == 1:
 			await updateMatch(self.room_name, content)
 		await self.close()
