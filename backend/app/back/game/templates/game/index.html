@@ -57,27 +57,29 @@
 
 		var matchSocket = 0;
 
-// tom 256b2ccafa34a35a7dd9a7b5ac75e1294c238bd8
-// moise f44c54dd904d41da988161d9794bd5db410537ee
+	// c9563b05da4742946b6b09102ce902bc4c0ce2e5 > tom
+	// e6246144acdca72df99421f27c134d3f385634b8 > moise
+	// b85d89c90b59987f12798acfb0e58ae3c84751fb > guest
+	// 7a05f5277db819925617ffcf3237d70ed6301d28 > guest2
 
-		function getMatch(token) {
-			const queueSocket = new WebSocket('ws://' + window.location.host +'/ws/game/queue/' + '?token=' + token);
+		function getTournament(token){
+			console.log('getTournament');
+			const tournamentSocket = new WebSocket('ws://' + window.location.host +'/ws/game/tournament/' + '?token=' + token);
 			
-			queueSocket.onopen = function(e) {
-				queueSocket.send(JSON.stringify({
-					'message': 'join',
-				}));
-			};
+			tournamentSocket.onopen = function(e) {
+				tournamentSocket.send(JSON.stringify({'message': 'join'})); 
+			}
 
-			queueSocket.onmessage = function(e) {
-				const data = JSON.parse(e.data);
-				console.log(data.response);
-				if (data.response == 'match_found') {
-					console.log('match found');
-					launchMatch(data.match_id, token);
-					queueSocket.close();
+			tournamentSocket.onclose = function(e) {
+				console.log('tournamentSocket closed');
+			}
+
+			setInterval(function() {
+				if (tournamentSocket.readyState == 1){
+					console.log('tournamentSocket heartbeat')
+					tournamentSocket.send(JSON.stringify({'message': 'heartbeat'}));
 				}
-			};	
+			}, 10000);
 		}
 
 		function launchMatch(match_id, token) {
@@ -131,6 +133,34 @@
 				}));
 			};
 		}
+
+		// function getMatch(token) {
+		// 	console.log('getMatch');
+		// 	const queueSocket = new WebSocket('ws://' + window.location.host +'/ws/game/queue/' + '?token=' + token);
+			
+		// 	setInterval(function() {
+		// 		queueSocket.send(JSON.stringify({'message': 'heartbeat'}));
+		// 	}, 10000);
+
+		// 	queueSocket.onopen = function(e) {
+		// 		queueSocket.send(JSON.stringify({
+		// 			'message': 'join',
+		// 		}));
+		// 	};
+
+		// 	queueSocket.onmessage = function(e) {
+		// 		const data = JSON.parse(e.data);
+		// 		if (data.response == 'match_found') {
+		// 			console.log('match found');
+		// 			queueSocket.close(); 
+		// 			launchMatch(data.match_id, token);
+		// 		}
+		// 	};
+		// }
+
+
+	// pour le local on pourrait log juste connecter le user au websocket avec un guest token
+	// comme ça on a pas besoin de trop modifier le code du pong
 		
 		</script>
 </body>

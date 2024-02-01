@@ -19,13 +19,12 @@ ballSize=21 # default value: 21
 ballSpeed=3 # default value: 5
 ballMaxSpeed=7 # default value: 7
 
-pointsToWin=5 # default value: 5
+pointsToWin=1 # default value: 5
 
 def roundNb(nb):
 	if (nb - floor(nb) >= 0.5):
 		return (ceil(nb))
 	return (floor(nb))
-
 class Ball:
 	def __init__(self, paddle1, paddle2):
 		self.paddle1 = paddle1
@@ -94,14 +93,6 @@ class Paddle:
 		else:
 			self.y += self.dir * paddleSpeed
 
-
-class PongEngine():
-	def __init__(self, groupe_name, **kwargs):
-		self.group_name = groupe_name
-		self.input = [0, 0]
-		self.playerReady = [False, False]
-
-		super().__init__(**kwargs)
 
 def run(queue, group_name):
 	paddle1 = Paddle("p1")
