@@ -8,6 +8,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LandingModule } from './feature-modules/landing/landing.module';
 import { UserModule } from './feature-modules/user/user.module';
 
+import { PongoInterceptor } from './interceptor/pongo.interceptor';
+
 import { AppComponent } from './app.component';
 import { HomeComponent } from './feature-modules/home/components/home/home.component';
 import { SharedModule } from './shared-modules/shared/shared.module';
@@ -25,7 +27,7 @@ import { ToastrModule } from 'ngx-toastr';
 	BrowserAnimationsModule,
 	CommonModule,
     AppRoutingModule,
-    OAuthModule.forRoot(),
+    OAuthModule.forRoot(), // TODO: forRoot mandatory ?
 	ToastrModule.forRoot(),
     LandingModule,
     NgbModule,
@@ -33,7 +35,9 @@ import { ToastrModule } from 'ngx-toastr';
     SharedModule,
 	ChatModule
   ],
-  providers: [],
+  providers: [
+	PongoInterceptor
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

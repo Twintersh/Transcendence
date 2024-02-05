@@ -10,7 +10,7 @@ import { Subject } from 'rxjs';
 })
 export class GameService {
 
-	matchSocket: number = 0;
+	matchSocket: number = 0; // inférence
 	private gameElements$: Subject<any> = new Subject<any>();
 
 	constructor(

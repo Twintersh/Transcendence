@@ -8,3 +8,10 @@ export interface User {
 	gameRatio?: number;
 	avatar: string;
 }
+
+export interface UpdatedUser {
+	username: string;
+	password: string;
+	confirmPassword: string;
+	avatar?: string;
+}

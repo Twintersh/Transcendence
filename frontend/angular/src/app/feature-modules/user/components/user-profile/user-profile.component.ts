@@ -52,14 +52,15 @@ export class UserProfileComponent implements OnInit {
 	}
 
 	editProfile(): void {
-		console.log('editProfile');
 		this.offcanvas.open(EditOffcanvasComponent, { animation: true, backdrop: true }).result.then(
 			(result) => {
-				console.log(`Closed with: ${result}`);
+				console.log('ok');
+				this.offcanvas.dismiss();
+				this.user$ = this.getUserInfos();
 			},
 			(reason) => {
-				console.log(`Dismissed ${reason}`);
-			}
+				console.log('je suis la raison');
+			},
 		);
 	}
 

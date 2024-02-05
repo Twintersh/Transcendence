@@ -5,6 +5,7 @@ from .views import *
 urlpatterns = [
     re_path('login/', login),
     re_path('signup/', signup),
+	re_path('signup42/', signup42),
     re_path('updateCredential/', updateCredential),
     re_path('logout', logout),
     re_path('getUserInfo', getUserInfo),

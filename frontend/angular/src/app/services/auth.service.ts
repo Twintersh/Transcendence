@@ -1,10 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { User } from '../models/user.model';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, Router, UrlTree } from '@angular/router';
-import { CookieService } from './cookie.service';
+import { Injectable } from '@angular/core';
+
 import { catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
+
+import { CookieService } from './cookie.service'; 
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'

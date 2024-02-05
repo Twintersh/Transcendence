@@ -12,7 +12,12 @@ export class NavbarComponent implements OnInit {
 	isAuthenticated: boolean = false;
 	userAvatar?: string;
 
-	constructor(private router: Router, public authService: AuthService, private userService: UserService) {
+	constructor(
+		private router: Router, 
+		public authService: AuthService, 
+		private userService: UserService
+		) 
+	{
 		this.router.setUpLocationChangeListener();
 		router.events.subscribe((event) => {
 			if (event instanceof NavigationEnd) {
@@ -23,9 +28,6 @@ export class NavbarComponent implements OnInit {
 
 	ngOnInit() {
 		this.isAuth();
-		this.userService.getUserAvatar().subscribe((res) => {
-			this.userAvatar = 'http://127.0.0.1:8000' + res.avatar;
-		});
 	}
 
 	isAuth(): void {
