@@ -1,6 +1,8 @@
 # Use an official Node runtime as a parent image
 FROM python:3.8
 
+RUN apt-get update && apt-get upgrade -y && apt-get install netcat-openbsd -y
+
 # Set the working directory in the container
 WORKDIR /var/www/backend
 
