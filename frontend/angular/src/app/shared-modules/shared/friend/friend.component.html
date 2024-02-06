@@ -1,0 +1,30 @@
+<div class="offcanvas-header">
+	<h4 class="offcanvas-title">Friends</h4>
+	<button type="button" class="btn-close" aria-label="Close"></button>
+</div>
+	
+<div class="offcanvas-body justify-content-center">
+	<h2>Online</h2>
+	<div class="d-flex-column justify-content-evenly">
+		<div class="friends" *ngFor="let test of testfriends">
+			<div *ngIf="test.isActive">
+				<span> {{ test.username }} </span>
+			</div>
+		</div>
+	</div>
+	
+	<h2 (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">
+		Offline
+	</h2>
+	<div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
+		<div class="d-flex-column justify-content-evenly">
+			<div class="friends" *ngFor="let test of testfriends">
+				<span> {{ test.username }} </span>
+			</div>
+		</div>
+	</div>
+	<form [formGroup]="myForm" >
+		<input type="text" id="text" class="form-control" formControlName="username" placeholder="Enter username">
+	</form>
+	<button class="btn btn-primary mt-4 btn-lg w-100" type="button" (click)="addFriend()">Add new friend</button>
+</div>

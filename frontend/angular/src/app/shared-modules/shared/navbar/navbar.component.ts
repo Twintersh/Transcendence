@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { AuthService } from '../../../services/auth.service'
-import { UserService } from 'src/app/services/user.service';
+import { AuthService } from '../../../services/auth.service';
+import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
+import { FriendComponent } from '../friend/friend.component';
 
 @Component({
   selector: 'navbar',
@@ -14,10 +15,9 @@ export class NavbarComponent implements OnInit {
 
 	constructor(
 		private router: Router, 
-		public authService: AuthService, 
-		private userService: UserService
-		) 
-	{
+		public authService: AuthService,
+		private offcanvas: NgbOffcanvas
+	) {
 		this.router.setUpLocationChangeListener();
 		router.events.subscribe((event) => {
 			if (event instanceof NavigationEnd) {
@@ -42,5 +42,10 @@ export class NavbarComponent implements OnInit {
 		this.authService.logout();
 		this.isAuthenticated = false;
 		this.router.navigate(['']);
+	}
+
+	ngOnDestroy() {
+		console.log('destroy');
+		this.offcanvas.dismiss();
 	}
 }

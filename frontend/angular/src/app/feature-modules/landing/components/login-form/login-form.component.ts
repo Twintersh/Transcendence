@@ -23,8 +23,8 @@ export class LoginFormComponent implements OnInit {
 		private toastService: ToastService
 	) {
 		this.myForm = this.fb.group({
-			email: ['', Validators.required,Validators.email],
-			password : ['', Validators.required, Validators.minLength(4)]
+			email: new FormControl('', [Validators.required, Validators.email]),
+			password : new FormControl('', [Validators.required, Validators.minLength(4)])
 		});
 	}
 
@@ -40,8 +40,8 @@ export class LoginFormComponent implements OnInit {
 	}​
 
 	submitHandler(): void {
-		console.log(this.myForm.value);
 		if(this.myForm.valid) {
+			console.log(this.myForm.value);
 			this.authService.login(this.myForm.value).subscribe({
 				next: (response) => {
 					this.cookieService.saveCookie('authToken', response.token);

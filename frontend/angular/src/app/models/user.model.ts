@@ -7,6 +7,7 @@ export interface User {
 	wonMatchesCount?: number;
 	gameRatio?: number;
 	avatar: string;
+	isActive: boolean;
 }
 
 export interface UpdatedUser {

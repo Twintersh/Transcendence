@@ -1,0 +1,8 @@
+@import '../../../../styles.scss';
+
+.container {
+	z-index: 10;
+	padding: 1rem;
+	height: 100vh;
+	background-color: $tertiary;
+}
