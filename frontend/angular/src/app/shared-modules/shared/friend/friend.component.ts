@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { Subscription } from 'rxjs';
+import { Observable, Subscription, catchError } from 'rxjs';
 
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -18,13 +18,16 @@ import { User } from 'src/app/models/user.model';
 export class FriendComponent implements OnInit {
 	myForm: FormGroup;
 	friends: any[] = [];
-	testfriends: User[] = [ { id: 1, username: 'test', avatar: 'test', isActive: true },
-							{ id: 2, username: 'test2', avatar: 'test2', isActive: false},
-							{ id: 3, username: 'test3', avatar: 'test3', isActive: true},
-							{ id: 4, username: 'test4', avatar: 'test4', isActive: false}
-	];
-	subscription: Subscription = new Subscription();
-	isCollapsed = true;
+	rcvdRequests: any[] = [];
+	sentRequests: any[] = [];
+
+	FriendSubscription: Subscription = new Subscription();
+	rcvdRequestSubscription: Subscription = new Subscription();
+	sentRequestsSubscription: Subscription = new Subscription();
+	offCollapsed = true;
+	pendingCollapsed = true;
+
+	backendUrl = 'http://localhost:8000/';
 
 	constructor(
 		private readonly friendService: FriendService,
@@ -38,8 +41,16 @@ export class FriendComponent implements OnInit {
 	}
 	
 	ngOnInit(): void {
-		this.subscription = this.friendService.getUserFriends().subscribe((res: any) => {
-			console.log(res);
+		this.FriendSubscription = this.friendService.getUserFriends().subscribe((res: any) => {
+			this.friends = res;
+		});
+
+		this.rcvdRequestSubscription = this.friendService.getReceivedFriendRequests().subscribe((res: any) => {
+			this.rcvdRequests = res;
+		});
+
+		this.sentRequestsSubscription = this.friendService.getSentFriendRequests().subscribe((res: any) => {
+			this.sentRequests = res;
 		});
 	}
 
@@ -48,10 +59,34 @@ export class FriendComponent implements OnInit {
 			this.toastService.showInfo('Please enter a username.');
 			return;
 		}
-		this.friendService.addFriend(this.myForm.value).subscribe((res: any) => {
-			console.log(res);
+		this.friendService.addFriend(this.myForm.value).subscribe(
+			(res: any) => {
+				this.toastService.showSuccess('Friend request sent.');
+			},
+			(err: any) => {
+				if (err.status === 404) {
+					this.toastService.showError('User does not exist.');
+				}
+				else if (err.status === 400) {
+					this.toastService.showError('You are already friends with this user.');
+				}
+				else if (err.status === 403) {
+					this.toastService.showError('You cannot add yourself as a friend.');
+				}
+				else if (err.status === 304) {
+					this.toastService.showInfo('Friend request already sent.');
+				}
 		});
-		console.log(this.myForm.value);
-		console.log('add friend');
+	}
+
+	acceptFriend(username: string): void {
+		this.friendService.acceptFriendRequest(username).subscribe(
+			(res: any) => {
+				console.log("res is ", res);
+			},
+			(err: any) => {
+				console.log("err is ", err);
+		}
+		);
 	}
 }

@@ -6,23 +6,41 @@
 <div class="offcanvas-body justify-content-center">
 	<h2>Online</h2>
 	<div class="d-flex-column justify-content-evenly">
-		<div class="friends" *ngFor="let test of testfriends">
-			<div *ngIf="test.isActive">
-				<span> {{ test.username }} </span>
+		<div class="list friends" *ngFor="let friend of friends">
+			<div *ngIf="friend.is_active">
+				<img [src]="backendUrl + friend.avatar" alt="profile image" class="profile-image">
+				<span> {{ friend.username }} </span>
 			</div>
 		</div>
 	</div>
 	
-	<h2 (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">
-		Offline
+	<h2 (click)="pendingCollapsed = !pendingCollapsed" [attr.aria-expanded]="!pendingCollapsed" aria-controls="collapseExample">
+		Pending
 	</h2>
-	<div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
+	<div #collapse="ngbCollapse" [(ngbCollapse)]="pendingCollapsed">
 		<div class="d-flex-column justify-content-evenly">
-			<div class="friends" *ngFor="let test of testfriends">
-				<span> {{ test.username }} </span>
+			<div class="list sentRequest" *ngFor="let sentRequest of sentRequests">
+				<span> Invite sent to {{ sentRequest.toUser.username }} </span>
+			</div>
+			<div class="list rcvdRequest" *ngFor="let rcvdRequest of rcvdRequests">
+				<span> Received invite form {{ rcvdRequest.fromUser.username }} </span>
+				<button class="btn btn-primary" (click)="acceptFriend(rcvdRequest.fromUser.username)">Accept</button>
 			</div>
 		</div>
 	</div>
+
+	<h2 (click)="offCollapsed = !offCollapsed" [attr.aria-expanded]="!offCollapsed" aria-controls="collapseExample">
+		Offline
+	</h2>
+	<div class="d-flex-column justify-content-evenly">
+		<div class="friends" *ngFor="let friend of friends">
+			<div *ngIf="!friend.is_active">
+				<span> {{ friend.username }} </span>
+			</div>
+		</div>
+	</div>
+
+
 	<form [formGroup]="myForm" >
 		<input type="text" id="text" class="form-control" formControlName="username" placeholder="Enter username">
 	</form>

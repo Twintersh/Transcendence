@@ -169,8 +169,6 @@ def uploadAvatar(request):
 
 # FRIENDS REQUESTS
 
-
-
 @swagger_auto_schema(method='POST', request_body=UserLookSerializer)
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
@@ -233,7 +231,7 @@ def getReceivedFriendRequests(request):
 def getUserFriends(request):
     user = request.user
     friends = user.friends.all()
-    friendsSerializer = UserLookSerializer(instance=friends, many=True)
+    friendsSerializer = UserInfoSerializer(instance=friends, many=True)
     return Response(friendsSerializer.data, status=status.HTTP_200_OK)
 
 
