@@ -6,6 +6,8 @@ from rest_framework.parsers import MultiPartParser, FileUploadParser
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import update_last_login
+import requests
+from django.http import JsonResponse
 
 from .models import User, FriendRequest, Avatar
 from game.models import Match
@@ -13,7 +15,6 @@ from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 
 from .serializers import *
-
 # USER BASIC
 
 @swagger_auto_schema(method='POST', request_body=UserRegisterSerializer)
@@ -27,6 +28,59 @@ def signup(request):
         user.save()
         token = Token.objects.create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def signup42(request):
+    # Handle the request data from the frontend
+    data_from_frontend = request.data
+    token = data_from_frontend.get('token')
+
+    if not token:
+        return Response({'error': 'Token is missing in the request'}, status=status.HTTP_400_BAD_REQUEST)
+
+    external_api_endpoint = 'https://api.intra.42.fr/userinfo'
+
+    try:
+        # Make the GET request to the external API
+        headers = {'Authorization': f'Bearer {token}'}
+        response = requests.get(external_api_endpoint, headers=headers)
+
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            # Parse the JSON data from the response
+            external_data = response.json()
+
+            # Process the external data and extract necessary information
+            username = external_data.get('username')
+            email = external_data.get('email')
+
+            # Assuming your User model has fields like 'username' and 'email'
+            user, created = User.objects.get_or_create(username=username, email=email)
+
+            # Perform any additional logic, such as updating the last login time
+            # update_last_login(user, user)
+
+    except requests.RequestException as e:
+        # Handle exceptions, such as connection errors
+        return JsonResponse({'error': f'Request failed: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # If the external API response doesn't contain the necessary user data, you can create a user manually
+    external_user_data = {
+        'email': 'example@email.com',
+        'username': 'example_user',
+        'password': 'password123',
+    }
+
+    # Create a user or perform other backend operations
+    external_user_serializer = UserRegisterSerializer(data=external_user_data)
+    if external_user_serializer.is_valid(raise_exception=True):
+        external_user_serializer.save()
+        user = get_object_or_404(User, email=external_user_data['email'])
+        user.set_password(external_user_data['password'])
+        user.save()
+        token = Token.objects.create(user=user)
+
+    return JsonResponse({'user': {'username': user.username, 'email': user.email}}, status=status.HTTP_201_CREATED)
 
 @swagger_auto_schema(method='POST', request_body=UserLoginSerializer)
 @api_view(['POST'])
@@ -77,6 +131,21 @@ def getUserInfo(request):
     serializer = UserInfoSerializer(instance=user)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@swagger_auto_schema(method='GET')
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FileUploadParser])
+def getUserAvatar(request):
+    user = request.user
+    
+    if hasattr(user, 'avatar') and user.avatar:
+        image_serializer = Avatarserializer(instance=user.avatar)
+        image_url = image_serializer.data['image']
+        return Response({'avatar': image_url}, status=status.HTTP_200_OK)
+    else:
+        return Response({'detail': 'User has no avatar'}, status=status.HTTP_404_NOT_FOUND)
+
 
 @swagger_auto_schema(method='POST')
 @api_view(['POST'])
@@ -99,8 +168,6 @@ def uploadAvatar(request):
 
 
 # FRIENDS REQUESTS
-
-
 
 @swagger_auto_schema(method='POST', request_body=UserLookSerializer)
 @api_view(['POST'])

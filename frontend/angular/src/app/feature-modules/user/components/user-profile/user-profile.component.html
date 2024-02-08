@@ -1,42 +1,66 @@
-<div class="container-fluid text-center">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="profile-info" style="text-align: center;">
-				<div class="profile-pic" *ngIf="user?.avatar">
-					<img [src]="user?.avatar" alt="User Avatar">
-				  </div>
-                <div class="user-details">
-                    <h2>{{ user?.username }}</h2>
-                    <p>Description Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div>
-                <button class="btn btn-secondary" (click)="editProfile()">Edit Profile</button>
-				<div class="achievements">
+<div class="container text-center">
+	<div class="row">
+
+		<div class="col-md-4">
+			<div class="usercard sticky-top">
+				<div class="backpanel">
+					<h2>{{ user?.username }}</h2>
+					<div class="row my-4">
+						<div class="col-md-5">
+							<img class="img-fluid" *ngIf="user?.avatar" [src]="user?.avatar">
+						</div>
+						<div class="col-md-7">
+							<p>{{ user?.username }}, you really are Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+							<button class="btn btn-secondary w-100" (click)="editProfile()">Edit Profile</button>
+						</div>
+					</div>
 					<p>Achievements</p>
+					<div class="achievements d-flex justify-content-around">
+						<img src="assets/logo.svg" style="height:45px">
+						<img src="assets/ballgreen.svg" style="height:45px">
+						<img src="assets/logo.svg" style="height:45px">
+					</div>
+				</div>
+
+				<div class="backpanel mt-4">
+					<h2>Games Stats</h2>
+
+					<div class="progress my-4" style="height: 50px;">
+						<div class="progress-bar w-50" role="progressbar"></div>
+						<div class="d-flex justify-content-between" style="width: 100%;">
+							<img src="assets/logo.svg" style="margin-left: -25px;">
+							<img src="assets/ballgreen.svg" class="spinning">
+						</div>
+					</div>
+
+					<div class="statscontainer d-flex">
+						<div>
+							<p>Games Played</p>
+							<p>{{ user?.MatchesCount }}</p>
+						</div><p>Games Played</p>
+						<div>
+							<p>Games Won</p>
+							<p>{{ user?.wonMatchesCount }}</p>
+						</div>
+						<div>
+							<p>W/L Ratio</p>
+							<p>{{ user?.gameRatio }}</p>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-        <div class="col-md-8">
-			<h2>Game History</h2>
-			<div class="gameList">
-				<div class="matchcontainer" *ngFor="let game of gameList">
-					<match [game]="game"></match>
-				</div>
-			</div>
-			<h2>Games Stats</h2>
-			<div class="statscontainer">
-				<div>
-					<p>Games Played</p>
-					<p>{{ user?.MatchesCount }}</p>
-				</div><p>Games Played</p>
-				<div>
-					<p>Games Won</p>
-					<p>{{ user?.wonMatchesCount }}</p>
-				</div>
-				<div>
-					<p>W/L Ratio</p>
-					<p>{{ user?.gameRatio }}</p>
+
+		<div class="col-md-8">
+			<div class="gameList px-4">
+				<h2>Game History</h2>
+				<div class="d-flex-column justify-content-evenly">
+					<div class="matchcontainer" *ngFor="let game of gameList">
+						<match [game]="game"></match>
+					</div>
 				</div>
 			</div>
 		</div>
-    </div>
+		
+	</div>
 </div>

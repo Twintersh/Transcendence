@@ -28,6 +28,6 @@ export class LandingComponent implements OnInit {
 	};
 
 	sign42() {
-		this.router.navigateByUrl('http://localhost:3000/auth/42');
+		this.authService.signup42();
 	}
 }

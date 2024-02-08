@@ -14,7 +14,13 @@ export class SignUpFormComponent {
 
 	myForm: FormGroup;
 
-	constructor(private fb: FormBuilder, private readonly http: HttpClient, private authService: AuthService, private cookieService: CookieService, private router: Router) {
+	constructor(
+		private fb: FormBuilder,
+		private readonly http: HttpClient,
+		private authService: AuthService,
+		private cookieService: CookieService,
+		private router: Router
+	) {
 		this.myForm = this.fb.group({
 			email: new FormControl('', Validators.email),
 			username: new FormControl('', Validators.required),

@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+
+import { Subscription } from 'rxjs';
+
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from 'src/app/services/user.service';
 
@@ -11,12 +14,22 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class EditOffcanvasComponent {
 	editForm: FormGroup;
+	subscription = new Subscription();
 
-	constructor(private readonly offcanvas: NgbOffcanvas, private fb: FormBuilder, private readonly http: HttpClient, private userService: UserService) {
+	constructor(
+		private readonly offcanvas: NgbOffcanvas, 
+		private fb: FormBuilder, 
+		private readonly http: HttpClient, 
+		private userService: UserService,
+		private cd : ChangeDetectorRef
+		)
+	{
 		this.editForm = this.fb.group({
-			username: new FormControl('', [Validators.minLength(4), Validators.maxLength(20)]),
-			password : new FormControl('', [Validators.minLength(4), Validators.maxLength(20)]),
-			confirmPassword : new FormControl('', [Validators.minLength(4), Validators.maxLength(20)])
+			username: [undefined, [Validators.minLength(4), Validators.maxLength(20)]],
+			password : [undefined, [Validators.minLength(4), Validators.maxLength(20)]],
+			confirmPassword : [undefined, [Validators.minLength(4), Validators.maxLength(20)]],
+			//
+			avatar: undefined
 		});
 	}
 
@@ -30,8 +43,31 @@ export class EditOffcanvasComponent {
 
 	submitHandler(): void {
 		if(this.editForm.valid) {
+			if (this.editForm.value.avatar) {
+				console.log(this.editForm.value.avatar);
+				// this.updateAvatar();
+				// TODO: retour de fichier de avatar
+			}
 			console.log(this.editForm.value);
-			this.userService.updateUserInfos(this.editForm.value);
+			// this.userService.updateUserInfos(this.editForm.value);
+			this.subscription.add(
+				this.userService.updateUserInfos(this.editForm.value).subscribe({
+					next: () => {
+						// this.userService.getUserInfos().subscribe({
+						// 	next: (data) => {
+						// 	},
+						// 	error: (error) => {
+						// 		console.error('Error fetching user information:', error);
+						// 	}
+						// });*
+						this.cd.markForCheck(); // pour refresh
+					},
+					error: (error) => {
+						// Error: Handle the error if the user information update fails
+						console.error('User information update failed:', error);
+					},
+				})
+			)
 		}
 	}
 

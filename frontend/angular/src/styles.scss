@@ -1,12 +1,5 @@
-/* You can add global styles to this file, and also import other style files */
-// Override Bootstrap variables if needed
-$primary: #9D95E7;
-$secondary: #FFC801;
-$tertiary: #53A6AC;
-$success: #FE90E7;
-$warning: #ff6701;
-$danger: #dc3545;
-$light: #FFECDE;
+/* Importing Colors file. */
+@import 'colors.scss';
 
 /* Importing Bootstrap SCSS file. */
 @import 'ngx-toastr/toastr';
@@ -40,13 +33,16 @@ body {
 	font-family: 'Gopher', 'arial', sans-serif;
 
 	background-image: linear-gradient(#e6bfa1a6 .1em, transparent .1em), linear-gradient(90deg, #e6bfa1a6 .1em, transparent .1em);
+	background-position: center;
 	background-size: 4rem 4rem;
 
 	overflow-x: hidden;
-	padding: 0.3rem 2rem;
 }
 
-
+.selectDisable {
+	user-select: none;
+	pointer-events: none;
+}
 
 
 //////////////////////
@@ -58,12 +54,12 @@ body {
 	border:solid 4px #000;
 	color: #000;
 	box-shadow: 5px 5px 0 0 #000;
-    transition: 0.15s all;
+    transition: 0.1s all;
 	border-radius: 4px;
 
 	&:active {
 		border:solid 4px #000 !important;
-		box-shadow: 0px 0px 0px 0px;
+		box-shadow:	none;
 		transform: translate(5px, 5px);
 	}
 
@@ -80,32 +76,46 @@ body {
 
 
 
+//////////////////////
+/*		CARDS		*/
+//////////////////////
+
+.card {
+	box-shadow: 0.75rem 0.75rem black;
+    border: solid 4px black;
+}
+
+
+
 
 //////////////////////////
 /*		SCROLL-BAR		*/
 //////////////////////////
 
-/* Scrollbar Styles */
-::-webkit-scrollbar {
-	width: 15px;
-}
 
-/* Track */
-::-webkit-scrollbar-track {
-	margin: 20px 20px;
-	background: $tertiary;
-	border-radius: 7.5px;
-	box-shadow: 5px 5px 0 0 #000;
-}
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-	margin: 20px 20px;
-	//border: solid 3px #000;
-	box-shadow: 5px 5px 0 0 #000;
-	border-radius: 7.5px;
-	background: $secondary;
-}
+
+// /* Scrollbar Styles */
+// ::-webkit-scrollbar {
+// 	width: 15px;
+// }
+
+// /* Track */
+// ::-webkit-scrollbar-track {
+// 	margin: 20px 20px;
+// 	background: $tertiary;
+// 	border-radius: 7.5px;
+// 	box-shadow: 5px 5px 0 0 #000;
+// }
+
+// /* Handle */
+// ::-webkit-scrollbar-thumb {
+// 	margin: 20px 20px;
+// 	//border: solid 3px #000;
+// 	box-shadow: 5px 5px 0 0 #000;
+// 	border-radius: 7.5px;
+// 	background: $secondary;
+// }
 
 
 

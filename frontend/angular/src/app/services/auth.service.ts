@@ -1,10 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { User } from '../models/user.model';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, Router, UrlTree } from '@angular/router';
-import { CookieService } from './cookie.service';
-import { catchError, map } from 'rxjs/operators';
-import { Observable, of, throwError } from 'rxjs';
+import { Injectable } from '@angular/core';
+
+import { catchError } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+
+import { CookieService } from './cookie.service'; 
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +21,7 @@ export class AuthService {
 		return this.http.post('http://127.0.0.1:8000/users/signup/', newUser)
 	}	
 
-	public signup42(newUser: User) {
-		return this.http.post('http://127.0.0.1:8000/users/sign42/', newUser)
+	public signup42() {
 	}
 
 	public logout(): void {
@@ -61,7 +62,7 @@ export class AuthService {
 			catchError((error) => {
 				if (error.status === 403) {
 					console.log('Unauthorized error. Redirecting to landing page...');
-					this.router.navigate(['/landing']);
+					this.router.navigate(['']);
 				}
 				return of(false);
 			})
