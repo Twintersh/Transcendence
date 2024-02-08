@@ -8,7 +8,6 @@ urlpatterns = [
     re_path('updateCredential/', updateCredential),
     re_path('logout', logout),
     re_path('getUserInfo', getUserInfo),
-    re_path('getUserMatches', getUserMatches),
     re_path('sendFriendRequest/', sendFriendRequest),
     re_path('acceptFriendRequest/', acceptFriendRequest),
     re_path('getSentRequests/', getSentFriendRequests),
