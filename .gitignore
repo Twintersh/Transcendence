@@ -3,11 +3,9 @@ client/node_modules
 client/e2e
 client/bootstrap-overview
 
-
 backend/bin
 backend/include
 backend/lib
-
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -84,6 +82,7 @@ volumes/*
 
 # env data
 .env
+
 # PyBuilder
 target/
 
@@ -93,31 +92,13 @@ target/
 # pyenv
 .python-version
 
-# celery beat schedule file
-celerybeat-schedule
-
 # SageMath parsed files
 *.sage.py
-
-# dotenv
-.env
 
 # virtualenv
 .venv
 venv/
 ENV/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
 /dist
