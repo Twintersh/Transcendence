@@ -3,7 +3,6 @@ from asgiref.sync import async_to_sync
 from time import time
 from math import sin, radians, floor, ceil
 import random
-import json
 import asyncio
 
 channel_layer = get_channel_layer()
