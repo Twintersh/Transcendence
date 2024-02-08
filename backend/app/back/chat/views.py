@@ -31,7 +31,7 @@ def getRoomName(request):
 	print(user.username)
 	serializer = UserLookSerializer(data=request.data)
 	serializer.is_valid(raise_exception=True)
-	toUser = get_object_or_404(User, username=serializer.data['username']) 
+	toUser = get_object_or_404(User, username=serializer.data['username'])
 	print(toUser.username)
 	try:
 		room = Room.objects.filter(users=user).get(users=toUser)

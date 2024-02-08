@@ -1,9 +1,9 @@
 import json
 from django.conf import settings
-from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer, StopConsumer
 from channels.db import database_sync_to_async
-from asgiref.sync import async_to_sync, sync_to_async
-from .models import Match, Tournament
+from asgiref.sync import sync_to_async
+from .models import Match
 from users.models import User
 from django.shortcuts import get_object_or_404
 
@@ -21,81 +21,19 @@ def makeMatch(players):
 		message = {'response' : 'match_found', 'match_id' : id}
 	return message
 
-from .tournament import TournamentEngine
-
-# def MakeTournament():
-# 	tournament = Tournament.objects.create()
-# 	if not tournament:
-# 		return 0
-# 	return tournament.id
-
-@database_sync_to_async
-def addTournamentLoosers(tournament_id, looser):
-	tournament = get_object_or_404(Tournament, id=tournament_id)
-	tournament.loosers.add(looser)
-
-class TournamentManager(AsyncWebsocketConsumer):
-	async def connect(self):
-		self.tournament_id = 0
-		self.group_name = "tournament"
-		if not self.scope['user'].is_authenticated:
-			return
-		await self.accept()
-
-	async def receive(self, text_data):
-		message = json.loads(text_data)["message"]
-		if message == "heartbeat":
-			return
-		elif message == 'join':
-			settings.TOURNAMENT.append({
-					"user" : self.scope["user"].username,
-					"channel_name" : self.channel_name, 
-				})
-			if len(settings.TOURNAMENT) == 4:
-				# la ligne du démon
-				tournament = await sync_to_async(Tournament.objects.create)()
-				
-				self.tournament_id = tournament.id
-				print(self.tournament.id)
-				if (self.tournament_id != 0):
-					tour = TournamentEngine(settings.TOURNAMENT, self.channel_layer, self.tournament_id)
-					tour.start()
-
-				await self.channel_layer.group_send(
-					self.group_name,
-					{
-						"type": "getTournamentId",
-						"content": self.tournament_id
-					}
-				)
-				settings.TOURNAMENT = []
-
-	async def getTournamentId(self, event):
-		self.tournament_id = event['content'] 
-
-	async def disconnect(self, exit_code):
-		if self.tournament_id != 0:
-			await addTournamentLoosers(self.tournament_id, self.scope['user'])
-		await self.channel_layer.group_discard(self.group_name, self.channel_name)
-		raise StopConsumer("Disconected")
-
-	async def get_match_id(self, event):
-		match_id = event['match_id']
-		await self.send(text_data=json.dumps(match_id))
-
-
 # WebSocket consumer for managing the queue of players waiting for a match
 class QueueManager(AsyncWebsocketConsumer):
 
 	async def connect(self):
 		self.room_group_name = "queue"
 		if not self.scope['user'].is_authenticated:
+			print("Unauthenticated")
 			return
 		await self.accept()
-		await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+		await self.channel_layer.group_add(self.room_group_name, self.channel_name) #type:ignore
 
 	async def disconnect(self, exit_code):
-		await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+		await self.channel_layer.group_discard(self.room_group_name, self.channel_name) #type:ignore
 		if self.scope['user'].is_authenticated:
 			for player in settings.QUEUE_MANAGER:
 				if player['user'] == self.scope['user'].username:
@@ -142,6 +80,10 @@ def updateMatch(id, content):
 @database_sync_to_async
 def getPlayerID(id, user):
 	match = Match.objects.get(id=id)
+	if not match:
+		return -1
+	if user == match.player1 and match.player1 == match.player2:
+		return 3
 	if user == match.player1:
 		return 1
 	elif user == match.player2:
@@ -159,43 +101,52 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		self.room_name = self.scope["url_route"]["kwargs"]["game"]
 		self.group_name = "game_%s" % self.room_name
 		self.playerID = await getPlayerID(self.room_name, self.scope["user"])
+		if (self.playerID == -1):
+			raise StopConsumer("Invalid ID")
 		if (self.playerID == 0):
-			print("Could not connect user in room")
-			await self.close()
+			raise StopConsumer("Could not connect user in room")
 		await self.channel_layer.group_add(self.group_name, self.channel_name)
 		await self.accept()
 
 		if not self.group_name in QueuePool.queues:
-			QueuePool.new_queue(self)
+			QueuePool.new_queue(self) # create one queue for both players
 	
 		self.queue = QueuePool.queues[self.group_name]
 
 		if not self.group_name in ProcessPool.processes:
-			ProcessPool.new_thread(self)
+			ProcessPool.new_process(self) # create one process for both players
 	
 		self.process = ProcessPool.processes[self.group_name]
 
-		if self.playerID == 1:
+		if self.playerID == 3:
+			self.process['local'] = True
+			self.process['paddle1'] = True
+			self.process['paddle2'] = True
+		elif self.playerID == 1:
 			self.process['paddle1'] = True
 		elif self.playerID == 2:
 			self.process['paddle2'] = True
 
-
 		if self.process['paddle1'] and self.process['paddle2']:
-			self.process['process'].start()
+			self.process['process'].start() # starting process when both player are connected
 			print("Running thread")
 		print(f"Connected in room : {str(self.room_name)}")
 
 	async def disconnect(self, close_code):
-		self.queue.put('kill')
-		self.process['process'].join()
+		if self.queue and self.process:
+			self.queue.put('kill')
+			self.process['process'].join()
 		await self.channel_layer.group_discard(self.group_name, self.channel_name)
 		raise StopConsumer("Disconnected")
 
 	async def receive(self, text_data):
 		content = json.loads(text_data)
 		dir = content["message"]
-		self.queue.put([self.playerID, dir])
+		if self.process and self.process['local']:
+			player = content["player"]
+			self.queue.put([player, dir]) # filling queue with incoming inputs
+		else:
+			self.queue.put([self.playerID, dir]) # filling queue with incoming inputs
 
 
 	async def sendUpdates(self, event):
@@ -204,9 +155,10 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 
 	async def endGame(self, event):
 		content = event['content']
-		self.process['process'].join()
-		if self.playerID == 1:
+		if self.process:
+			self.process['process'].join() # waiting for the process to end before continuing
+		if self.playerID == 1 or self.playerID == 3:
 			# Update the match details in the database
-			await updateMatch(self.room_name, content)
+			await updateMatch(self.room_name, content) # update match info in db
 		await self.close()
 

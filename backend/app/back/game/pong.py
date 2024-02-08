@@ -3,6 +3,8 @@ from asgiref.sync import async_to_sync
 from time import time
 from math import sin, radians, floor, ceil
 import random
+import json
+import asyncio
 
 channel_layer = get_channel_layer()
 tick_rate = 1/50
@@ -13,18 +15,19 @@ MAX_ANGLE = 55 # default value : 55
 
 paddleHeight=100 # default value: 100
 paddleWidth=15 # default value: 15
-paddleSpeed=10 # default value: 10
+paddleSpeed=4 # default value: 10
 
 ballSize=21 # default value: 21
-ballSpeed=3 # default value: 5
-ballMaxSpeed=7 # default value: 7
+ballSpeed=2 # default value: 5
+ballMaxSpeed=8 # default value: 7
 
-pointsToWin=1 # default value: 5
+pointsToWin=5 # default value: 5
 
 def roundNb(nb):
 	if (nb - floor(nb) >= 0.5):
 		return (ceil(nb))
 	return (floor(nb))
+
 class Ball:
 	def __init__(self, paddle1, paddle2):
 		self.paddle1 = paddle1
@@ -45,13 +48,14 @@ class Ball:
 		self.speedX *= -1
 
 		if (self.x >= WIDTH/2):
-			self.x = paddle.x - ballSize/2 - 7
+			self.x = paddle.x - ballSize/2 - 1
 		else:
-			self.x = paddle.x + ballSize/2 + paddleWidth + 7
+			self.x = paddle.x + ballSize/2 + paddleWidth + 1
 
 	def collide(self, paddle):
-		if (self.x + ballSize >= paddle.x and self.x - ballSize <= paddle.x + paddleWidth):
-			if (self.y + ballSize >= paddle.y and self.y - ballSize <= paddle.y + paddleHeight):
+		delta = ballSize / 2
+		if (self.x + delta >= paddle.x and self.x - delta <= paddle.x + paddleWidth):
+			if (self.y + delta >= paddle.y and self.y - delta <= paddle.y + paddleHeight):
 				return (True)
 		return (False)
 	
@@ -74,7 +78,6 @@ class Ball:
 		self.y += self.speedY
 
 
-
 class Paddle:
 	def __init__(self, player):
 		if player == "p1":
@@ -86,14 +89,14 @@ class Paddle:
 		self.score = 0
 
 	def move(self):
+		self.y += self.dir * paddleSpeed
 		if (self.y < 0):
 			self.y = 0
 		elif (self.y + paddleHeight > HEIGHT):
 			self.y = HEIGHT - paddleHeight
-		else:
-			self.y += self.dir * paddleSpeed
 
-
+# exectued in a separated process (one per game)
+# group_name to send updates through channel_layer **maybe try to go directly through websocket by having consummer instances passed to method
 def run(queue, group_name):
 	paddle1 = Paddle("p1")
 	paddle2 = Paddle("p2")
@@ -102,32 +105,35 @@ def run(queue, group_name):
 	start = time()
 
 	while True:
-		if not queue.empty():
-			inputs = queue.get()
-			if inputs == 'kill':
-				return
-			if inputs[0] == 1:
-				paddle1.dir = inputs[1]
-			elif inputs[0] == 2:
-				paddle2.dir = inputs[1]
-		if time() - start > 0.01:
+		asyncio.run(setInputs(queue, paddle1, paddle2))
+			
+		if time() - start > 0.005:	#move everything x times per second
 			paddle1.move()
 			paddle2.move()
 			ball.move()
 			start = time()
 
-		if (paddle1.score >= 5 or paddle2.score >= 5):
+		if (paddle1.score >= pointsToWin or paddle2.score >= pointsToWin):
 			break ;
 		state = {
 			"paddle1" : {"x" : paddle1.x, "y" : paddle1.y, "score" : paddle1.score},
 			"paddle2" : {"x" : paddle2.x, "y" : paddle2.y, "score" : paddle2.score},
 			"ball" : {"x" : ball.x, "y" : ball.y}
 		}
-		async_to_sync(channel_layer.group_send)(group_name, {'type' : 'sendUpdates', 'content' : state})
+		async_to_sync(channel_layer.group_send)(group_name, {'type' : 'sendUpdates', 'content' : state})	#send updates as much as possible to prevent lag
 	duration = time() - loop
 	sendEndGame([paddle1.score, paddle2.score], duration, group_name)
 
-	
+async def setInputs(queue, paddle1, paddle2):
+	if not queue.empty():
+		inputs = queue.get(False) # queue to pull keyinputs from consummer
+		if inputs[0] == 1:
+			paddle1.dir = inputs[1]
+		elif inputs[0] == 2:
+			paddle2.dir = inputs[1]
+		elif inputs == 'kill':
+			return
+
 def sendEndGame(score, duration, group_name):
 	if score[0] > score[1]:
 		content = {

@@ -168,7 +168,7 @@ def getReceivedFriendRequests(request):
 def getUserFriends(request):
     user = request.user
     friends = user.friends.all()
-    friendsSerializer = UserLookSerializer(instance=friends, many=True)
+    friendsSerializer = UserInfoSerializer(instance=friends, many=True)
     return Response(friendsSerializer.data, status=status.HTTP_200_OK)
 
 
@@ -182,7 +182,7 @@ def getUserFriends(request):
 @permission_classes([IsAuthenticated])
 def getUserMatches(request):
     user = request.user
-    Matches = user.p1Matches.all() + user.p2Matches.all()
+    Matches = user.p1Matches.all() | user.p2Matches.all()
     MatchesSerializer = MatchSerializer(instance=Matches, many=True)
     return Response(MatchesSerializer, status=status.HTTP_200_OK)
 
