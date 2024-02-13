@@ -2,7 +2,6 @@ version: '3.8'
 
 services:
   angular:
-    image: angular
     container_name: angular
     networks:
       - transcendence
@@ -17,7 +16,6 @@ services:
       - django
 
   django:
-    image: django
     container_name: django
     networks:
       - transcendence
@@ -37,7 +35,19 @@ services:
     #   test:  nc -w 5 127.0.0.1 4200
     #   interval: 5s
     #   retries: 30
-  
+
+  redis:
+    image: redislabs/redismod
+    container_name: redis
+    ports:
+      -  6379:6379
+    volumes:
+      - redis:/data
+    networks:
+      - transcendence
+    depends_on:
+      - django
+
   postgresql:
     container_name: postgresql
     build:
@@ -55,11 +65,7 @@ services:
       POSTGRES_INITDB_ARGS: --no-locale --encoding=UTF-8
       PG_DATA: /var/lib/postgresql/data
     volumes:
-      - type: bind
-        source: ./volumes/db
-        target: /var/lib/postgresql/data
-        bind:
-          create_host_path: true
+      - db:/var/lib/postgresql/data
     healthcheck:
       test: nc -w 5 127.0.0.1 5432
       interval: 30s
@@ -84,6 +90,19 @@ services:
 
 networks:
   transcendence:
+    driver: bridge
 
 volumes:
   db:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./volumes/db
+      o: bind
+
+  redis:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./volumes/redis
+      o: bind
