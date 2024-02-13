@@ -145,9 +145,9 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		dir = content["message"]
 		if self.process and self.process['local']:
 			player = content["player"]
-			self.queue.put([player, dir]) # filling queue with incoming inputs
+			self.queue.put([player, int(dir)]) # filling queue with incoming inputs
 		else:
-			self.queue.put([self.playerID, dir]) # filling queue with incoming inputs
+			self.queue.put([self.playerID, int(dir)]) # filling queue with incoming inputs
 
 
 	async def sendUpdates(self, event):

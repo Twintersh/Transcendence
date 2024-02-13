@@ -25,11 +25,14 @@ export class WebSocketService {
 		this.socket.onerror = (error) => {
 			console.error('WebSocket error:', error);
 		};
+
+		this.socket.onmessage = (event) => {
+			this.messages$.next(JSON.parse(event.data));
+		}
 	}
 
 	send(message: any) {
 		// Send data to the server
-		console.log(message);
 		this.socket.send(JSON.stringify({
 			'message' : message,
 		}));
@@ -38,7 +41,6 @@ export class WebSocketService {
 	receive() {
 		// Receive data from the server
 		this.socket.onmessage = (event) => {
-			console.log(event.data);
 			this.messages$.next(JSON.parse(event.data));
 		};
 	}

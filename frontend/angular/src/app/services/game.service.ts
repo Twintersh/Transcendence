@@ -11,6 +11,9 @@ import { Subject } from 'rxjs';
 export class GameService {
 
 	matchSocket: number = 0; // inférence
+	lastMove: number = 0;
+	input: number = 0;
+	player: number = 0;
 	private gameElements$: Subject<any> = new Subject<any>();
 
 	constructor(
@@ -67,21 +70,21 @@ export class GameService {
 		
 	// Send keyboard inputs to the server
 	private sendInputs(e: KeyboardEvent): void {
-		if (e.keyCode !== 83 && e.keyCode !== 87) {
-		return;
-		}
-	
-		var input: number = e.keyCode;
-		if (e.type === 'keyup') {
-			input = 0;
-		}
-	
+		if (e.type != 'keyup' && e.keyCode == this.lastMove)
+			return;
+		if (e.type == 'keyup')
+			this.input = 0;
+		else if (e.keyCode == 83)
+			this.input = 1;
+		else if (e.keyCode == 87)
+			this.input = -1;
 		// Send keyboard input to the server using WebSocketService
-		this.webSocketService.send({
-			type: 'keyboard_input',
-			input: input,
-		});
-	}
+		this.webSocketService.send(this.input);
+		if (e.type == 'keyup')
+			this.lastMove = 0;
+		else
+			this.lastMove = e.keyCode;
+	};
 	
 	// Get an observable for game elements' positions
 	getGameElements(): Subject<any> {

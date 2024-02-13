@@ -104,7 +104,8 @@ def run(queue, group_name):
 	start = time()
 
 	while True:
-		asyncio.run(setInputs(queue, paddle1, paddle2))
+		if not asyncio.run(setInputs(queue, paddle1, paddle2)):
+			break
 			
 		if time() - start > 0.005:	#move everything x times per second
 			paddle1.move()
@@ -112,8 +113,8 @@ def run(queue, group_name):
 			ball.move()
 			start = time()
 
-		if (paddle1.score >= pointsToWin or paddle2.score >= pointsToWin):
-			break ;
+		#if (paddle1.score >= pointsToWin or paddle2.score >= pointsToWin):
+			#break ;
 		state = {
 			"paddle1" : {"x" : paddle1.x, "y" : paddle1.y, "score" : paddle1.score},
 			"paddle2" : {"x" : paddle2.x, "y" : paddle2.y, "score" : paddle2.score},
@@ -125,13 +126,15 @@ def run(queue, group_name):
 
 async def setInputs(queue, paddle1, paddle2):
 	if not queue.empty():
-		inputs = queue.get(False) # queue to pull keyinputs from consummer
+		inputs = queue.get(False)
+		print(inputs[1]) # queue to pull keyinputs from consummer
 		if inputs[0] == 1:
 			paddle1.dir = inputs[1]
 		elif inputs[0] == 2:
 			paddle2.dir = inputs[1]
 		elif inputs == 'kill':
-			return
+			return False
+	return True
 
 def sendEndGame(score, duration, group_name):
 	if score[0] > score[1]:
