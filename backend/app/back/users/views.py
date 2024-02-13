@@ -179,6 +179,10 @@ def sendFriendRequest(request):
     print(request.data)
     toUserSerializer.is_valid(raise_exception=True)
     toUser = get_object_or_404(User, username=toUserSerializer.data['username'])
+    if fromUser.friends.filter(id=toUser.id).exists():
+         return Response("Cannot send friend request to friend", status=status.HTTP_406_NOT_ACCEPTABLE)
+    if fromUser == toUser:
+         return Response("Cannot send friend request to yourself", status=status.HTTP_406_NOT_ACCEPTABLE)
     friendRequest, created = FriendRequest.objects.get_or_create(fromUser=fromUser, toUser=toUser)
     if created :
         return Response("Friend request sent", status=status.HTTP_201_CREATED)
@@ -259,6 +263,10 @@ def blockUser(request):
     toBlockSerializer = UserLookSerializer(data=request.data)
     toBlockSerializer.is_valid(raise_exception=True)
     toBlock = get_object_or_404(User, username=toBlockSerializer.data['username'])
+    if toBlock == user:
+        return Response("Cannot block yourself", status=status.HTTP_406_NOT_ACCEPTABLE)
+    if user.blocked.filter(id=toBlock.id).exists():
+        return Response("User already blocked",  status=status.HTTP_406_NOT_ACCEPTABLE)
     user.blocked.add(toBlock)
     return Response("User blocked succesfully", status=status.HTTP_200_OK)
 
