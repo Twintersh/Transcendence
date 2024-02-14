@@ -27,12 +27,6 @@ services:
     #   test:  nc -w 5 127.0.0.1 4200
     #   interval: 5s
     #   retries: 30
-<<<<<<< Updated upstream
-    
-    # depends_on:
-    #   angular-app:
-    #     condition: service_healthy
-=======
   
   postgresql:
     container_name: postgresql
@@ -75,7 +69,6 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
->>>>>>> Stashed changes
 
 networks:
    transcendence:
