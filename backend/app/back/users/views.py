@@ -32,8 +32,7 @@ def signup(request):
 @api_view(['POST'])
 def signup42(request):
     # Handle the request data from the frontend
-    data_from_frontend = request.data
-    token = data_from_frontend.get('token')
+    token = request.data.get('token')
 
     if not token:
         return Response({'error': 'Token is missing in the request'}, status=status.HTTP_400_BAD_REQUEST)
