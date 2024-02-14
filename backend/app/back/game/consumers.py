@@ -51,6 +51,11 @@ class QueueManager(AsyncWebsocketConsumer):
 		if message == "heartbeat":
 			return
 		if message == 'join':
+			# avoid a player joining the queue twice
+			for player in settings.QUEUE_MANAGER:
+				if player['user'] == self.scope['user'].username:
+					return
+
 			settings.QUEUE_MANAGER.append({
 					'user' : self.scope["user"].username,
 					'channel_name' : self.channel_name,
