@@ -46,7 +46,7 @@ class UserMatchSerializer(serializers.Serializer):
     player1 = serializers.CharField()
     player2 = serializers.CharField()
 
-class Avatarserializer(serializers.ModelSerializer):
+class AvatarSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Avatar
         fields = ['image']

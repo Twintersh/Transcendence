@@ -127,7 +127,6 @@ def run(queue, group_name):
 async def setInputs(queue, paddle1, paddle2):
 	if not queue.empty():
 		inputs = queue.get(False)
-		print(inputs[1]) # queue to pull keyinputs from consummer
 		if inputs[0] == 1:
 			paddle1.dir = inputs[1]
 		elif inputs[0] == 2:

@@ -140,7 +140,7 @@ def getUserAvatar(request):
     user = request.user
     
     if hasattr(user, 'avatar') and user.avatar:
-        image_serializer = Avatarserializer(instance=user.avatar)
+        image_serializer = AvatarSerializer(instance=user.avatar)
         image_url = image_serializer.data['image']
         return Response({'avatar': image_url}, status=status.HTTP_200_OK)
     else:

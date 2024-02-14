@@ -4,12 +4,24 @@ from rest_framework.permissions import IsAuthenticated
 from users.serializers import UserMatchSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Match
 from users.models import User
 
 def index(request):
     return render(request, "game/index.html")
+
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def getPlayers(request):
+    match_id = request['id']
+    if not match_id:
+        return Response("No match id provided", status=status.HTTP_400_BAD_REQUEST)
+    match = get_object_or_404(Match, id=match_id)
+    return Response({'player1' : {'username' : match.player1.username, 'avatar' : match.player1.avatar.image},
+                     'player2' : {'username' : match.player2.username, 'avatar' : match.player2.avatar.image}}, status=status.HTTP_200_OK)
+
 
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])

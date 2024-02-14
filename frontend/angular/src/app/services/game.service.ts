@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CookieService } from './cookie.service';
 import { WebSocketService } from './websocket.service';
 import { Router } from '@angular/router';
@@ -89,5 +89,14 @@ export class GameService {
 	// Get an observable for game elements' positions
 	getGameElements(): Subject<any> {
 		return this.gameElements$;
+	}
+
+	getPlayers(matchId: string) {
+		const token = this.cookieService.getCookie('authToken');
+		const headers = new HttpHeaders().set('Authorization', `Token ${token}`)
+			.set('id', matchId);
+
+
+		return this.http.get<any>('http://127.0.0.1:8000/game/getPlayers/', { headers });
 	}
 }

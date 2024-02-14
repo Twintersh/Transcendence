@@ -14,7 +14,6 @@ import { User } from '../models/user.model';
 export class AuthService {
 
 	constructor(private readonly http: HttpClient, private readonly cookieService: CookieService, private readonly router: Router) {
-
 	}
 
   	public signup(newUser: User) {
@@ -22,6 +21,7 @@ export class AuthService {
 	}	
 
 	public signup42() {
+		this.router.navigate(['http://api.intra.42.fr/Oauth/authorize']);
 	}
 
 	public logout(): void {
