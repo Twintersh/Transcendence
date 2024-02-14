@@ -23,6 +23,8 @@ def signup(request):
     if serializer.is_valid(raise_exception=True):
         serializer.save()
         user = get_object_or_404(User, email=request.data['email'])
+        avatar = Avatar(user=user)
+        avatar.save()
         user.set_password(request.data['password'])
         user.save()
         token = Token.objects.create(user=user)
