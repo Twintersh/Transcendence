@@ -20,7 +20,7 @@ ballSize=21 # default value: 21
 ballSpeed=2 # default value: 5
 ballMaxSpeed=8 # default value: 7
 
-pointsToWin=5 # default value: 5
+pointsToWin=10 # default value: 5
 
 def roundNb(nb):
 	if (nb - floor(nb) >= 0.5):
@@ -113,16 +113,23 @@ def run(queue, group_name):
 			ball.move()
 			start = time()
 
-		#if (paddle1.score >= pointsToWin or paddle2.score >= pointsToWin):
-			#break ;
+		if (paddle1.score >= pointsToWin or paddle2.score >= pointsToWin):
+			state = {
+				"paddle1" : {"x" : paddle1.x, "y" : paddle1.y, "score" : paddle1.score},
+				"paddle2" : {"x" : paddle2.x, "y" : paddle2.y, "score" : paddle2.score},
+				"ball" : {"x" : ball.x, "y" : ball.y}
+			}
+			async_to_sync(channel_layer.group_send)(group_name, {'type' : 'sendUpdates', 'content' : state})
+			async_to_sync(channel_layer.group_send)(group_name, {'type' : 'sendWinner', 'content' : {'winner' : 'P1' if paddle1.score >= pointsToWin else 'P2', 'duration' : roundNb(time() - loop)}})
+			break ;
 		state = {
 			"paddle1" : {"x" : paddle1.x, "y" : paddle1.y, "score" : paddle1.score},
 			"paddle2" : {"x" : paddle2.x, "y" : paddle2.y, "score" : paddle2.score},
 			"ball" : {"x" : ball.x, "y" : ball.y}
 		}
 		async_to_sync(channel_layer.group_send)(group_name, {'type' : 'sendUpdates', 'content' : state})	#send updates as much as possible to prevent lag
-	duration = time() - loop
-	sendEndGame([paddle1.score, paddle2.score], duration, group_name)
+		duration = time() - loop
+		sendEndGame([paddle1.score, paddle2.score], duration, group_name)
 
 async def setInputs(queue, paddle1, paddle2):
 	if not queue.empty():

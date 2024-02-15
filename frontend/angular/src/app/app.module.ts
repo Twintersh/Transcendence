@@ -16,11 +16,13 @@ import { SharedModule } from './shared-modules/shared/shared.module';
 import { CommonModule } from '@angular/common';
 import { ChatModule } from './feature-modules/chat/chat.module';
 import { ToastrModule } from 'ngx-toastr';
+import { QueueModalComponent } from './feature-modules/home/components/queue-modal/queue-modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+	QueueModalComponent
   ],
   imports: [
     BrowserModule,

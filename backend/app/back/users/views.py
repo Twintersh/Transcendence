@@ -25,6 +25,7 @@ def signup(request):
         serializer.save()
         user = get_object_or_404(User, email=request.data['email'])
         user.set_password(request.data['password'])
+        Avatar.objects.create(user=user, image='media/avatars/default.png')
         user.save()
         token = Token.objects.create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
@@ -174,16 +175,20 @@ def uploadAvatar(request):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def sendFriendRequest(request):
-    fromUser = request.user
-    toUserSerializer = UserLookSerializer(data=request.data)
-    print(request.data)
-    toUserSerializer.is_valid(raise_exception=True)
-    toUser = get_object_or_404(User, username=toUserSerializer.data['username'])
-    friendRequest, created = FriendRequest.objects.get_or_create(fromUser=fromUser, toUser=toUser)
-    if created :
-        return Response("Friend request sent", status=status.HTTP_201_CREATED)
-    else:
-        return Response("Friend request already sent", status=status.HTTP_304_NOT_MODIFIED)
+	fromUser = request.user
+	toUserSerializer = UserLookSerializer(data=request.data)
+	print(request.data)
+	toUserSerializer.is_valid(raise_exception=True)
+	toUser = get_object_or_404(User, username=toUserSerializer.data['username'])
+	
+	if fromUser == toUser:
+		return Response("You can't send a friend request to yourself", status=status.HTTP_400_BAD_REQUEST)
+
+	friendRequest, created = FriendRequest.objects.get_or_create(fromUser=fromUser, toUser=toUser)
+	if created :
+		return Response("Friend request sent", status=status.HTTP_201_CREATED)
+	else:
+		return Response("Friend request already sent", status=status.HTTP_304_NOT_MODIFIED)
     
 
 @swagger_auto_schema(method='POST', request_body=UserLookSerializer)

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { Observable, Subscription, catchError } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -67,10 +67,10 @@ export class FriendComponent implements OnInit {
 				if (err.status === 404) {
 					this.toastService.showError('User does not exist.');
 				}
-				else if (err.status === 400) {
+				else if (err.status === 403) {
 					this.toastService.showError('You are already friends with this user.');
 				}
-				else if (err.status === 403) {
+				else if (err.error === "You can't send a friend request to yourself") {
 					this.toastService.showError('You cannot add yourself as a friend.');
 				}
 				else if (err.status === 304) {
