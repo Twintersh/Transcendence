@@ -1,29 +1,26 @@
-@import '../../../../../styles.scss';
+@import '../../../../../colors.scss';
 
 form-control {
 	box-shadow: 1rem 1rem black;
-	border: 0.2rem solid black;
+	border: 4px solid black;
 }
 
 label {
 	margin-top: 0.5rem;
 }
 
-input {
-	box-shadow: 0.3rem 0.3rem black;
-	border: 0.2rem solid black;
-	margin-bottom: 0.5rem;
-}
-
 input.ng-invalid.ng-dirty {
-	border: 0.2rem solid $danger;
 	box-shadow: 0.3rem 0.3rem $danger;
+	border: 4px solid $danger!important;
 	color: $danger;
 }
 
-.submit {
-	text-align: center;
-	margin-top: 1rem;
-	margin-bottom: 1rem;
+input, input:focus {
 	box-shadow: 0.3rem 0.3rem black;
+	border: 4px solid black!important;
+	margin-bottom: 0.5rem;
+}
+
+.modal-body {
+	padding : 7%;
 }

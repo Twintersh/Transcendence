@@ -5,13 +5,7 @@ from .models import Message, Room
 from channels.db import database_sync_to_async
 # from . import send_chat_history
 
-from rest_framework.decorators import authentication_classes, permission_classes
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
-
-
 class ChatConsumer(AsyncWebsocketConsumer):
-
 	async def connect(self):
 		self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
 		self.room_group_name = "chat_%s" % self.room_name

@@ -25,10 +25,11 @@
 }
 
 ul {
-	font-size: 2rem;
+	font-size: 2.25rem;
 	color: black;
 }
 
 .offcanvas {
+	border: 0 !important;
 	background-color: $tertiary;
 }

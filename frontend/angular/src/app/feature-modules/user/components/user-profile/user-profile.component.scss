@@ -1,58 +1,49 @@
-.profile-info {
-	font-family: 'Gopher', sans-serif;
 
-	.profile-pic {
-		width: 240px;
-		height: 240px;
-		background-position:50% 50%;
-		background-repeat:no-repeat;
-		background-size:cover;
-		border-radius: 50%;
-		margin-bottom: 1rem;
-	}
+.backpanel {
+	box-shadow: 0.75rem 0.75rem black;
+	border: solid 4px black;
+	padding: 1rem;
+	background-color: #53A6AC;
 
-	.user-details {
-		text-align: center;
-		margin-bottom: 1rem;
+}
 
-		h2 {
-			margin-bottom: 1rem;
-		}
+.img-fluid {
+	border-radius: 50%;
+}
 
-		p {
-			margin-top: 1rem;
-		}
-	}
-
-	.edit-button {
-		padding: 8px 16px;
-		background-color: #FFC801;
-		cursor: pointer;
-		transition: background-color 0.3s;
-	}
-	
-	.achievements {
-		font-family: 'Gopher', sans-serif;
-		margin-top: 2rem;
-	}
+.usercard {
+	top: 20px;
 }
 
 
 h2 {
-	font-family: 'Gopher', sans-serif;
 	border: solid 4px #000;
 	box-shadow: 5px 5px 0px 0px #000;
+	background-color: #9D95E7;
 }
 
 .gameList {
-	height: 40%;
-	align-items: center;
-	overflow-y: auto;
-	margin-bottom: 1rem;
+    min-height: 80vh;
+    margin-bottom: 10rem;
 }
 
-.statscontainer {
-	font-family: 'Gopher', sans-serif;
-	display: flex;
-	justify-content: space-evenly;
+//////////////////////////
+/*		ANIMATIONS		*/
+//////////////////////////
+
+
+
+.spinning {
+	animation:	spin 2.5s linear infinite;
+	position: relative;
+}
+
+/* Spinning the sphere using key frames */
+@keyframes spin {
+	from { 
+		transform: rotate(0deg); 
+	}
+	to { 
+		transform: rotate(360deg); 
+	}
 }

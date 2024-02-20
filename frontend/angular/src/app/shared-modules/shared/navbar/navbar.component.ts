@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { AuthService } from '../../../services/auth.service'
+import { AuthService } from '../../../services/auth.service';
+import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
+import { FriendComponent } from '../friend/friend.component';
 
 @Component({
   selector: 'navbar',
@@ -9,8 +11,13 @@ import { AuthService } from '../../../services/auth.service'
 })
 export class NavbarComponent implements OnInit {
 	isAuthenticated: boolean = false;
+	userAvatar?: string;
 
-	constructor(private router: Router, public authService: AuthService) {
+	constructor(
+		private router: Router, 
+		public authService: AuthService,
+		private offcanvas: NgbOffcanvas
+	) {
 		this.router.setUpLocationChangeListener();
 		router.events.subscribe((event) => {
 			if (event instanceof NavigationEnd) {
@@ -25,8 +32,8 @@ export class NavbarComponent implements OnInit {
 
 	isAuth(): void {
 		this.authService.isAuth().subscribe((res) => {
-			this.isAuthenticated = res;	
-			if (this.router.url.includes('landing'))
+			this.isAuthenticated = res;
+			if (this.router.url.includes('game'))
 				this.isAuthenticated = false;
 		})
 	};
@@ -34,6 +41,11 @@ export class NavbarComponent implements OnInit {
 	logout(): void {
 		this.authService.logout();
 		this.isAuthenticated = false;
-		this.router.navigate(['/landing']);
+		this.router.navigate(['']);
+	}
+
+	ngOnDestroy() {
+		console.log('destroy');
+		this.offcanvas.dismiss();
 	}
 }

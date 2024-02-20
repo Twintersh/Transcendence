@@ -8,7 +8,7 @@ from users.models import User
 
 
 class Room(models.Model):
-	id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
+	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	users = models.ManyToManyField(User, related_name='ChatRooms', blank=True)
 
 	def __str__(self):
