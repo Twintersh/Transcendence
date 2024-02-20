@@ -66,6 +66,7 @@ export class GameComponent implements OnInit {
 			return;
 		}
 		
+		this.router.events.subscribe()
 		
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.fillStyle = "#53A6AC";
