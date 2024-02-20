@@ -35,4 +35,4 @@ class FriendRequest(models.Model):
 
 class Avatar(models.Model):
     user = models.OneToOneField('User', related_name='avatar', on_delete=models.CASCADE, blank=True, null=True)
-    image = models.FileField(upload_to='media/avatars', blank=True, default='default.jpg')
+    image = models.FileField(upload_to='avatars', default='default.jpg')

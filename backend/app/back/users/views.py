@@ -24,8 +24,11 @@ def signup(request):
     if serializer.is_valid(raise_exception=True):
         serializer.save()
         user = get_object_or_404(User, email=request.data['email'])
+        avatar = Avatar(user=user)
+        avatar.save()
         user.set_password(request.data['password'])
         user.save()
+        update_last_login(User, request.user)
         token = Token.objects.create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
 
@@ -108,6 +111,7 @@ def isAuth(request):
 @permission_classes([IsAuthenticated])
 def logout(request):
     request.user.auth_token.delete()
+    update_last_login(User, request.user)
     return Response("User logged out", status=status.HTTP_200_OK)
 
 @swagger_auto_schema(method='POST', request_body=UserUpdateSerializer)
