@@ -170,5 +170,5 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		if self.playerID == 1 or self.playerID == 3:
 			# Update the match details in the database
 			await updateMatch(self.room_name, content, self.process['local']) # update match info in db
-		await self.close()
+		await self.send(json.dumps(content))
 

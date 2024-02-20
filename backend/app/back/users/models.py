@@ -7,28 +7,28 @@ from .managers import UserManager
 from django.utils.translation import gettext as _
 
 class User(AbstractUser):
-    email = models.EmailField(_('email'), unique=True, blank=False, null=False)
-    friends = models.ManyToManyField('User', blank=True)
-    blocked = models.ManyToManyField('User', related_name='blocked_by', blank=True)
-    inGame = models.BooleanField(default=False)
-    gameRatio = models.DecimalField(max_digits=2, decimal_places=1, default=0.0)
-    wonMatchesCount = models.IntegerField(default=0)
-    MatchesCount = models.IntegerField(default=0)
-    ft_auth = models.BooleanField(default=False)
+	email = models.EmailField(_('email'), unique=True, blank=False, null=False)
+	friends = models.ManyToManyField('User', blank=True)
+	blocked = models.ManyToManyField('User', related_name='blocked_by', blank=True)
+	inGame = models.BooleanField(default=False)
+	gameRatio = models.DecimalField(max_digits=2, decimal_places=1, default=0.0)
+	wonMatchesCount = models.IntegerField(default=0)
+	MatchesCount = models.IntegerField(default=0)
+	ft_auth = models.BooleanField(default=False)
 
-    objects = UserManager()
+	objects = UserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+	USERNAME_FIELD = 'email'
+	REQUIRED_FIELDS = []
 
-    def __str__(self):
-        return f"{self.username}"
-        
-    def updateRatio(self):
-        if self.MatchesCount == 0:
-            return 0.0
-        else:
-            return self.wonMatchesCount / self.MatchesCount
+	def __str__(self):
+		return f"{self.username}"
+		
+	def updateRatio(self):
+		if self.MatchesCount == 0:
+			return 0.0
+		else:
+			return self.wonMatchesCount / self.MatchesCount
 
 class FriendRequest(models.Model):
     fromUser = models.ForeignKey('User', related_name="sentRequests", on_delete=models.CASCADE)

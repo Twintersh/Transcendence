@@ -37,9 +37,6 @@ export class WebSocketService {
 	}
 
 	disconnectQueue() {
-		this.queueWebSocket$.send(JSON.stringify({
-			'message' : 'leave'
-		}));
 		this.queueWebSocket$.close();
 	}
 

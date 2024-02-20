@@ -24,12 +24,9 @@ def signup(request):
     if serializer.is_valid(raise_exception=True):
         serializer.save()
         user = get_object_or_404(User, email=request.data['email'])
-        avatar = Avatar(user=user)
-        avatar.save()
         user.set_password(request.data['password'])
-        Avatar.objects.create(user=user, image='media/avatars/default.png')
+        Avatar.objects.create(user=user, image='media/avatars/default.jpg')
         user.save()
-        update_last_login(User, request.user)
         token = Token.objects.create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
 
@@ -52,12 +49,10 @@ def signup42(request):
     try :
         user = User.objects.get(username=username)
         token = Token.objects.get_or_create(user=user)
-        update_last_login(User, user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
         user = User.objects.create(username=username, email=email, ft_auth=True)
         avatar = Avatar.objects.create(user=user, image=avatar_link)
-        update_last_login(User, user)
         user.save()
         Token.objects.create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
@@ -75,7 +70,8 @@ def login(request):
     if not user.check_password(request.data['password']):
         return Response("Wrong password", status=status.HTTP_400_BAD_REQUEST)
     token, created = Token.objects.get_or_create(user=user)
-    update_last_login(User, user)
+    user.is_active = True
+    user.save()
     return Response({'token': token.key}, status=status.HTTP_200_OK)
 
 @swagger_auto_schema(method='GET')
@@ -92,7 +88,8 @@ def isAuth(request):
 @permission_classes([IsAuthenticated])
 def logout(request):
     request.user.auth_token.delete()
-    update_last_login(User, request.user)
+    request.user.is_active = False
+    request.user.save()
     return Response("User logged out", status=status.HTTP_200_OK)
 
 @swagger_auto_schema(method='POST', request_body=UserUpdateSerializer)
@@ -149,8 +146,6 @@ def uploadAvatar(request):
         avatar = Avatar(user=user, image=file)
         avatar.save()
         return Response("Avatar uploaded succesfully", status=status.HTTP_201_CREATED)
-
-
 
 # FRIENDS REQUESTS
 
