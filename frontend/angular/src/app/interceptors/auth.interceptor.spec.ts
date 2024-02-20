@@ -1,16 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PongoInterceptor } from './pongo.interceptor';
+import { AuthInterceptor } from './auth.interceptor';
 
-describe('PongoInterceptor', () => {
+describe('AuthInterceptor', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
-      PongoInterceptor
+      AuthInterceptor
       ]
   }));
 
   it('should be created', () => {
-    const interceptor: PongoInterceptor = TestBed.inject(PongoInterceptor);
+    const interceptor: AuthInterceptor = TestBed.inject(AuthInterceptor);
     expect(interceptor).toBeTruthy();
   });
 });

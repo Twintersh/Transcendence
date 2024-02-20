@@ -21,7 +21,9 @@ export class AuthService {
 	}	
 
 	public signup42() {
-		this.router.navigate(['http://api.intra.42.fr/Oauth/authorize']);
+		console.log('signup42');
+		const url: string = 'https://api.intra.42.fr/v2/oauth/authorizeclient_id=u-s4t2ud-07f2dcaa8cb3bea2fc596723d624d6d09f0e930ed9b35c5d9b30f5a1159b7cce&redirect_uri=http://127.0.0.1:8000/users/signup42/&response_type=code';
+		this.router.navigateByUrl(url);
 	}
 
 	public logout(): void {
@@ -55,6 +57,7 @@ export class AuthService {
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 		
 		if (!token) {
+			this.router.navigate(['/']);
 			return of(false);
 		}
 
@@ -62,7 +65,7 @@ export class AuthService {
 			catchError((error) => {
 				if (error.status === 403) {
 					console.log('Unauthorized error. Redirecting to landing page...');
-					this.router.navigate(['']);
+					this.router.navigate(['/']);
 				}
 				return of(false);
 			})

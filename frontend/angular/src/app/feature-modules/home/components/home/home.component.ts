@@ -8,6 +8,7 @@ import { GameService } from 'src/app/services/game.service';
 import { CookieService } from 'src/app/services/cookie.service';
 
 import { QueueModalComponent } from '../queue-modal/queue-modal.component';
+import { AddPlayerModalComponent } from '../add-player-modal/add-player-modal.component';
 
 @Component({
   selector: 'app-home',
@@ -26,7 +27,7 @@ export class HomeComponent {
 	
 	joinOnlineMatch() {
 		const token: string = this.cookie.getCookie("authToken");
-		this.gameService.getMatch(token);
+		this.gameService.getMatch(token, false);
 		this.gameService.QueueMessages$.subscribe((data) => {
 			console.log(data);
 			if (data['message'] == "connected to queue") {
@@ -42,6 +43,23 @@ export class HomeComponent {
 					this.router.navigate(['/game/' + data['match_id']]);
 				}, 2000);
 			}
+		});
+	}
+
+	createLocalMatch() {
+		const token: string = this.cookie.getCookie("authToken");
+		this.modal = this.ngbModal.open(AddPlayerModalComponent, { centered: true });
+		this.modal.result.then((result) => {
+			// Handle the result when the modal is closed
+			if (result != undefined) {
+				this.gameService.getLocalMatch("benben", result).subscribe((res) => {
+					console.log(res);
+					this.router.navigate(['/game/local/' + res['id']]);
+				});
+			}
+		}, (reason) => {
+			// Handle the case when the modal is dismissed
+			console.log('Modal dismissed with reason:', reason);
 		});
 	}
 }

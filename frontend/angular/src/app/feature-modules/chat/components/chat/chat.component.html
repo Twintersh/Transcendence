@@ -3,19 +3,31 @@
 		<div class="col col-md-3">
 			<div class="backpanel">
 				<h2>Friends</h2>
-				<div class="friendslist" *ngIf="friends.length > 0">
-					<div *ngFor="let friend of friends">
-						<img src="{{ friend.avatar }}" alt="{{ friend.avatar }}" width="50px" height="50px">
-						<span>{{ friend.username }}</span>
-					</div>
-				</div>
+				<ul class="friendsList">
+					<li class="friend" *ngFor="let friend of friends">
+						<img class="img-fluid" [src]="friend.avatar">
+						<h3 [class.selected]="friend === selectedFriend" (click)="onSelect(friend)">{{friend.username}}</h3>
+					</li>
+				</ul>
 			</div>
 		</div>
 
 		<div class="col col-md-8">
-			<div class="backpanel container-fluid">
-				fenetre message
+			<div class="row backpanel container-fluid">
+				<h2>Chat</h2>
 			</div>
+			<div class="row messages container-fluid">
+				<app-messages [friend]="selectedFriend"></app-messages>
+			</div>
+			<div class="row backpanel container-fluid">
+				<div class="col col-md-10">
+					<form [formGroup]="myForm" >
+						<input type="text" id="text" class="form-control" formControlName="message" placeholder="Hey P'ierre, you wanna come out here ?">
+					</form>
+				</div>
+				<div class="col col-md-2">
+					<button class="btn btn-primary" type="button" (click)="sendMessage()">Send</button>
+				</div>
 		</div>
 	</div>
 </div>

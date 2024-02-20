@@ -145,9 +145,9 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		dir = content["message"]
 		if self.process and self.process['local']:
 			player = content["player"]
-			self.queue.put([player, int(dir)]) # filling queue with incoming inputs
+			self.queue.put([player, dir]) # filling queue with incoming inputs
 		else:
-			self.queue.put([self.playerID, int(dir)]) # filling queue with incoming inputs
+			self.queue.put([self.playerID, dir]) # filling queue with incoming inputs
 
 
 	async def sendUpdates(self, event):
@@ -156,6 +156,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 
 	async def endGame(self, event):
 		content = event['content']
+		await self.send(json.dumps(content))
 		if self.process:
 			self.process['process'].join() # waiting for the process to end before continuing
 		if self.playerID == 1 or self.playerID == 3:

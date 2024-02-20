@@ -3,8 +3,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 
-import { User } from '../models/user.model';
 import { CookieService } from './cookie.service';
+import { Game } from 'src/app/models/game.model';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,11 +25,11 @@ export class UserService {
 		return this.http.get<User>('http://127.0.0.1:8000/users/getUserInfo/', { headers });
 	}
 
-	public getUserMatches(): Observable<User | null> {
+	public getUserMatches(): Observable<Game[]> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		return this.http.get<User>('http://127.0.0.1:8000/users/getUserMatches/', { headers });
+		return this.http.get<Game[]>('http://127.0.0.1:8000/users/getUserMatches/', { headers });
 	}
 
 	public getUserAvatar(): Observable<any> {

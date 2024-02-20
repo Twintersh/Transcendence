@@ -21,17 +21,31 @@ input, input:focus {
 	margin-bottom: 0.5rem;
 }
 
-
 .modal-content, .modal-header, .modal-footer, .modal-body {
 	border-color: black;
     border-width: 4px;
 	background-color: #53A6AC;
 	
+	.modal-footer {
+		border-top: 0;
+	}
+	
 	.modal-header {
 		border-bottom: 0;
 	}
+}
 
-	.modal-footer {
-		border-top: 0;
+
+/* Main Content Styles */
+.presentation {
+	font-size: 2rem;
+	margin-top: 10vh;
+}
+
+.modal-footer {
+	a {
+		color: #FD8743;
+		text-decoration: underline;
+		cursor: pointer;
 	}
 }

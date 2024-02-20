@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../../../services/auth.service'
 import { Router } from '@angular/router';
+
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+import { AuthService } from '../../../../services/auth.service'
+import { AuthenticationComponent } from '../authentication/authentication.component';
 
 @Component({
   selector: 'landing',
@@ -10,8 +14,11 @@ import { Router } from '@angular/router';
 
 export class LandingComponent implements OnInit {
 
-	constructor(private authService: AuthService, private router: Router) {
-	}
+	constructor(
+		private authService: AuthService,
+		private router: Router,
+		private modalService: NgbModal
+	) { }
 
 	ngOnInit() {
 		this.isAuth();
@@ -21,13 +28,13 @@ export class LandingComponent implements OnInit {
 		this.authService.isAuth().subscribe( {
 			next: (res) => {
 				if (res) {
-					window.location.href = 'http://localhost:4200/home';
+					this.router.navigate(['/home']);
 				}
 			}
 		})
 	};
 
-	sign42() {
-		this.authService.signup42();
+	signup(): void {
+		this.modalService.open(AuthenticationComponent, { centered: true });
 	}
 }

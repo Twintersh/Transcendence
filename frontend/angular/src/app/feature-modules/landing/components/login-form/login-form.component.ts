@@ -6,6 +6,8 @@ import { AuthService } from 'src/app/services/auth.service';
 import { CookieService } from 'src/app/services/cookie.service';
 import { ToastService } from 'src/app/services/toast.service';
 
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
 @Component({
 	selector: 'login-form',
 	templateUrl: './login-form.component.html',
@@ -20,7 +22,8 @@ export class LoginFormComponent implements OnInit {
 		private authService: AuthService, 
 		private cookieService: CookieService, 
 		private router: Router, 
-		private toastService: ToastService
+		private toastService: ToastService,
+		private modalService: NgbModal
 	) {
 		this.myForm = this.fb.group({
 			email: new FormControl('', [Validators.required, Validators.email]),
@@ -41,21 +44,25 @@ export class LoginFormComponent implements OnInit {
 
 	submitHandler(): void {
 		if(this.myForm.valid) {
-			console.log(this.myForm.value);
 			this.authService.login(this.myForm.value).subscribe({
 				next: (response) => {
 					this.cookieService.saveCookie('authToken', response.token);
 					this.toastService.showSuccess('Login successful');
 					this.myForm.reset();
+					this.modalService.dismissAll();
 					this.router.navigate(['/home']);
 				},
 				error: (error) => {
 					if (error.status == 400)
 						this.toastService.showError('Wrong password');
 					if (error.status == 404)
-						this.toastService.showError('Wrong email');
+						this.toastService.showError('Email not found');
 				}
 			}
 		)};
+	}
+
+	close(): void {
+		this.modalService.dismissAll();
 	}
 }

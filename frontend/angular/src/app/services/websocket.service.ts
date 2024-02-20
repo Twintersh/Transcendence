@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +10,6 @@ export class WebSocketService {
 
 	private queueWebSocket$: WebSocket = {} as WebSocket;
 	readonly queueMessages$: Subject<any> = new Subject<any>();
-
 	
 	constructor() {
 	}
@@ -65,11 +63,13 @@ export class WebSocketService {
 		}
 	}
 
+	connectChat(username: string): void {
+		this.socket = new WebSocket('ws://' + "127.0.0.1:8000" +'/ws/game/queue/' + '?token=' + username);
+	}
+
 	send(message: any) {
 		// Send data to the server
-		this.socket.send(JSON.stringify({
-			'message' : message,
-		}));
+		this.socket.send(message);
 	}
 
 	receive() {

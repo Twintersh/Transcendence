@@ -4,11 +4,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 
 import { LandingModule } from './feature-modules/landing/landing.module';
 import { UserModule } from './feature-modules/user/user.module';
 
-import { PongoInterceptor } from './interceptor/pongo.interceptor';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './feature-modules/home/components/home/home.component';
@@ -17,17 +20,22 @@ import { CommonModule } from '@angular/common';
 import { ChatModule } from './feature-modules/chat/chat.module';
 import { ToastrModule } from 'ngx-toastr';
 import { QueueModalComponent } from './feature-modules/home/components/queue-modal/queue-modal.component';
+import { AddPlayerModalComponent } from './feature-modules/home/components/add-player-modal/add-player-modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-	QueueModalComponent
+	QueueModalComponent,
+	AddPlayerModalComponent
   ],
   imports: [
+	HttpClientModule,
     BrowserModule,
 	BrowserAnimationsModule,
 	CommonModule,
+	FormsModule,
+	ReactiveFormsModule,
     AppRoutingModule,
     OAuthModule.forRoot(), // TODO: forRoot mandatory ?
 	ToastrModule.forRoot(),
@@ -38,7 +46,7 @@ import { QueueModalComponent } from './feature-modules/home/components/queue-mod
 	ChatModule
   ],
   providers: [
-	PongoInterceptor
+	AuthInterceptor
   ],
   bootstrap: [AppComponent]
 })

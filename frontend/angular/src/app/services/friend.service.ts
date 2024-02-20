@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Observable, catchError } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { CookieService } from './cookie.service';
+
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +18,7 @@ export class FriendService {
 		) 
 	{ }
 
-	public getUserFriends(): Observable<any | null> {
+	public getUserFriends(): Observable<User[] | null> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 

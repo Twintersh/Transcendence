@@ -7,6 +7,7 @@ import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { FriendService } from 'src/app/services/friend.service';
 import { ToastService } from 'src/app/services/toast.service';
+
 import { User } from 'src/app/models/user.model';
 
 
@@ -17,7 +18,7 @@ import { User } from 'src/app/models/user.model';
 })
 export class FriendComponent implements OnInit {
 	myForm: FormGroup;
-	friends: any[] = [];
+	friends: User[] = [];
 	rcvdRequests: any[] = [];
 	sentRequests: any[] = [];
 
@@ -26,8 +27,6 @@ export class FriendComponent implements OnInit {
 	sentRequestsSubscription: Subscription = new Subscription();
 	offCollapsed = true;
 	pendingCollapsed = true;
-
-	backendUrl = 'http://localhost:8000/';
 
 	constructor(
 		private readonly friendService: FriendService,
@@ -43,6 +42,7 @@ export class FriendComponent implements OnInit {
 	ngOnInit(): void {
 		this.FriendSubscription = this.friendService.getUserFriends().subscribe((res: any) => {
 			this.friends = res;
+			console.log("friends are ", this.friends);
 		});
 
 		this.rcvdRequestSubscription = this.friendService.getReceivedFriendRequests().subscribe((res: any) => {
@@ -83,6 +83,7 @@ export class FriendComponent implements OnInit {
 		this.friendService.acceptFriendRequest(username).subscribe(
 			(res: any) => {
 				console.log("res is ", res);
+				this.toastService.showSuccess('Friend request accepted.');
 			},
 			(err: any) => {
 				console.log("err is ", err);

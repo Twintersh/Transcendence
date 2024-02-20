@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
+import { ViewEncapsulation } from '@angular/core';
+
+import { NgbOffcanvas, NgbOffcanvasRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { EditOffcanvasComponent } from '../edit-offcanvas/edit-offcanvas.component';
 import { Game } from 'src/app/models/game.model';
@@ -12,22 +14,20 @@ import { Observable } from 'rxjs';
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class UserProfileComponent implements OnInit {
-	gameList: Game[];
 	user$!: Observable<User | null>;
 	user!: User | null;
+	gameList: Game[] | null = null;
+	gameList$: Observable<Game[] | null> | null = null;
 
-	constructor(private offcanvas: NgbOffcanvas, private userService: UserService) {
-		this.gameList = [
-			{ id: 1, title: 'Tennis', scoreOp1: 6, scoreOp2: 4, winner: 'John', loser: 'Jack' },
-			{ id: 2, title: 'Basket', scoreOp1: 86, scoreOp2: 104, winner: 'John', loser: 'Jack' },
-			{ id: 3, title: 'Foot', scoreOp1: 2, scoreOp2: 1, winner: 'John', loser: 'Jack' },
-			{ id: 4, title: 'Tennis', scoreOp1: 6, scoreOp2: 4, winner: 'John', loser: 'Jack' },
-			{ id: 5, title: 'Basket', scoreOp1: 86, scoreOp2: 104, winner: 'John', loser: 'Jack' },
-			{ id: 6, title: 'Foot', scoreOp1: 2, scoreOp2: 1, winner: 'John', loser: 'Jack' },
-		];
-	}
+	private edit!: NgbOffcanvasRef;
+
+	constructor(
+		private offcanvas: NgbOffcanvas,
+		private userService: UserService
+	) { }
 
 	ngOnInit(): void {
 		this.user$ = this.getUserInfos();
@@ -49,17 +49,27 @@ export class UserProfileComponent implements OnInit {
 			  console.error('Fetch data avatar failed:', error);
 			},
 		});
+		this.gameList$ = this.userService.getUserMatches();
+		this.gameList$.subscribe({
+			next: (response: any) => {
+				this.gameList = response;
+			},
+			error: (error) => {
+			  console.error('Fetch data game list failed:', error);
+			},
+		});
 	}
 
 	editProfile(): void {
-		this.offcanvas.open(EditOffcanvasComponent, { animation: true, backdrop: true }).result.then(
+		this.edit = this.offcanvas.open(EditOffcanvasComponent, { animation: true, backdrop: true, panelClass: 'edit' });
+		this.edit.componentInstance.avatar = this.user?.avatar;
+		this.edit.result.then(
 			(result) => {
-				console.log('ok');
 				this.offcanvas.dismiss();
 				this.user$ = this.getUserInfos();
 			},
 			(reason) => {
-				console.log('je suis la raison');
+				console.log(reason);
 			},
 		);
 	}

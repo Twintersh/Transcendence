@@ -14,6 +14,7 @@ class User(AbstractUser):
     gameRatio = models.DecimalField(max_digits=2, decimal_places=1, default=0.0)
     wonMatchesCount = models.IntegerField(default=0)
     MatchesCount = models.IntegerField(default=0)
+    ft_auth = models.BooleanField(default=False)
 
     objects = UserManager()
 

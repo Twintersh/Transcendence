@@ -128,8 +128,8 @@ def run(queue, group_name):
 			"ball" : {"x" : ball.x, "y" : ball.y}
 		}
 		async_to_sync(channel_layer.group_send)(group_name, {'type' : 'sendUpdates', 'content' : state})	#send updates as much as possible to prevent lag
-		duration = time() - loop
-		sendEndGame([paddle1.score, paddle2.score], duration, group_name)
+	duration = time() - loop
+	sendEndGame([paddle1.score, paddle2.score], duration, group_name)
 
 async def setInputs(queue, paddle1, paddle2):
 	if not queue.empty():

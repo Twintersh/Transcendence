@@ -1,13 +1,12 @@
+@import '../../../../../colors.scss';
+
+
+.row {
+	margin: 0.5rem 0rem;
+}
+
 .profile-pic {
-	width: 240px;
-	height: 240px;
-	background-image: url(https://www.w3schools.com/howto/img_avatar.png);
-	background-position: center;
-	background-repeat: off;
-	background-size:cover;
 	border-radius: 50%;
-	margin-bottom: 10px;
+	margin-bottom: 1rem;
 	align-self: center;
-	overflow: hidden;
-	transition: 0,3s;
 }

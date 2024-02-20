@@ -1,5 +1,5 @@
 import { OnInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Subscription, map } from 'rxjs';
 import { GameService } from 'src/app/services/game.service';
 
@@ -29,25 +29,30 @@ export class GameComponent implements OnInit {
 		ball: {x: 0, y: 0}
 	};
 
-	PlayersSubscription: Subscription = new Subscription();
+	local: boolean = false;
 
-	private routeSub: Subscription = this.router.params.subscribe((params: Params) => {
-		this.gameElements.id = params['matchId'];
-	});
+	private routeSub: Subscription = new Subscription();
+	private PlayersSubscription: Subscription = new Subscription();
 	
 	constructor(
-		private readonly router: ActivatedRoute,
+		private readonly router: Router,
+		private readonly routerActive: ActivatedRoute,
 		private readonly gameService: GameService
-		) { }
+	) { }
 		
 	ngOnInit() {
 		//this.PlayersSubscription = this.gameService.getPlayers(this.gameElements.id).subscribe((res: any) => {
 		//	console.log(res);
 		//});
-		this.gameloop(this.gameElements.id);
+		this.routeSub = this.routerActive.params.subscribe((params: Params) => {
+			this.gameElements.id = params['matchId'];
+		});
+		if (this.router.url.includes('local'))
+			this.local = true;
+		this.gameloop(this.gameElements.id, this.local);
 	}
 
-	gameloop(match_id: string): void {
+	gameloop(match_id: string, local: boolean): void {
 		const canvas: HTMLCanvasElement = this.pongCanvas.nativeElement;
 		const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
 		
@@ -69,7 +74,7 @@ export class GameComponent implements OnInit {
 		this.showtimer(ctx, canvas.width, canvas.height);
 		
 		setTimeout(() => {
-			this.gameService.launchMatch(match_id);
+			this.gameService.launchMatch(match_id, local);
 		}, 6000);
 
 		this.gameService.getGameElements().subscribe((data: GameData) => {
