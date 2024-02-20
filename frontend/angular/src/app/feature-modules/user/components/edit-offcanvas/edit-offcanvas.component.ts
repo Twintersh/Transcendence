@@ -43,6 +43,11 @@ export class EditOffcanvasComponent {
 
 	submitHandler(): void {
 		if(this.editForm.valid) {
+			if (this.editForm.value.avatar) {
+				console.log(this.editForm.value.avatar);
+				// this.updateAvatar();
+				// TODO: retour de fichier de avatar
+			}
 			console.log(this.editForm.value);
 			this.subscription.add(
 				this.userService.updateUserInfos(this.editForm.value).subscribe({

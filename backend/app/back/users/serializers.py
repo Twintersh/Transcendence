@@ -34,10 +34,17 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class Avatarserializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = Avatar
+        fields = ['image']
+
 class UserInfoSerializer(serializers.ModelSerializer):
+    avatar = Avatarserializer()
+
     class Meta(object):
         model = User
-        fields = '__all__'
+        fields = ('__all__')
 
 class UserLookSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -46,10 +53,6 @@ class UserMatchSerializer(serializers.Serializer):
     player1 = serializers.CharField()
     player2 = serializers.CharField()
 
-class AvatarSerializer(serializers.ModelSerializer):
-    class Meta(object):
-        model = Avatar
-        fields = ['image']
 
 class FriendRequestSerializer(serializers.ModelSerializer):
     fromUser = UserLookSerializer()

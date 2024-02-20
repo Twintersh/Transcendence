@@ -6,8 +6,7 @@ from rest_framework.parsers import MultiPartParser, FileUploadParser
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import update_last_login
-from requests import request as py_request
-import os
+import requests
 from django.http import JsonResponse
 
 from .models import User, FriendRequest, Avatar
@@ -25,9 +24,12 @@ def signup(request):
     if serializer.is_valid(raise_exception=True):
         serializer.save()
         user = get_object_or_404(User, email=request.data['email'])
+        avatar = Avatar(user=user)
+        avatar.save()
         user.set_password(request.data['password'])
         Avatar.objects.create(user=user, image='media/avatars/default.png')
         user.save()
+        update_last_login(User, request.user)
         token = Token.objects.create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
 
@@ -90,6 +92,7 @@ def isAuth(request):
 @permission_classes([IsAuthenticated])
 def logout(request):
     request.user.auth_token.delete()
+    update_last_login(User, request.user)
     return Response("User logged out", status=status.HTTP_200_OK)
 
 @swagger_auto_schema(method='POST', request_body=UserUpdateSerializer)
@@ -122,7 +125,7 @@ def getUserAvatar(request):
     user = request.user
     
     if hasattr(user, 'avatar') and user.avatar:
-        image_serializer = AvatarSerializer(instance=user.avatar)
+        image_serializer = Avatarserializer(instance=user.avatar)
         image_url = image_serializer.data['image']
         return Response({'avatar': image_url}, status=status.HTTP_200_OK)
     else:
@@ -156,20 +159,20 @@ def uploadAvatar(request):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def sendFriendRequest(request):
-	fromUser = request.user
-	toUserSerializer = UserLookSerializer(data=request.data)
-	print(request.data)
-	toUserSerializer.is_valid(raise_exception=True)
-	toUser = get_object_or_404(User, username=toUserSerializer.data['username'])
-	
-	if fromUser == toUser:
-		return Response("You can't send a friend request to yourself", status=status.HTTP_400_BAD_REQUEST)
-
-	friendRequest, created = FriendRequest.objects.get_or_create(fromUser=fromUser, toUser=toUser)
-	if created :
-		return Response("Friend request sent", status=status.HTTP_201_CREATED)
-	else:
-		return Response("Friend request already sent", status=status.HTTP_304_NOT_MODIFIED)
+    fromUser = request.user
+    toUserSerializer = UserLookSerializer(data=request.data)
+    print(request.data)
+    toUserSerializer.is_valid(raise_exception=True)
+    toUser = get_object_or_404(User, username=toUserSerializer.data['username'])
+    if fromUser.friends.filter(id=toUser.id).exists():
+         return Response("Cannot send friend request to friend", status=status.HTTP_406_NOT_ACCEPTABLE)
+    if fromUser == toUser:
+         return Response("Cannot send friend request to yourself", status=status.HTTP_406_NOT_ACCEPTABLE)
+    friendRequest, created = FriendRequest.objects.get_or_create(fromUser=fromUser, toUser=toUser)
+    if created :
+        return Response("Friend request sent", status=status.HTTP_201_CREATED)
+    else:
+        return Response("Friend request already sent", status=status.HTTP_304_NOT_MODIFIED)
     
 
 @swagger_auto_schema(method='POST', request_body=UserLookSerializer)
@@ -245,6 +248,10 @@ def blockUser(request):
     toBlockSerializer = UserLookSerializer(data=request.data)
     toBlockSerializer.is_valid(raise_exception=True)
     toBlock = get_object_or_404(User, username=toBlockSerializer.data['username'])
+    if toBlock == user:
+        return Response("Cannot block yourself", status=status.HTTP_406_NOT_ACCEPTABLE)
+    if user.blocked.filter(id=toBlock.id).exists():
+        return Response("User already blocked",  status=status.HTTP_406_NOT_ACCEPTABLE)
     user.blocked.add(toBlock)
     return Response("User blocked succesfully", status=status.HTTP_200_OK)
 

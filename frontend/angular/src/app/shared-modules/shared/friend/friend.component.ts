@@ -7,7 +7,6 @@ import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { FriendService } from 'src/app/services/friend.service';
 import { ToastService } from 'src/app/services/toast.service';
-
 import { User } from 'src/app/models/user.model';
 
 

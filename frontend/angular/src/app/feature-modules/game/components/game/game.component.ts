@@ -1,6 +1,6 @@
 import { OnInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { Subscription, map } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { GameService } from 'src/app/services/game.service';
 
 interface GameData {
@@ -65,8 +65,6 @@ export class GameComponent implements OnInit {
 			console.log("ctx is null");
 			return;
 		}
-		
-		this.router.events.subscribe()
 		
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.fillStyle = "#53A6AC";
