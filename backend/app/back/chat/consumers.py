@@ -45,6 +45,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 	async def send_chat_history(self):
 			history = await self.getHistory()
 			async for message in history:
-				await self.send(text_data=json.dumps({
+				self.send(text_data=json.dumps({
 					'message': message.content
 				}))

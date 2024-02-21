@@ -41,7 +41,7 @@ export class NavbarComponent implements OnInit {
 	logout(): void {
 		this.authService.logout();
 		this.isAuthenticated = false;
-		this.router.navigate(['']);
+		this.router.navigate(['/']);
 	}
 
 	ngOnDestroy() {

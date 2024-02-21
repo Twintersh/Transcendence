@@ -13,17 +13,21 @@ import { User } from '../models/user.model';
 })
 export class AuthService {
 
-	constructor(private readonly http: HttpClient, private readonly cookieService: CookieService, private readonly router: Router) {
-	}
+	window = window;
+
+	constructor(
+		private readonly http: HttpClient,
+		private readonly cookieService: CookieService,
+		private readonly router: Router
+	) { }
 
   	public signup(newUser: User) {
 		return this.http.post('http://127.0.0.1:8000/users/signup/', newUser)
 	}	
 
 	public signup42() {
-		console.log('signup42');
-		const url: string = 'https://api.intra.42.fr/v2/oauth/authorizeclient_id=u-s4t2ud-07f2dcaa8cb3bea2fc596723d624d6d09f0e930ed9b35c5d9b30f5a1159b7cce&redirect_uri=http://127.0.0.1:8000/users/signup42/&response_type=code';
-		this.router.navigateByUrl(url);
+		const url: string = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-07f2dcaa8cb3bea2fc596723d624d6d09f0e930ed9b35c5d9b30f5a1159b7cce&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fusers%2Fsignup42&response_type=code';
+		this.window.location.href = url;
 	}
 
 	public logout(): void {

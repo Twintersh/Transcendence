@@ -8,17 +8,23 @@ import { CookieService } from './cookie.service';
   providedIn: 'root'
 })
 export class ChatService {
-	constructor(
-	private readonly http: HttpClient,
-	private readonly webSocketService: WebSocketService,
-	private readonly cookieService: CookieService
+
+	constructor (
+		private readonly http: HttpClient,
+		private readonly webSocketService: WebSocketService,
+		private readonly cookieService: CookieService
 	) { }
 
-	getRoomName() {
+	connectChat(roomId: string): void {
+		this.webSocketService.connectChat(roomId);
+	}
+
+	getRoomName(username: string) : any {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		const body = { "player1" : "benben", "player2" : "benben" };
-		return this.http.post('http://127.0.0.1:8000/game/createMatch/', body, { headers });
+		const body = { "username" : username };
+
+		return this.http.post('http://127.0.0.1:8000/chat/getRoomName/', body, { headers });
 	}
 }

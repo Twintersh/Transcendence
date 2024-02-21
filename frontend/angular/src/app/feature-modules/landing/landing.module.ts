@@ -16,6 +16,9 @@ import { LoginFormComponent } from './components/login-form/login-form.component
     CommonModule,
     HttpClientModule,
     ReactiveFormsModule
+  ],
+  exports: [
+	LandingComponent
   ]
 })
 export class LandingModule { }

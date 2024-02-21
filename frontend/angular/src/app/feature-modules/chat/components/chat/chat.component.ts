@@ -40,10 +40,6 @@ export class ChatComponent implements OnInit {
 				});
 			});
 		});
-		
-		this.chatService.getRoomName().subscribe((res: any) => {
-			console.log(res);
-		});
 	}
 
 	sendMessage(): void {

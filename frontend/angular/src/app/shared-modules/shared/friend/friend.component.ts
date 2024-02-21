@@ -41,7 +41,6 @@ export class FriendComponent implements OnInit {
 	ngOnInit(): void {
 		this.FriendSubscription = this.friendService.getUserFriends().subscribe((res: any) => {
 			this.friends = res;
-			console.log("friends are ", this.friends);
 		});
 
 		this.rcvdRequestSubscription = this.friendService.getReceivedFriendRequests().subscribe((res: any) => {
