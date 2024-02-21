@@ -55,12 +55,14 @@
 			<div class="gameList px-4">
 				<h2>Game History</h2>
 				<div class="d-flex-column justify-content-evenly">
+					<div *ngIf="gameList?.length == 0">
+						<h5>No games played yet. Visit home to face your first opponent.</h5>
+					</div>
 					<div class="matchcontainer" *ngFor="let game of gameList">
 						<match [game]="game"></match>
 					</div>
 				</div>
 			</div>
 		</div>
-		
 	</div>
 </div>

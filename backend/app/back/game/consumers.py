@@ -51,6 +51,11 @@ class QueueManager(AsyncWebsocketConsumer):
 		if message == "heartbeat":
 			return
 		if message == 'join':
+			# avoid a player joining the queue twice
+			for player in settings.QUEUE_MANAGER:
+				if player['user'] == self.scope['user'].username:
+					return
+
 			settings.QUEUE_MANAGER.append({
 					'user' : self.scope["user"].username,
 					'channel_name' : self.channel_name,
@@ -66,8 +71,11 @@ class QueueManager(AsyncWebsocketConsumer):
 
 # Function to update the match details asynchronously
 @database_sync_to_async
-def updateMatch(id, content):
+def updateMatch(id, content, local):
 	curMatch = get_object_or_404(Match, id=id)
+	if local:
+		curMatch.delete()
+		return 
 	curMatch.wScore = content['wScore']
 	curMatch.lScore = content['lScore']
 	curMatch.duration = content['duration']
@@ -156,10 +164,11 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 
 	async def endGame(self, event):
 		content = event['content']
+		await self.send(json.dumps(content))
 		if self.process:
 			self.process['process'].join() # waiting for the process to end before continuing
 		if self.playerID == 1 or self.playerID == 3:
 			# Update the match details in the database
-			await updateMatch(self.room_name, content) # update match info in db
-		await self.close()
+			await updateMatch(self.room_name, content, self.process['local']) # update match info in db
+		await self.send(json.dumps(content))
 

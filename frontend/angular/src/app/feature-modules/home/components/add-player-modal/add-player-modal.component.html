@@ -1,0 +1,9 @@
+<div class="modal-content">
+	<div class="modal-body">
+		<form [formGroup]="myForm">
+			<input type="text" id="text" class="form-control" formControlName="username" placeholder="Enter username">		
+		</form>
+		<button class="btn btn-primary" type="button" (click)="addPlayer()">Add player</button>
+		<button class="btn btn-danger" type="button" (click)="leaveMatch()">Leave Match</button>
+	</div>
+</div>

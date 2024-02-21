@@ -8,8 +8,7 @@
 	<div class="d-flex-column justify-content-evenly">
 		<div class="list friends" *ngFor="let friend of friends">
 			<div *ngIf="friend.is_active">
-				<img [src]="backendUrl + friend.avatar" alt="profile image" class="profile-image">
-				<span> {{ friend.username }} </span>
+				<h3> {{ friend.username }} </h3>
 			</div>
 		</div>
 	</div>
@@ -35,7 +34,7 @@
 	<div class="d-flex-column justify-content-evenly">
 		<div class="friends" *ngFor="let friend of friends">
 			<div *ngIf="!friend.is_active">
-				<span> {{ friend.username }} </span>
+				<h3> {{ friend.username }} </h3>
 			</div>
 		</div>
 	</div>

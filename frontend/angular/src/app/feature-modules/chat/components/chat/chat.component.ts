@@ -1,37 +1,60 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+
+import { Subscription } from 'rxjs';
+
 import { User } from 'src/app/models/user.model'
+
+import { FriendService } from 'src/app/services/friend.service';
+import { UserService } from 'src/app/services/user.service';
+import { ChatService } from 'src/app/services/chat.service';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
-export class ChatComponent {
-	friends!: User[];
+export class ChatComponent implements OnInit {
+	friends: User[] = [];
+	FriendSubscription: Subscription = new Subscription();
+	myForm: FormGroup;
+	selectedFriend!: User;
 
-	constructor() {
-		this.friends = [
-			{ id: 1, username: 'Jack', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 2, username: 'Titi', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 3, username: 'Back', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 4, username: 'Toto', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 5, username: 'Tack', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 6, username: 'Tutu', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 7, username: 'Jack', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 8, username: 'Titi', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 9, username: 'Back', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 10, username: 'Toto', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 11, username: 'Tack', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 12, username: 'Tutu', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 13, username: 'Jack', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 14, username: 'Titi', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 15, username: 'Back', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 16, username: 'Toto', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 17, username: 'Tack', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 18, username: 'Tutu', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-		];
+	constructor(
+		private readonly fb: FormBuilder,
+		private readonly friendService: FriendService,
+		private readonly userService: UserService,
+		private readonly chatService: ChatService
+	) { 
+		this.myForm = this.fb.group({
+			message: new FormControl('', Validators.required)
+		});
+	}
 
-		console.log('Friends:', this.friends);
-		console.log('Friends:', this.friends.length);
+	ngOnInit(): void {
+		this.FriendSubscription = this.friendService.getUserFriends().subscribe((res: any) => {
+			this.friends = res;
+			this.friends.forEach(friend => {
+				this.userService.getUserAvatar().subscribe((res: any) => {
+					friend.avatar = 'http://127.0.0.1:8000' + res.avatar;
+				});
+			});
+		});
+		
+		this.chatService.getRoomName().subscribe((res: any) => {
+			console.log(res);
+		});
+	}
+
+	sendMessage(): void {
+		if (this.myForm.invalid) {
+			return;
+		}
+		console.log("sending message");
+		console.log(this.myForm.value);
+	}
+
+	onSelect(friend: User): void {
+	  this.selectedFriend = friend;
 	}
 }

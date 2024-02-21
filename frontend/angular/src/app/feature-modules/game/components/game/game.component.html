@@ -1,7 +1,30 @@
-<body>
-	<canvas #pongCanvas width="640" height="480" style="position: relative; margin:0 auto;"></canvas>
-	<img #background src="assets/game/background.svg" style="display:none">
-	<img #paddleLeft src="assets/game/paddleLeft.svg" style="display:none">
-	<img #paddleRight src="assets/game/paddleRight.svg" style="display:none">
-	<img #gameBall src="assets/logo.svg" style="display:none">
-</body>
+<div class="container text-center">
+	<div class="row">
+	  <div class="col">
+		<div class="row">
+			<img src="assets/logo.svg" alt="Pong" style="width: 100px; height: 100px;">
+			<h4>Player 1 Name</h4>
+			<h4>Score</h4>
+			<h4>{{gameElements.paddle1.score}}</h4>
+		</div>
+	  </div>
+
+	  <div class="col-8">
+		<canvas #pongCanvas width="640" height="480" style="position: relative; margin:0 auto;"></canvas>
+		<img #background src="assets/game/background.svg" style="display:none">
+		<img #paddleLeft src="assets/game/paddleLeft.svg" style="display:none">
+		<img #paddleRight src="assets/game/paddleRight.svg" style="display:none">
+		<img #gameBall src="assets/logo.svg" style="display:none">
+	  </div>
+
+	  <div class="col">
+		<div class="row">
+			<img src="assets/logo.svg" alt="Pong" style="width: 100px; height: 100px;">
+			<h4>Player 1 Name</h4>
+			<h4>Score</h4>
+			<h4>{{gameElements.paddle2.score}}</h4>
+		</div>
+	  </div>
+
+	</div>
+</div>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { Observable, Subscription, catchError } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -17,7 +17,7 @@ import { User } from 'src/app/models/user.model';
 })
 export class FriendComponent implements OnInit {
 	myForm: FormGroup;
-	friends: any[] = [];
+	friends: User[] = [];
 	rcvdRequests: any[] = [];
 	sentRequests: any[] = [];
 
@@ -26,8 +26,6 @@ export class FriendComponent implements OnInit {
 	sentRequestsSubscription: Subscription = new Subscription();
 	offCollapsed = true;
 	pendingCollapsed = true;
-
-	backendUrl = 'http://localhost:8000/';
 
 	constructor(
 		private readonly friendService: FriendService,
@@ -43,6 +41,7 @@ export class FriendComponent implements OnInit {
 	ngOnInit(): void {
 		this.FriendSubscription = this.friendService.getUserFriends().subscribe((res: any) => {
 			this.friends = res;
+			console.log("friends are ", this.friends);
 		});
 
 		this.rcvdRequestSubscription = this.friendService.getReceivedFriendRequests().subscribe((res: any) => {
@@ -67,10 +66,10 @@ export class FriendComponent implements OnInit {
 				if (err.status === 404) {
 					this.toastService.showError('User does not exist.');
 				}
-				else if (err.status === 400) {
+				else if (err.status === 403) {
 					this.toastService.showError('You are already friends with this user.');
 				}
-				else if (err.status === 403) {
+				else if (err.error === "You can't send a friend request to yourself") {
 					this.toastService.showError('You cannot add yourself as a friend.');
 				}
 				else if (err.status === 304) {
@@ -83,6 +82,7 @@ export class FriendComponent implements OnInit {
 		this.friendService.acceptFriendRequest(username).subscribe(
 			(res: any) => {
 				console.log("res is ", res);
+				this.toastService.showSuccess('Friend request accepted.');
 			},
 			(err: any) => {
 				console.log("err is ", err);

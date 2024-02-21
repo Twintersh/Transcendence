@@ -1,12 +1,16 @@
 @import "../../../../../colors.scss";
 
-body {
+.container {
 	display: flex;
-	align-items: center;
 	justify-content: center;
+	align-items: center;
 	height: 100vh;
-	width: 100vw;
-	background-color: #FFECDE;
+}
+
+.row {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 canvas {

@@ -1,11 +1,12 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 
 import { Subscription } from 'rxjs';
 
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
+
 import { UserService } from 'src/app/services/user.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-edit-offcanvas',
@@ -16,20 +17,19 @@ export class EditOffcanvasComponent {
 	editForm: FormGroup;
 	subscription = new Subscription();
 
+	@Input() avatar: string = '';
+
 	constructor(
 		private readonly offcanvas: NgbOffcanvas, 
-		private fb: FormBuilder, 
-		private readonly http: HttpClient, 
+		private fb: FormBuilder,
 		private userService: UserService,
-		private cd : ChangeDetectorRef
-		)
-	{
+		private cd : ChangeDetectorRef,
+		private toastr: ToastrService
+	) {
 		this.editForm = this.fb.group({
 			username: [undefined, [Validators.minLength(4), Validators.maxLength(20)]],
 			password : [undefined, [Validators.minLength(4), Validators.maxLength(20)]],
 			confirmPassword : [undefined, [Validators.minLength(4), Validators.maxLength(20)]],
-			//
-			avatar: undefined
 		});
 	}
 
@@ -49,17 +49,9 @@ export class EditOffcanvasComponent {
 				// TODO: retour de fichier de avatar
 			}
 			console.log(this.editForm.value);
-			// this.userService.updateUserInfos(this.editForm.value);
 			this.subscription.add(
 				this.userService.updateUserInfos(this.editForm.value).subscribe({
 					next: () => {
-						// this.userService.getUserInfos().subscribe({
-						// 	next: (data) => {
-						// 	},
-						// 	error: (error) => {
-						// 		console.error('Error fetching user information:', error);
-						// 	}
-						// });*
 						this.cd.markForCheck(); // pour refresh
 					},
 					error: (error) => {
@@ -72,9 +64,26 @@ export class EditOffcanvasComponent {
 	}
 
 	updateAvatar(event: any): void {
-		console.log(event.target.files[0]); // outputs the first file
 		const formData = new FormData();
 		formData.append('file', event.target.files[0]);
-		this.userService.updateProfilePicture(formData);
+		if (event.target.files[0].size > 1000000) {
+			// Error: Handle the error if the file size is too large
+			this.toastr.error('File size is too large');
+			return;
+		}
+		else if (event.target.files[0].type !== 'image/png' && event.target.files[0].type !== 'image/jpeg') {
+			// Error: Handle the error if the file type is not supported
+			this.toastr.error('File type is not supported');
+			return;
+		}
+		else {
+			// Success: Update the user's profile picture
+			this.toastr.success('Profile picture updated');
+			this.userService.updateProfilePicture(formData);
+		}
+	}
+
+	onDestroy() {
+		this.subscription.unsubscribe();
 	}
 }

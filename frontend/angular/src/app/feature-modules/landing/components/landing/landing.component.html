@@ -21,7 +21,7 @@
 				<p>Become the pong hero in this thrilling journey!</p>
 			</div>
 			<div class="col-xl-3">
-				<button class="btn btn-primary btn-lg w-100" data-bs-target="#loginModal" data-bs-toggle="modal">Play</button>
+				<button class="btn btn-primary btn-lg w-100" (click)="signup()">Play</button>
 			</div>
 		</div>
 		<div class="fixed-bottom selectDisable">
@@ -50,65 +50,4 @@
 	
 	<p>From that day forward, Pongo and Pongi became legends in the world of ping pong, inspiring aspiring players and proving that with skill, teamwork, and a bit of colorful flair, anything is possible on the table tennis court. And so, the tale of the ping pong ball brothers echoed through the halls of Tabletopville, a story of triumph, camaraderie, and the boundless spirit of the game.</p>
 	<p>You space bastard, you killed a pine. You do? Yeah, it's 8:00. Hey, McFly, I thought I told you never to come in here. Well it's gonna cost you. How much money you got on you?</p>
-</div>
-
-
-<!-- Authentification modal -->
-<div class="modal fade" id="loginModal" aria-hidden="true" tabindex="-1">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h1 class="modal-title fs-3">Authentification</h1>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-lg-5 text-center pt-5">
-						<button class="btn btn-primary mt-4 fs-4" type="button" data-bs-target="#signUp" data-bs-toggle="modal">Sign Up</button>
-						<button class="btn btn-secondary mt-4 fs-5" type="button" (click)="sign42()">Log in with 42</button>
-					</div>
-					<div class="col-lg-7">
-						<img class="logo w-100" src="assets/logo.svg" alt="pongo">
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<span>Already registered? <a data-bs-target="#signIn" data-bs-toggle="modal">Login!</a></span>
-			</div>
-		</div>
-	</div>
-</div>
-
-
-<!-- Sign up modal -->
-<div class="modal fade" id="signUp" aria-hidden="true" tabindex="-1">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h1 class="modal-title fs-3">Sign Up</h1>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<signup-form></signup-form>
-			<div class="modal-footer">
-				<span>Already registered? <a data-bs-target="#signIn" data-bs-toggle="modal">Login!</a></span>
-			</div>
-			</div>
-	</div>
-</div>
-
-
-<!-- Login modal -->
-<div class="modal fade" id="signIn" aria-hidden="true" tabindex="-1">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h1 class="modal-title fs-3">Log In</h1>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<login-form></login-form>
-			<div class="modal-footer">
-				<span>Not registered? <a data-bs-target="#loginModal" data-bs-toggle="modal">Sign up</a></span>
-			</div>
-		</div>
-	</div>
 </div>

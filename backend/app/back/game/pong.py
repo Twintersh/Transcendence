@@ -20,7 +20,7 @@ ballSize=21 # default value: 21
 ballSpeed=2 # default value: 5
 ballMaxSpeed=8 # default value: 7
 
-pointsToWin=5 # default value: 5
+pointsToWin=10 # default value: 5
 
 def roundNb(nb):
 	if (nb - floor(nb) >= 0.5):
@@ -107,26 +107,26 @@ def run(queue, group_name):
 		if not asyncio.run(setInputs(queue, paddle1, paddle2)):
 			break
 			
-		if time() - start > 0.005:	#move everything x times per second
+		if time() - loop > 0.005:	#move everything x times per second
 			paddle1.move()
 			paddle2.move()
 			ball.move()
-			start = time()
+			loop = time()
 
-		if (paddle1.score >= pointsToWin or paddle2.score >= pointsToWin):
-			break ;
 		state = {
 			"paddle1" : {"x" : paddle1.x, "y" : paddle1.y, "score" : paddle1.score},
 			"paddle2" : {"x" : paddle2.x, "y" : paddle2.y, "score" : paddle2.score},
 			"ball" : {"x" : ball.x, "y" : ball.y}
 		}
 		async_to_sync(channel_layer.group_send)(group_name, {'type' : 'sendUpdates', 'content' : state})	#send updates as much as possible to prevent lag
-	duration = time() - loop
+		if (paddle1.score >= pointsToWin or paddle2.score >= pointsToWin):
+			break
+	duration = time() - start
 	sendEndGame([paddle1.score, paddle2.score], duration, group_name)
 
 async def setInputs(queue, paddle1, paddle2):
 	if not queue.empty():
-		inputs = queue.get(False) # queue to pull keyinputs from consummer
+		inputs = queue.get(False)
 		if inputs[0] == 1:
 			paddle1.dir = inputs[1]
 		elif inputs[0] == 2:

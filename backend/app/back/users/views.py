@@ -6,7 +6,7 @@ from rest_framework.parsers import MultiPartParser, FileUploadParser
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import update_last_login
-import requests
+import requests as py_request
 from django.http import JsonResponse
 
 from .models import User, FriendRequest, Avatar
@@ -25,61 +25,39 @@ def signup(request):
         serializer.save()
         user = get_object_or_404(User, email=request.data['email'])
         user.set_password(request.data['password'])
+        Avatar.objects.create(user=user, image='media/avatars/default.jpg')
         user.save()
         token = Token.objects.create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def signup42(request):
-    # Handle the request data from the frontend
-    token = request.data.get('token')
+    auth_code = request.query_params.get('code')
 
-    if not token:
-        return Response({'error': 'Token is missing in the request'}, status=status.HTTP_400_BAD_REQUEST)
+    token_url = 'https://api.intra.42.fr/oauth/token'
+    data = {"grant_type" : "authorization_code",
+             "client_id" : os.environ.get('42_CLIENT_ID'),
+             "client_secret" : os.environ.get('42_SECRET_KEY'),
+             "code" : auth_code}
+    token_response = py_request.post(token_url, data=data)
+    access_token = token_response['access_token']
+    user_reponse = py_request.get("https://api.intra.42.fr/v2/me", headers={"Authorization": f"Bearer {access_token}"})
 
-    external_api_endpoint = 'https://api.intra.42.fr/userinfo'
-
-    try:
-        # Make the GET request to the external API
-        headers = {'Authorization': f'Bearer {token}'}
-        response = requests.get(external_api_endpoint, headers=headers)
-
-        # Check if the request was successful (status code 200)
-        if response.status_code == 200:
-            # Parse the JSON data from the response
-            external_data = response.json()
-
-            # Process the external data and extract necessary information
-            username = external_data.get('username')
-            email = external_data.get('email')
-
-            # Assuming your User model has fields like 'username' and 'email'
-            user, created = User.objects.get_or_create(username=username, email=email)
-
-            # Perform any additional logic, such as updating the last login time
-            # update_last_login(user, user)
-
-    except requests.RequestException as e:
-        # Handle exceptions, such as connection errors
-        return JsonResponse({'error': f'Request failed: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    # If the external API response doesn't contain the necessary user data, you can create a user manually
-    external_user_data = {
-        'email': 'example@email.com',
-        'username': 'example_user',
-        'password': 'password123',
-    }
-
-    # Create a user or perform other backend operations
-    external_user_serializer = UserRegisterSerializer(data=external_user_data)
-    if external_user_serializer.is_valid(raise_exception=True):
-        external_user_serializer.save()
-        user = get_object_or_404(User, email=external_user_data['email'])
-        user.set_password(external_user_data['password'])
+    username = user_reponse['login']
+    avatar_link = user_reponse['image']['link']
+    email = user_reponse['email']
+    try :
+        user = User.objects.get(username=username)
+        token = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key}, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        user = User.objects.create(username=username, email=email, ft_auth=True)
+        avatar = Avatar.objects.create(user=user, image=avatar_link)
         user.save()
-        token = Token.objects.create(user=user)
+        Token.objects.create(user=user)
+        return Response({'token': token.key}, status=status.HTTP_200_OK)
 
-    return JsonResponse({'user': {'username': user.username, 'email': user.email}}, status=status.HTTP_201_CREATED)
+
 
 @swagger_auto_schema(method='POST', request_body=UserLoginSerializer)
 @api_view(['POST'])
@@ -87,10 +65,13 @@ def login(request):
     serializer = UserLoginSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     user = get_object_or_404(User, email=serializer.data['email'])
+    if user.ft_auth:
+        return Response("This user is authentified with 42", status=status.HTTP_400_BAD_REQUEST)
     if not user.check_password(request.data['password']):
         return Response("Wrong password", status=status.HTTP_400_BAD_REQUEST)
     token, created = Token.objects.get_or_create(user=user)
-    update_last_login(User, user)
+    user.is_active = True
+    user.save()
     return Response({'token': token.key}, status=status.HTTP_200_OK)
 
 @swagger_auto_schema(method='GET')
@@ -107,6 +88,8 @@ def isAuth(request):
 @permission_classes([IsAuthenticated])
 def logout(request):
     request.user.auth_token.delete()
+    request.user.is_active = False
+    request.user.save()
     return Response("User logged out", status=status.HTTP_200_OK)
 
 @swagger_auto_schema(method='POST', request_body=UserUpdateSerializer)
@@ -164,8 +147,6 @@ def uploadAvatar(request):
         avatar.save()
         return Response("Avatar uploaded succesfully", status=status.HTTP_201_CREATED)
 
-
-
 # FRIENDS REQUESTS
 
 @swagger_auto_schema(method='POST', request_body=UserLookSerializer)
@@ -178,6 +159,10 @@ def sendFriendRequest(request):
     print(request.data)
     toUserSerializer.is_valid(raise_exception=True)
     toUser = get_object_or_404(User, username=toUserSerializer.data['username'])
+    if fromUser.friends.filter(id=toUser.id).exists():
+         return Response("Cannot send friend request to friend", status=status.HTTP_406_NOT_ACCEPTABLE)
+    if fromUser == toUser:
+         return Response("Cannot send friend request to yourself", status=status.HTTP_406_NOT_ACCEPTABLE)
     friendRequest, created = FriendRequest.objects.get_or_create(fromUser=fromUser, toUser=toUser)
     if created :
         return Response("Friend request sent", status=status.HTTP_201_CREATED)
@@ -258,6 +243,10 @@ def blockUser(request):
     toBlockSerializer = UserLookSerializer(data=request.data)
     toBlockSerializer.is_valid(raise_exception=True)
     toBlock = get_object_or_404(User, username=toBlockSerializer.data['username'])
+    if toBlock == user:
+        return Response("Cannot block yourself", status=status.HTTP_406_NOT_ACCEPTABLE)
+    if user.blocked.filter(id=toBlock.id).exists():
+        return Response("User already blocked",  status=status.HTTP_406_NOT_ACCEPTABLE)
     user.blocked.add(toBlock)
     return Response("User blocked succesfully", status=status.HTTP_200_OK)
 

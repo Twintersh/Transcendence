@@ -1,0 +1,25 @@
+@import "../../../../../colors.scss";
+
+.modal-content {
+	border: 0.25rem solid black;
+	border-radius: 0.5rem;
+	background-color: $tertiary;
+	justify-content: center;
+	align-items: center;
+	
+	.modal-header {
+		h4 {
+			padding-top: 1rem;
+		}
+		border: 0px;
+	}
+	
+	.modal-body {
+		border: 0px;
+	}
+	
+	.modal-footer {
+		padding-bottom: 1rem;
+		border: 0px;
+	}
+}

@@ -1,18 +1,32 @@
-<div class="container text-center">
-		<div class="profile-pic" >
-		</div>
-		<button class="btn btn-primary" type="button" (click)="uploader.click()">Upload</button>
-		<input hidden type="file" #uploader (change)="updateAvatar($event)"/>
-		<form [formGroup]="editForm">
-			<label for="username">Username</label>
-			<input type="username" class="form-control" type='text' formControlName="username" placeholder="Enter new username">
+<div class="container">
+	<div class="offcanvas-header">
+		<h4 class="offcanvas-title">Update profile</h4>
+		<button type="button" class="btn-close" aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body">
+		<div class="col">
+			<div class="row profile-pic">
+				<img [src]="avatar" alt="avatar" class="profile-pic">
+			</div>
+			<div class="row">
+				<button class="btn btn-primary" type="button" (click)="uploader.click()">Upload</button>
+			</div>
+			<div class="row">
+				<input hidden type="file" #uploader (change)="updateAvatar($event)"/>
+				<form [formGroup]="editForm">
+					<label for="username">Username</label>
+					<input type="username" class="form-control" type='text' formControlName="username" placeholder="Enter new username">
 
-			<label for="password">Password</label>
-			<input type="password" class="form-control" type='text' formControlName="password" placeholder="Enter new password">
-			<label for="password">Confirm Password</label>
-			<input type="password" class="form-control" type='text' formControlName="confirmPassword" placeholder="Confirm new password">
-		</form>
-		<div class="buttons">
-			<button type="submit" class="btn btn-primary submit" (click)="submitHandler()">Submit</button><button class="btn btn-danger" (click)="close()">Cancel</button>
+					<label for="password">Password</label>
+					<input type="password" class="form-control" type='text' formControlName="password" placeholder="Enter new password">
+					<label for="password">Confirm Password</label>
+					<input type="password" class="form-control" type='text' formControlName="password" placeholder="Confirm new password">
+				</form>
+			</div>
+			<div class="row buttons">
+				<button type="submit" class="btn btn-primary submit" (click)="submitHandler()">Submit</button>
+				<button class="btn btn-danger" (click)="close()">Cancel</button>
+			</div>
 		</div>
+	</div>
 </div>

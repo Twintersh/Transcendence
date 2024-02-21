@@ -13,6 +13,7 @@ const routes: Routes = [
 	{ path: 'home', component: HomeComponent, canActivate: [AuthService] },
 	{ path: 'user', component: UserProfileComponent, canActivate: [AuthService] },
 	{ path: 'game/:matchId', component: GameComponent, canActivate: [AuthService] },
+	{ path: 'game/local/:matchId', component: GameComponent, canActivate: [AuthService] },
 	{ path: 'chat', component: ChatComponent, canActivate: [AuthService] },
 	{ path: '**', component: PageNotFoundComponent, pathMatch: 'full' }
 ];

@@ -1,3 +1,4 @@
+@import '../../../../../colors.scss';
 
 .backpanel {
 	box-shadow: 0.75rem 0.75rem black;
@@ -27,11 +28,13 @@ h2 {
     margin-bottom: 10rem;
 }
 
+.edit {
+	background-color: $tertiary;
+}
+
 //////////////////////////
 /*		ANIMATIONS		*/
 //////////////////////////
-
-
 
 .spinning {
 	animation:	spin 2.5s linear infinite;
