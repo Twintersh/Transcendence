@@ -34,7 +34,7 @@ export class ChatComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.FriendSubscription = this.friendService.getUserFriends().subscribe((res: any) => {
+		this.FriendSubscription = this.friendService.friends$.subscribe((res: any) => {
 			this.friends = res;
 			this.friends.forEach(friend => {
 				this.userService.getUserAvatar().subscribe((res: any) => {

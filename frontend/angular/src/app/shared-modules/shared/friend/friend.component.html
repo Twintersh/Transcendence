@@ -1,6 +1,6 @@
 <div class="offcanvas-header">
 	<h4 class="offcanvas-title">Friends</h4>
-	<button type="button" class="btn-close" aria-label="Close"></button>
+	<button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="offcanvas"></button>
 </div>
 	
 <div class="offcanvas-body justify-content-center">
@@ -22,7 +22,7 @@
 				<span> Invite sent to {{ sentRequest.toUser.username }} </span>
 			</div>
 			<div class="list rcvdRequest" *ngFor="let rcvdRequest of rcvdRequests">
-				<span> Received invite form {{ rcvdRequest.fromUser.username }} </span>
+				<span> Received invite from {{ rcvdRequest.fromUser.username }} </span>
 				<button class="btn btn-primary" (click)="acceptFriend(rcvdRequest.fromUser.username)">Accept</button>
 			</div>
 		</div>
@@ -41,7 +41,7 @@
 
 
 	<form [formGroup]="myForm" >
-		<input type="text" id="text" class="form-control" formControlName="username" placeholder="Enter username">
+		<input type="text" class="form-control" formControlName="username" placeholder="Enter username">
 	</form>
 	<button class="btn btn-primary mt-4 btn-lg w-100" type="button" (click)="addFriend()">Add new friend</button>
 </div>

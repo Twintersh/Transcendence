@@ -4,13 +4,13 @@
 		<div class="col-md-4">
 			<div class="usercard sticky-top">
 				<div class="backpanel">
-					<h2> {{ user?.username }} </h2>
+					<h2> {{ user.username }} </h2>
 					<div class="row my-4">
 						<div class="col-md-5">
-							<img class="img-fluid" *ngIf="user?.avatar" [src]="user?.avatar">
-						</div>
+							<img class="img-fluid" *ngIf="user.avatar" [src]="user.avatar">
+						</div>	
 						<div class="col-md-7">
-							<p> {{ user?.username }}, you really are Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+							<p> {{ user.username }}, you really are Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
 							<button class="btn btn-secondary w-100" (click)="editProfile()">Edit Profile</button>
 						</div>
 					</div>
@@ -36,15 +36,15 @@
 					<div class="statscontainer d-flex">
 						<div>
 							<p>Games Played</p>
-							<p> {{ user?.MatchesCount }} </p>
+							<p> {{ user.MatchesCount }} </p>
 						</div><p>Games Played</p>
 						<div>
 							<p>Games Won</p>
-							<p> {{ user?.wonMatchesCount }} </p>
+							<p> {{ user.wonMatchesCount }} </p>
 						</div>
 						<div>
 							<p>W/L Ratio</p>
-							<p> {{ user?.gameRatio }} </p>
+							<p> {{ user.gameRatio }} </p>
 						</div>
 					</div>
 				</div>

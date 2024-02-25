@@ -1,10 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { Subscription, first } from 'rxjs';
-
-import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
-
 import { FriendService } from 'src/app/services/friend.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { User } from 'src/app/models/user.model';
@@ -21,15 +17,11 @@ export class FriendComponent implements OnInit {
 	rcvdRequests: any[] = [];
 	sentRequests: any[] = [];
 
-	FriendSubscription: Subscription = new Subscription();
-	rcvdRequestSubscription: Subscription = new Subscription();
-	sentRequestsSubscription: Subscription = new Subscription();
 	offCollapsed = true;
 	pendingCollapsed = true;
 
 	constructor(
 		private readonly friendService: FriendService,
-		private readonly collapse: NgbCollapseModule,
 		private readonly fb: FormBuilder,
 		private readonly toastService: ToastService
 	) {
@@ -39,15 +31,16 @@ export class FriendComponent implements OnInit {
 	}
 	
 	ngOnInit(): void {
-		this.friendService.getUserFriends().subscribe((res: any) => {
+		this.friendService.getUserFriends();
+		this.friendService.getReceivedFriendRequests();
+		this.friendService.getSentFriendRequests();
+		this.friendService.friends$.subscribe((res: any) => {
 			this.friends = res;
 		});
-
-		this.friendService.getReceivedFriendRequests().subscribe((res: any) => {
+		this.friendService.rcvdRequests$.subscribe((res: any) => {
 			this.rcvdRequests = res;
 		});
-
-		this.friendService.getSentFriendRequests().subscribe((res: any) => {
+		this.friendService.sentRequests$.subscribe((res: any) => {
 			this.sentRequests = res;
 		});
 	}
@@ -60,12 +53,14 @@ export class FriendComponent implements OnInit {
 		this.friendService.addFriend(this.myForm.value).subscribe(
 			(res: any) => {
 				this.toastService.showSuccess('Friend request sent.');
+				this.myForm.reset();
+				this.friendService.getSentFriendRequests();
 			},
 			(err: any) => {
 				if (err.status === 404) {
 					this.toastService.showError('User does not exist.');
 				}
-				else if (err.status === 403) {
+				else if (err.status === 406) {
 					this.toastService.showError('You are already friends with this user.');
 				}
 				else if (err.error === "You can't send a friend request to yourself") {
@@ -82,6 +77,8 @@ export class FriendComponent implements OnInit {
 			(res: any) => {
 				console.log("res is ", res);
 				this.toastService.showSuccess('Friend request accepted.');
+				this.friendService.getReceivedFriendRequests();
+				this.friendService.getUserFriends();
 			},
 			(err: any) => {
 				console.log("err is ", err);

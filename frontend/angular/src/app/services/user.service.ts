@@ -18,7 +18,7 @@ export class UserService {
 		) 
 	{ }
 
-	public getUserInfos(): Observable<User | null> {
+	public getUserInfos(): Observable<User> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 

@@ -18,7 +18,7 @@ import { Observable } from 'rxjs';
 })
 export class UserProfileComponent implements OnInit {
 	user$!: Observable<User | null>;
-	user!: User | null;
+	user: User = {} as User;
 	gameList: Game[] | null = null;
 	gameList$: Observable<Game[] | null> | null = null;
 
@@ -34,19 +34,10 @@ export class UserProfileComponent implements OnInit {
 		this.user$.subscribe({
 			next: (response: any) => {
 				this.user = response;
+				this.user.avatar = 'http://127.0.0.1:8000' + response.avatar.image;
 			},
 			error: (error) => {
 			  console.error('Fetch data user failed:', error);
-			},
-		});
-		this.userService.getUserAvatar().subscribe({
-			next: (response: any) => {
-				if (this.user) {
-					this.user.avatar = 'http://127.0.0.1:8000' + response.avatar;
-				}
-			},
-			error: (error) => {
-			  console.error('Fetch data avatar failed:', error);
 			},
 		});
 		this.gameList$ = this.userService.getUserMatches();
@@ -74,7 +65,7 @@ export class UserProfileComponent implements OnInit {
 		);
 	}
 
-	getUserInfos(): Observable<User | null> {
+	getUserInfos(): Observable<User> {
 		return this.userService.getUserInfos();
 	}
 }
