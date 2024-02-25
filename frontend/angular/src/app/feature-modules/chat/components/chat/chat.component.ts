@@ -9,6 +9,8 @@ import { FriendService } from 'src/app/services/friend.service';
 import { UserService } from 'src/app/services/user.service';
 import { ChatService } from 'src/app/services/chat.service';
 
+import { MessagesComponent } from '../messages/messages.component';
+
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -46,11 +48,10 @@ export class ChatComponent implements OnInit {
 		if (this.myForm.invalid) {
 			return;
 		}
-		console.log("sending message");
-		console.log(this.myForm.value);
+		this.chatService.sendMessage(this.myForm.value);
 	}
 
 	onSelect(friend: User): void {
-	  this.selectedFriend = friend;
+		this.selectedFriend = friend;
 	}
 }

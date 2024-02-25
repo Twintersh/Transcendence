@@ -22,7 +22,7 @@ export class FriendService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		return this.http.get<any>('http://127.0.0.1:8000/users/getUserFriends/', { headers });
+		return this.http.get<User[]>('http://127.0.0.1:8000/users/getUserFriends/', { headers });
 	}
 
 	public addFriend(username: string): Observable<any | null> {

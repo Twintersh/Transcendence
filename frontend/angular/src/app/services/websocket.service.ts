@@ -71,17 +71,9 @@ export class WebSocketService {
 		const token = this.cookieService.get('authToken');
 
 		this.chatSocket = new WebSocket('ws://' + "127.0.0.1:8000" +'/ws/chat/' + roomId + '/?token=' + token);
-		console.log('connecting to chat');
-		console.log(this.chatSocket);
 
 		this.chatSocket.onopen = () => {
-			this.chatMessages$.next({
-				'message' : 'connected to room'
-			});
-			this.chatSocket.send(JSON.stringify({
-				'message' : 'join'
-			}));
-			console.log('WebSocket connection established.');
+			console.log('Chat WebSocket connection established.');
 		}
 
 		this.chatSocket.onmessage = (event) => {
@@ -89,13 +81,17 @@ export class WebSocketService {
 		}
 
 		this.chatSocket.onclose = (event) => {
-			console.log('WebSocket connection closed:', event);
+			console.log('Chat WebSocket connection closed:', event);
 		}
 	}
 
 	send(message: any) {
 		// Send data to the server
 		this.matchSocket.send(message);
+	}
+
+	sendChatMessage(message: any) {
+		this.chatSocket.send(message);
 	}
 
 	receive() {

@@ -1,11 +1,7 @@
 <div *ngIf="friend">
-	<h2> {{ friend.username }} </h2>
-	<div>
-		<span>id: </span>{{ friend.id }}
-	</div>
-	<div>
-	  <label for="friend-name">friend name: </label>
-	  <input id="friend-name" [(ngModel)]="friend.username" placeholder="name">
-	</div>
-  
+	<ul class="messages">
+		<li class="message" *ngFor="let message of messages">
+			<h3> {{ message }} </h3>
+		</li>
+	</ul>
 </div>

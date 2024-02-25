@@ -7,7 +7,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import render, get_object_or_404
 from .models import Match
-from users.models import User
+from users.models import User, Avatar
+from users.serializers import Avatarserializer
 
 def index(request):
     return render(request, "game/index.html")
@@ -16,23 +17,19 @@ def index(request):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def getPlayers(request):
-    match_id = request.GET.get('id', None)
+    match_id = request.query_params.get('id')
     print('match_id in getplayers is:')
     print(match_id)
     if not match_id:
         return Response("No match id provided", status=status.HTTP_400_BAD_REQUEST)
     match = get_object_or_404(Match, id=match_id)
-    return Response({
-        'player1': {
-            'username': match.player1.username,
-            'avatar': match.player1.avatar.image
-        },
-        'player2': {
-            'username': match.player2.username,
-            'avatar': match.player2.avatar.image
-        }
-    }, status=status.HTTP_200_OK)
-
+    serializer = Avatarserializer(instance=match.player1.avatar)
+    p1Avatar = serializer.data['image']
+    serializer = Avatarserializer(instance=match.player2.avatar)
+    p2Avatar = serializer.data['image']
+    response = {"player1" : {"username" : match.player1.username, "avatar" : p1Avatar},
+                "player2" : {"username" : match.player2.username, "avatar" : p2Avatar}}
+    return Response(response, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])

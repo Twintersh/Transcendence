@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { Subscription } from 'rxjs';
+import { Subscription, first } from 'rxjs';
 
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -39,15 +39,15 @@ export class FriendComponent implements OnInit {
 	}
 	
 	ngOnInit(): void {
-		this.FriendSubscription = this.friendService.getUserFriends().subscribe((res: any) => {
+		this.friendService.getUserFriends().subscribe((res: any) => {
 			this.friends = res;
 		});
 
-		this.rcvdRequestSubscription = this.friendService.getReceivedFriendRequests().subscribe((res: any) => {
+		this.friendService.getReceivedFriendRequests().subscribe((res: any) => {
 			this.rcvdRequests = res;
 		});
 
-		this.sentRequestsSubscription = this.friendService.getSentFriendRequests().subscribe((res: any) => {
+		this.friendService.getSentFriendRequests().subscribe((res: any) => {
 			this.sentRequests = res;
 		});
 	}

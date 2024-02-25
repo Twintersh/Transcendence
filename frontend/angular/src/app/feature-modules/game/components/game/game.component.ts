@@ -8,6 +8,13 @@ interface GameData {
 	paddle1: { x: number, y: number, score: number };
 	paddle2: { x: number, y: number, score: number };
 	ball: { x: number, y: number };
+	player1: Player;
+	player2: Player;
+}
+
+interface Player {
+	username: string;
+	avatar: string;
 }
 
 @Component({
@@ -26,9 +33,10 @@ export class GameComponent implements OnInit {
 		id: '',
 		paddle1: {x: 0, y: 0, score: 0},
 		paddle2: {x: 0, y: 0, score: 0},
-		ball: {x: 0, y: 0}
+		ball: {x: 0, y: 0},
+		player1: {username: '', avatar: ''},
+		player2: {username: '', avatar: ''}
 	};
-
 	local: boolean = false;
 
 	private routeSub: Subscription = new Subscription();
@@ -41,11 +49,15 @@ export class GameComponent implements OnInit {
 	) { }
 		
 	ngOnInit() {
-		//this.PlayersSubscription = this.gameService.getPlayers(this.gameElements.id).subscribe((res: any) => {
-		//	console.log(res);
-		//});
 		this.routeSub = this.routerActive.params.subscribe((params: Params) => {
 			this.gameElements.id = params['matchId'];
+		});
+		this.PlayersSubscription = this.gameService.getPlayers(this.gameElements.id).subscribe((res: any) => {
+			this.gameElements.player1 = res.player1;
+			this.gameElements.player1.avatar = 'http://127.0.0.1:8000' + this.gameElements.player1.avatar;
+			this.gameElements.player2 = res.player2;
+			this.gameElements.player1.avatar = 'http://127.0.0.1:8000' + this.gameElements.player2.avatar;
+			console.log('player1 ', this.gameElements.player1, 'player2', this.gameElements.player2);
 		});
 		if (this.router.url.includes('local'))
 			this.local = true;

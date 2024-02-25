@@ -3,6 +3,8 @@ import { NgIf } from '@angular/common';
 
 import { User } from 'src/app/models/user.model';
 
+import { Subject } from 'rxjs';
+
 import { ChatService } from 'src/app/services/chat.service';
 
 @Component({
@@ -12,7 +14,8 @@ import { ChatService } from 'src/app/services/chat.service';
 })
 export class MessagesComponent implements OnInit {
 	@Input() friend!: User;
-	@Input() messages?: string[];
+	private messages$: Subject<any> = new Subject<any>();
+	readonly messages: string[] = [];
 
 	private roomId = '';
 
@@ -21,6 +24,10 @@ export class MessagesComponent implements OnInit {
 	) { }
 
 	ngOnInit(): void {
+		this.chatService.getMessages().subscribe((message: any) => {
+			this.messages$.next(message);
+			this.messages.push(message);
+		});
 	}
 
 	ngOnChanges(): void {
@@ -36,6 +43,10 @@ export class MessagesComponent implements OnInit {
 				}
 			});
 		}
+	}
+
+	sendMessage(message: string): void {
+		console.log('Sending message:', message);
 	}
 
 	ngOnDestroy(): void {
