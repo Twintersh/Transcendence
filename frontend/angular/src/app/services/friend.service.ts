@@ -11,18 +11,22 @@ import { User } from '../models/user.model';
   providedIn: 'root'
 })
 export class FriendService {
-
-	constructor(
-		private readonly http: HttpClient, 
-		private readonly cookieService: CookieService
-	) { }
-
 	private friendsSubject = new BehaviorSubject<User[]>([]);
 	friends$ = this.friendsSubject.asObservable();
 	private sentRequestsSubject = new BehaviorSubject<any[]>([]);
 	sentRequests$ = this.sentRequestsSubject.asObservable();
 	private rcvdRequestsSubject = new BehaviorSubject<any[]>([]);
 	rcvdRequests$ = this.rcvdRequestsSubject.asObservable();
+
+	constructor(
+		private readonly http: HttpClient, 
+		private readonly cookieService: CookieService
+	) { 
+		this.getUserFriends();
+		this.getReceivedFriendRequests();
+		this.getSentFriendRequests();
+	}
+
 
 
 	public getUserFriends(): void {
@@ -59,7 +63,6 @@ export class FriendService {
 	}
 
 	public addFriend(username: string): Observable<any | null> {
-		console.log("accepting friend request from ", username);
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 

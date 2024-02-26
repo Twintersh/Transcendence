@@ -21,13 +21,15 @@ import { ChatModule } from './feature-modules/chat/chat.module';
 import { ToastrModule } from 'ngx-toastr';
 import { QueueModalComponent } from './feature-modules/home/components/queue-modal/queue-modal.component';
 import { AddPlayerModalComponent } from './feature-modules/home/components/add-player-modal/add-player-modal.component';
+import { WinModalComponent } from './feature-modules/game/components/win-modal/win-modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
 	QueueModalComponent,
-	AddPlayerModalComponent
+	AddPlayerModalComponent,
+	WinModalComponent
   ],
   imports: [
 	HttpClientModule,

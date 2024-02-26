@@ -6,6 +6,8 @@ import { catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
 import { CookieService } from './cookie.service'; 
+import { LocalDataManagerService } from './local-data-manager.service';
+
 import { User } from '../models/user.model';
 
 @Injectable({
@@ -18,7 +20,8 @@ export class AuthService {
 	constructor(
 		private readonly http: HttpClient,
 		private readonly cookieService: CookieService,
-		private readonly router: Router
+		private readonly router: Router,
+		private readonly localDataManager: LocalDataManagerService
 	) { }
 
   	public signup(newUser: User) {
@@ -37,6 +40,8 @@ export class AuthService {
 		this.http.get<any>('http://127.0.0.1:8000/users/logout/', { headers }).subscribe({
 			next: () => {
 			  this.cookieService.deleteCookie('authToken');
+			  this.localDataManager.removeData('userName');
+			  this.localDataManager.removeData('userAvatar');
 			  console.log('Logout successful');
 			},
 			error: (error) => {

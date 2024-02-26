@@ -20,7 +20,7 @@ ballSize=21 # default value: 21
 ballSpeed=2 # default value: 5
 ballMaxSpeed=8 # default value: 7
 
-pointsToWin=10 # default value: 5
+pointsToWin=5 # default value: 5
 
 def roundNb(nb):
 	if (nb - floor(nb) >= 0.5):

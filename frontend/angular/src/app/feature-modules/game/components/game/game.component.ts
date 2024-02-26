@@ -1,21 +1,15 @@
-import { OnInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { OnInit, Component, ElementRef, ViewChild, Input } from '@angular/core';
+import { Router, ActivatedRoute, Params, NavigationSkipped, NavigationStart } from '@angular/router';
+
 import { Subscription } from 'rxjs';
+
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+
 import { GameService } from 'src/app/services/game.service';
 
-interface GameData {
-	id: string;
-	paddle1: { x: number, y: number, score: number };
-	paddle2: { x: number, y: number, score: number };
-	ball: { x: number, y: number };
-	player1: Player;
-	player2: Player;
-}
+import { GameData, GamePlayers, GameResult } from 'src/app/models/game.model';
+import { WinModalComponent } from '../win-modal/win-modal.component';
 
-interface Player {
-	username: string;
-	avatar: string;
-}
 
 @Component({
   selector: 'app-game',
@@ -34,33 +28,49 @@ export class GameComponent implements OnInit {
 		paddle1: {x: 0, y: 0, score: 0},
 		paddle2: {x: 0, y: 0, score: 0},
 		ball: {x: 0, y: 0},
-		player1: {username: '', avatar: ''},
-		player2: {username: '', avatar: ''}
 	};
+	players: GamePlayers = {} as GamePlayers;
 	local: boolean = false;
+	winModal!: NgbModalRef;
 
 	private routeSub: Subscription = new Subscription();
-	private PlayersSubscription: Subscription = new Subscription();
 	
 	constructor(
 		private readonly router: Router,
 		private readonly routerActive: ActivatedRoute,
-		private readonly gameService: GameService
+		private readonly gameService: GameService,
+		private readonly modalService: NgbModal
 	) { }
-		
+
 	ngOnInit() {
 		this.routeSub = this.routerActive.params.subscribe((params: Params) => {
 			this.gameElements.id = params['matchId'];
 		});
-		this.PlayersSubscription = this.gameService.getPlayers(this.gameElements.id).subscribe((res: any) => {
-			this.gameElements.player1 = res.player1;
-			this.gameElements.player1.avatar = 'http://127.0.0.1:8000' + this.gameElements.player1.avatar;
-			this.gameElements.player2 = res.player2;
-			this.gameElements.player1.avatar = 'http://127.0.0.1:8000' + this.gameElements.player2.avatar;
-			console.log('player1 ', this.gameElements.player1, 'player2', this.gameElements.player2);
+
+		this.router.events.subscribe((event) => {
+			if (event instanceof NavigationStart && !this.gameService.gameEnded) {
+				this.endGame(this.gameElements, this.players);
+				this.gameService.getGameElements().unsubscribe();
+			}
 		});
+
 		if (this.router.url.includes('local'))
 			this.local = true;
+		
+		this.gameService.getPlayers(this.gameElements.id).subscribe((res: any) => {
+			this.players.player1 = res.player1;
+			this.players.player1.avatar = 'http://127.0.0.1:8000' + this.players.player1.avatar;
+			if (this.local) {
+				this.players.player2.username = this.gameService.localOpp;
+				this.players.player2.avatar = this.players.player1.avatar;
+			}
+			else {
+				this.players.player2 = res.player2;
+				this.players.player2.avatar = 'http://127.0.0.1:8000' + this.players.player2.avatar;
+			}
+			console.log('player1 ', this.players.player1, 'player2', this.players.player2);
+		});
+
 		this.gameloop(this.gameElements.id, this.local);
 	}
 
@@ -89,16 +99,34 @@ export class GameComponent implements OnInit {
 		}, 6000);
 
 		this.gameService.getGameElements().subscribe((data: GameData) => {
+			if (data['winner' as keyof GameData]) {
+				this.endGame(data, this.players);
+				return;
+			}
 			ctx.drawImage(background, 0, 0);
 			this.gameElements.ball = data.ball;
 			this.gameElements.paddle1 = data.paddle1;
 			this.gameElements.paddle2 = data.paddle2;
+			this.players.player1.score = data.paddle1.score;
+			this.players.player2.score = data.paddle2.score;
 			ctx.drawImage(gameBall, this.gameElements.ball.x - 33, this.gameElements.ball.y - 33, 25, 25);
 			ctx.drawImage(paddleL, this.gameElements.paddle1.x - 33,  this.gameElements.paddle1.y - 33,  75,  75);
 			ctx.drawImage(paddleR, this.gameElements.paddle2.x - 33,  this.gameElements.paddle2.y - 33,  75,  75);
 		});
 	}
 
+	
+	endGame(data: GameData, players : GamePlayers): void {
+		this.winModal = this.modalService.open(WinModalComponent, { centered: true, backdrop : 'static', keyboard : false});
+		this.gameService.endGame();
+		this.winModal.componentInstance.gameResult = data;
+		this.winModal.componentInstance.players = players;
+	}
+	
+	NgOnDestroy() {
+		this.routeSub.unsubscribe();
+	}
+	
 	showtimer(ctx: CanvasRenderingContext2D, width: number, height: number): void {
 		ctx.fillStyle = "white";
 		ctx.font = "50px Gopher";
@@ -140,7 +168,8 @@ export class GameComponent implements OnInit {
 		}, 5000);
 	}
 
-	NgOnDestroy() {
+	ngOnDestroy() {
 		this.routeSub.unsubscribe();
+		this.gameService.getGameElements().unsubscribe();
 	}
 }

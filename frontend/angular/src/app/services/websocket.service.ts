@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { Subject } from 'rxjs';
 
-import { CookieService } from 'ngx-cookie-service';
+import { CookieService } from '../services/cookie.service';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +21,8 @@ export class WebSocketService {
 		private readonly cookieService: CookieService
 	) { }
 	
-	connectQueue(token: string): void {
+	connectQueue(): void {
+		const token = this.cookieService.getCookie('authToken');
 		this.queueWebSocket$ = new WebSocket('ws://' + "127.0.0.1:8000" +'/ws/game/queue/' + '?token=' + token);
 
 		this.queueWebSocket$.onopen = () => {
@@ -37,26 +38,21 @@ export class WebSocketService {
 		this.queueWebSocket$.onmessage = (event) => {
 			this.queueMessages$.next(JSON.parse(event.data));
 		}
-
-		this.queueWebSocket$.onclose = (event) => {
-			console.log('WebSocket connection closed:', event);
-		}
 	}
 
 	disconnectQueue() {
 		this.queueWebSocket$.close();
 	}
 
-	connect(url: string): void {
-		this.matchSocket = new WebSocket(url);
+	connectMatch(match_id: string): void {
+		const token: string = this.cookieService.getCookie("authToken");
+		const matchSocket: string = 'ws://localhost:8000/ws/game/' + match_id + '/?token=' + token;
+
+		this.matchSocket = new WebSocket(matchSocket);
 
 		this.matchSocket.onopen = () => {
 			console.log('WebSocket connection established.');
 		}
-
-		this.matchSocket.onclose = (event) => {
-			console.log('WebSocket connection closed:', event);
-		};
 
 		this.matchSocket.onerror = (error) => {
 			console.error('WebSocket error:', error);
@@ -68,7 +64,7 @@ export class WebSocketService {
 	}
 
 	connectChat(roomId: string): void {
-		const token = this.cookieService.get('authToken');
+		const token = this.cookieService.getCookie('authToken');
 
 		this.chatSocket = new WebSocket('ws://' + "127.0.0.1:8000" +'/ws/chat/' + roomId + '/?token=' + token);
 
@@ -101,8 +97,8 @@ export class WebSocketService {
 		};
 	}
 
-	close() {
-		// Close the WebSocket connection
+	closeMatch() {
+		// Close the match WebSocket connection
 		this.matchSocket.close();
 	}
 }

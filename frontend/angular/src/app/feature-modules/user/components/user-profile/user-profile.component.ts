@@ -3,12 +3,15 @@ import { ViewEncapsulation } from '@angular/core';
 
 import { NgbOffcanvas, NgbOffcanvasRef } from '@ng-bootstrap/ng-bootstrap';
 
-import { EditOffcanvasComponent } from '../edit-offcanvas/edit-offcanvas.component';
+import { Observable } from 'rxjs';
+
+import { UserService } from 'src/app/services/user.service';
+
 import { Game } from 'src/app/models/game.model';
 import { User } from 'src/app/models/user.model';
 
-import { UserService } from 'src/app/services/user.service';
-import { Observable } from 'rxjs';
+import { EditOffcanvasComponent } from '../edit-offcanvas/edit-offcanvas.component';
+import { MatchComponent } from '../match/match.component';
 
 @Component({
   selector: 'app-user-profile',
@@ -17,7 +20,6 @@ import { Observable } from 'rxjs';
   encapsulation: ViewEncapsulation.None
 })
 export class UserProfileComponent implements OnInit {
-	user$!: Observable<User | null>;
 	user: User = {} as User;
 	gameList: Game[] | null = null;
 	gameList$: Observable<Game[] | null> | null = null;
@@ -30,11 +32,13 @@ export class UserProfileComponent implements OnInit {
 	) { }
 
 	ngOnInit(): void {
-		this.user$ = this.getUserInfos();
-		this.user$.subscribe({
-			next: (response: any) => {
-				this.user = response;
-				this.user.avatar = 'http://127.0.0.1:8000' + response.avatar.image;
+		this.userService.userInfo$.subscribe({
+			next: (response: User) => {
+				if (response && Object.keys(response).length >  0) {
+					this.user = response;
+					const avatarUrl = response.avatar['image' as keyof typeof response.avatar];
+					this.user.avatar = 'http://127.0.0.1:8000/' + avatarUrl;
+				}
 			},
 			error: (error) => {
 			  console.error('Fetch data user failed:', error);
@@ -44,9 +48,10 @@ export class UserProfileComponent implements OnInit {
 		this.gameList$.subscribe({
 			next: (response: any) => {
 				this.gameList = response;
+				console.log('game list:', response);
 			},
 			error: (error) => {
-			  console.error('Fetch data game list failed:', error);
+				console.error('Fetch data game list failed:', error);
 			},
 		});
 	}
@@ -57,15 +62,9 @@ export class UserProfileComponent implements OnInit {
 		this.edit.result.then(
 			(result) => {
 				this.offcanvas.dismiss();
-				this.user$ = this.getUserInfos();
+				this.userService.getUserInfos();
 			},
-			(reason) => {
-				console.log(reason);
-			},
+			(error) => {}
 		);
-	}
-
-	getUserInfos(): Observable<User> {
-		return this.userService.getUserInfos();
 	}
 }

@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 import { CookieService } from './cookie.service';
+import { LocalDataManagerService } from './local-data-manager.service';
+
 import { Game } from 'src/app/models/game.model';
 import { User } from '../models/user.model';
 
@@ -12,17 +14,26 @@ import { User } from '../models/user.model';
 })
 export class UserService {
 
+	private userInfoSubject = new BehaviorSubject<User>({} as User);
+	userInfo$ = this.userInfoSubject.asObservable();
+
 	constructor(
 		private readonly http: HttpClient, 
-		private readonly cookieService: CookieService
-		) 
-	{ }
+		private readonly cookieService: CookieService,
+		private readonly localDataManager: LocalDataManagerService
+	) { 
+		this.getUserInfos();
+	}
 
-	public getUserInfos(): Observable<User> {
+	public getUserInfos(): void {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
-
-		return this.http.get<User>('http://127.0.0.1:8000/users/getUserInfo/', { headers });
+		
+		this.http.get<User>('http://127.0.0.1:8000/users/getUserInfo/', { headers }).subscribe(user => {
+			this.userInfoSubject.next(user);
+			this.localDataManager.saveData('userName', user.username);
+			this.localDataManager.saveData('userAvatar', user.avatar);
+		});
 	}
 
 	public getUserMatches(): Observable<Game[]> {
@@ -52,13 +63,7 @@ export class UserService {
 		this.http.post('http://localhost:8000/users/uploadAvatar/', data, { headers }).subscribe({
 			next: () => {
 				console.log('User avatar updated');
-				this.getUserInfos().subscribe({
-					next: (data) => {
-					},
-					error: (error) => {
-						console.error('Error updating user information:', error);
-					}
-				});
+				this.getUserInfos();
 			},
 			error: (error) => {
 				// Error: Handle the error if the user information update fails

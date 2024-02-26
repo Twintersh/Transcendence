@@ -2,10 +2,10 @@
 	<div class="row">
 	  <div class="col">
 		<div class="row">
-			<img src="{{ gameElements.player1.avatar }}" alt="Pong" style="width: 100px; height: 100px;">
-			<h4>{{ gameElements.player1.username }}</h4>
+			<img class="img-fluid" [src]="players.player1.avatar" alt="Player1 Avatar">
+			<h4> {{ players.player1.username }} </h4>
 			<h4> Score </h4>
-			<h4> {{gameElements.paddle1.score}} </h4>
+			<h4> {{ players.player1.score }} </h4>
 		</div>
 	  </div>
 
@@ -19,12 +19,11 @@
 
 	  <div class="col">
 		<div class="row">
-			<img src="{{ gameElements.player2.avatar }}" alt="Pong" style="width: 100px; height: 100px;">
-			<h4>{{ gameElements.player2.username }}</h4>
+			<img class="img-fluid" [src]="players.player2.avatar" alt="Player2 Avatar">
+			<h4> {{ players.player2.username }} </h4>
 			<h4>Score</h4>
-			<h4>{{gameElements.paddle2.score}}</h4>
+			<h4> {{ players.player2.score }} </h4>
 		</div>
 	  </div>
-
 	</div>
 </div>
