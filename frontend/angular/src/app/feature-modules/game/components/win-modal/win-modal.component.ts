@@ -36,11 +36,9 @@ export class WinModalComponent implements OnInit {
 		});
 
 		if ((this.user.username === this.players.player1.username && this.gameResult.winner === 'P1')
-		 || (this.user.username === this.players.player2.username && this.gameResult.winner === 'P2')) {
+			|| (this.user.username === this.players.player2.username && this.gameResult.winner === 'P2')) {
 			this.win = true;
 		}
-		console.log('end game data are ', this.gameResult);
-		console.log('end players are ', this.players);
 	}
 
 	leaveMatch() {

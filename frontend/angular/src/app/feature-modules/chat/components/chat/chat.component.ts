@@ -49,6 +49,7 @@ export class ChatComponent implements OnInit {
 			return;
 		}
 		this.chatService.sendMessage(this.myForm.value);
+		this.myForm.reset();
 	}
 
 	onSelect(friend: User): void {

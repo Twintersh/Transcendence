@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+import { Subject } from 'rxjs';
+
 import { WebSocketService } from './websocket.service';
 import { CookieService } from './cookie.service';
 
-import { Subject } from 'rxjs';
+import { Message } from '../models/chat.model';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
 
-	private messages$: Subject<any> = new Subject<any>();
+	readonly messages$: Subject<any> = this.webSocketService.chatMessages$;
 
 	constructor (
 		private readonly http: HttpClient,
@@ -39,13 +42,11 @@ export class ChatService {
 		return this.http.post('http://127.0.0.1:8000/chat/getRoomName/', body, { headers });
 	}
 
-	sendMessage(message: string): void {
-		this.webSocketService.sendChatMessage(JSON.stringify({
-			'message' : message
-		}));
+	sendMessage(message: Message): void {
+		this.webSocketService.sendChatMessage(JSON.stringify(message));
 	}
 
-	getMessages(): Subject<any> {
-		return this.messages$;
+	disconnectChat(): void {
+		this.webSocketService.disconnectChat();
 	}
 }

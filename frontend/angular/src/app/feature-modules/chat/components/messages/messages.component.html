@@ -1,7 +1,7 @@
 <div *ngIf="friend">
 	<ul class="messages">
 		<li class="message" *ngFor="let message of messages">
-			<h3> {{ message }} </h3>
+			<h3> {{ message.sender }}: {{ message.content }} </h3>
 		</li>
 	</ul>
 </div>

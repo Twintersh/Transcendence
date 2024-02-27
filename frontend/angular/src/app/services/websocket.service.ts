@@ -76,8 +76,8 @@ export class WebSocketService {
 			this.chatMessages$.next(JSON.parse(event.data));
 		}
 
-		this.chatSocket.onclose = (event) => {
-			console.log('Chat WebSocket connection closed:', event);
+		this.chatSocket.onclose = () => {
+			console.log('Chat WebSocket connection closed:');
 		}
 	}
 
@@ -100,5 +100,9 @@ export class WebSocketService {
 	closeMatch() {
 		// Close the match WebSocket connection
 		this.matchSocket.close();
+	}
+
+	disconnectChat() {
+		this.chatSocket.close();
 	}
 }

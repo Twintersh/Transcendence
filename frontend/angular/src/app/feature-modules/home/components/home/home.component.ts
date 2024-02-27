@@ -21,7 +21,7 @@ export class HomeComponent {
 	private modal!: NgbModalRef;
 	private username: string = '';
 
-	constructor(
+	constructor (
 		private readonly router: Router,
 		private readonly ngbModal: NgbModal,
 		private readonly gameService: GameService,
@@ -58,7 +58,7 @@ export class HomeComponent {
 					this.userService.userInfo$.subscribe((res) => {
 						this.username = res.username;
 					});
-					this.gameService.getLocalMatch(this.username, result).subscribe((res) => {
+					this.gameService.getLocalMatch(this.username, this.username).subscribe((res) => {
 						this.modal.close();
 						this.router.navigate(['/game/local/' + res['id']]);
 					});

@@ -57,10 +57,10 @@ export class FriendComponent implements OnInit {
 				if (err.status === 404) {
 					this.toastService.showError('User does not exist.');
 				}
-				else if (err.status === 406) {
+				else if (err.err === 'Cannot send friend request to friend') {
 					this.toastService.showError('You are already friends with this user.');
 				}
-				else if (err.error === "You can't send a friend request to yourself") {
+				else if (err.error === "Cannot send friend request to yourself") {
 					this.toastService.showError('You cannot add yourself as a friend.');
 				}
 				else if (err.status === 304) {
@@ -72,14 +72,13 @@ export class FriendComponent implements OnInit {
 	acceptFriend(username: string): void {
 		this.friendService.acceptFriendRequest(username).subscribe(
 			(res: any) => {
-				console.log("res is ", res);
 				this.toastService.showSuccess('Friend request accepted.');
 				this.friendService.getReceivedFriendRequests();
 				this.friendService.getUserFriends();
 			},
 			(err: any) => {
-				console.log("err is ", err);
-		}
+				this.toastService.showError('Failed to accept friend request.');
+			}
 		);
 	}
 }

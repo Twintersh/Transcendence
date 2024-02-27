@@ -62,7 +62,6 @@ export class UserService {
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 		this.http.post('http://localhost:8000/users/uploadAvatar/', data, { headers }).subscribe({
 			next: () => {
-				console.log('User avatar updated');
 				this.getUserInfos();
 			},
 			error: (error) => {

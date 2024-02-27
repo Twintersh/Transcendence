@@ -51,6 +51,7 @@ export class LoginFormComponent implements OnInit {
 					this.toastService.showSuccess('Login successful');
 					this.myForm.reset();
 					this.modalService.dismissAll();
+					this.authService.isAuthSubject.next(true);
 					this.router.navigate(['/home']);
 				},
 				error: (error) => {

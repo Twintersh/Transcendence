@@ -68,7 +68,6 @@ export class GameComponent implements OnInit {
 				this.players.player2 = res.player2;
 				this.players.player2.avatar = 'http://127.0.0.1:8000' + this.players.player2.avatar;
 			}
-			console.log('player1 ', this.players.player1, 'player2', this.players.player2);
 		});
 
 		this.gameloop(this.gameElements.id, this.local);
@@ -83,10 +82,8 @@ export class GameComponent implements OnInit {
 		const paddleR: HTMLImageElement = this.paddleR.nativeElement;
 		const gameBall: HTMLImageElement = this.gameBall.nativeElement;
 		
-		if (ctx === null) {
-			console.log("ctx is null");
+		if (ctx === null)
 			return;
-		}
 		
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.fillStyle = "#53A6AC";

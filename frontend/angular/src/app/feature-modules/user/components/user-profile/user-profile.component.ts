@@ -48,7 +48,6 @@ export class UserProfileComponent implements OnInit {
 		this.gameList$.subscribe({
 			next: (response: any) => {
 				this.gameList = response;
-				console.log('game list:', response);
 			},
 			error: (error) => {
 				console.error('Fetch data game list failed:', error);

@@ -2,8 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, Router, UrlTree } from '@angular/router';
 import { Injectable } from '@angular/core';
 
-import { catchError } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 import { CookieService } from './cookie.service'; 
 import { LocalDataManagerService } from './local-data-manager.service';
@@ -16,13 +16,17 @@ import { User } from '../models/user.model';
 export class AuthService {
 
 	window = window;
+	isAuthSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+	isAuth$: Observable<boolean> = this.isAuthSubject.asObservable();
 
 	constructor(
 		private readonly http: HttpClient,
 		private readonly cookieService: CookieService,
 		private readonly router: Router,
 		private readonly localDataManager: LocalDataManagerService
-	) { }
+	) { 
+		this.isAuth();
+	}
 
   	public signup(newUser: User) {
 		return this.http.post('http://127.0.0.1:8000/users/signup/', newUser)
@@ -34,7 +38,6 @@ export class AuthService {
 	}
 
 	public logout(): void {
-		console.log('logout');
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 		this.http.get<any>('http://127.0.0.1:8000/users/logout/', { headers }).subscribe({
@@ -42,7 +45,7 @@ export class AuthService {
 			  this.cookieService.deleteCookie('authToken');
 			  this.localDataManager.removeData('userName');
 			  this.localDataManager.removeData('userAvatar');
-			  console.log('Logout successful');
+			  this.isAuthSubject.next(false);
 			},
 			error: (error) => {
 			  // Error: Handle the error if the logout fails
@@ -58,26 +61,37 @@ export class AuthService {
 	}
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-		return this.isAuth();
+		return true;
+		this.isAuth$.subscribe((isAuth) => {
+			if (!isAuth) {
+				console.log('Unauthorized. Redirecting to landing page...');
+				return this.router.parseUrl('/');
+			}
+			else {
+				console.log('Authorized. Redirecting to the requested page...');
+				return true;
+			}
+		});
 	}
 
-	public isAuth(): Observable<boolean> {
+	public isAuth(): void {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 		
-		if (!token) {
-			this.router.navigate(['/']);
-			return of(false);
-		}
+		if (!token)
+			this.isAuthSubject.next(false);
 
-		return this.http.get<boolean>('http://127.0.0.1:8000/users/isAuth/', { headers }).pipe(
-			catchError((error) => {
+		this.http.get<boolean>('http://127.0.0.1:8000/users/isAuth/', { headers }).subscribe({
+			next: (res) => {
+				this.isAuthSubject.next(res);
+			},
+			error: (error) => {
 				if (error.status === 403) {
 					console.log('Unauthorized error. Redirecting to landing page...');
-					this.router.navigate(['/']);
+					this.isAuthSubject.next(false);
 				}
-				return of(false);
-			})
-		);
+				this.isAuthSubject.next(false);
+			}
+		});
 	}
 }

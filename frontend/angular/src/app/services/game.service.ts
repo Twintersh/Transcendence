@@ -133,8 +133,6 @@ export class GameService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		console.log(matchId);
-
 		return this.http.get(`http://127.0.0.1:8000/game/getPlayers/?id=${matchId}`, { headers });
 	}
 

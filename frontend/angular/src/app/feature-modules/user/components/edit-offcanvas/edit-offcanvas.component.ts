@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
@@ -23,7 +23,6 @@ export class EditOffcanvasComponent {
 		private readonly offcanvas: NgbOffcanvas, 
 		private fb: FormBuilder,
 		private userService: UserService,
-		private cd : ChangeDetectorRef,
 		private toastr: ToastrService
 	) {
 		this.editForm = this.fb.group({
@@ -43,12 +42,11 @@ export class EditOffcanvasComponent {
 
 	submitHandler(): void {
 		if(this.editForm.valid) {
-			console.log(this.editForm.value);
 			this.subscription.add(
 				this.userService.updateUserInfos(this.editForm.value).subscribe({
 					next: () => {
 						this.toastr.success('User information updated');
-						this.cd.detectChanges();
+						this.userService.getUserInfos();
 						this.offcanvas.dismiss();
 					},
 					error: (error) => {
@@ -77,6 +75,7 @@ export class EditOffcanvasComponent {
 			// Success: Update the user's profile picture
 			this.toastr.success('Profile picture updated');
 			this.userService.updateProfilePicture(formData);
+			this.userService.getUserInfos();
 		}
 	}
 

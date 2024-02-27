@@ -2,8 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
 
 import { User } from 'src/app/models/user.model';
-
-import { Subject } from 'rxjs';
+import { Message } from 'src/app/models/chat.model';
 
 import { ChatService } from 'src/app/services/chat.service';
 
@@ -14,8 +13,7 @@ import { ChatService } from 'src/app/services/chat.service';
 })
 export class MessagesComponent implements OnInit {
 	@Input() friend!: User;
-	private messages$: Subject<any> = new Subject<any>();
-	readonly messages: string[] = [];
+	messages: Message[] = [];
 
 	private roomId = '';
 
@@ -24,14 +22,24 @@ export class MessagesComponent implements OnInit {
 	) { }
 
 	ngOnInit(): void {
-		this.chatService.getMessages().subscribe((message: any) => {
-			this.messages$.next(message);
-			this.messages.push(message);
+		this.chatService.messages$.subscribe((message: any) => {
+			if (message['history'] !== undefined) {
+				console.log(message);
+				this.messages.push(...message['history']);
+				return;
+			}
+			else {
+				console.log(message);
+				this.messages.push(message.message);
+			}
 		});
 	}
 
 	ngOnChanges(): void {
 		this.getRoomName();
+		this.messages = [];
+		this.friend = {} as User;
+		this.chatService.disconnectChat();
 	}
 	
 	getRoomName(): void {
@@ -43,10 +51,6 @@ export class MessagesComponent implements OnInit {
 				}
 			});
 		}
-	}
-
-	sendMessage(message: string): void {
-		console.log('Sending message:', message);
 	}
 
 	ngOnDestroy(): void {

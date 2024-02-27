@@ -64,6 +64,9 @@ class FriendRequestSerializer(serializers.ModelSerializer):
 
 class MatchSerializer(serializers.ModelSerializer):
     winner = UserLookSerializer()
+    player1 = UserLookSerializer()
+    player2 = UserLookSerializer()
+
     class Meta(object):
         model = Match
-        fields = ['id', 'duration', 'wScore', 'lScore', 'winner']
+        fields = ['id', 'duration', 'wScore', 'lScore', 'winner', 'player1', 'player2']

@@ -31,21 +31,19 @@ export class NavbarComponent implements OnInit {
 	}
 
 	isAuth(): void {
-		this.authService.isAuth().subscribe((res) => {
+		this.authService.isAuth$.subscribe((res) => {
 			this.isAuthenticated = res;
-			if (this.router.url.includes('game'))
-				this.isAuthenticated = false;
-		})
+		});
 	};
 	
 	logout(): void {
 		this.authService.logout();
 		this.isAuthenticated = false;
+		this.authService.isAuthSubject.next(false);
 		this.router.navigate(['/']);
 	}
 
 	ngOnDestroy() {
-		console.log('destroy');
 		this.offcanvas.dismiss();
 	}
 }
