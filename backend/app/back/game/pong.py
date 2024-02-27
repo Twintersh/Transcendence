@@ -13,10 +13,10 @@ HEIGHT = 480
 MAX_ANGLE = 55 # default value : 55
 
 paddleHeight=100 # default value: 100
-paddleWidth=15 # default value: 15
+paddleWidth=25 # default value: 15
 paddleSpeed=4 # default value: 10
 
-ballSize=21 # default value: 21
+ballSize=25 # default value: 21
 ballSpeed=2 # default value: 5
 ballMaxSpeed=8 # default value: 7
 

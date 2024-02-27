@@ -106,9 +106,9 @@ export class GameComponent implements OnInit {
 			this.gameElements.paddle2 = data.paddle2;
 			this.players.player1.score = data.paddle1.score;
 			this.players.player2.score = data.paddle2.score;
-			ctx.drawImage(gameBall, this.gameElements.ball.x - 33, this.gameElements.ball.y - 33, 25, 25);
-			ctx.drawImage(paddleL, this.gameElements.paddle1.x - 33,  this.gameElements.paddle1.y - 33,  75,  75);
-			ctx.drawImage(paddleR, this.gameElements.paddle2.x - 33,  this.gameElements.paddle2.y - 33,  75,  75);
+			ctx.drawImage(gameBall, this.gameElements.ball.x - 12.5, this.gameElements.ball.y - 12.5, 25, 25);
+			ctx.drawImage(paddleL, this.gameElements.paddle1.x,  this.gameElements.paddle1.y,  25,  100);
+			ctx.drawImage(paddleR, this.gameElements.paddle2.x,  this.gameElements.paddle2.y,  25,  100);
 		});
 	}
 
