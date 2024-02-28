@@ -23,13 +23,12 @@ export class MessagesComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.chatService.messages$.subscribe((message: any) => {
-			if (message['history'] !== undefined) {
-				console.log(message);
-				this.messages.push(...message['history']);
-				return;
+			if (message['history'] != undefined) {
+				message['history'].forEach((msg: any) => {
+					this.messages.push(msg);
+				});
 			}
 			else {
-				console.log(message);
 				this.messages.push(message.message);
 			}
 		});

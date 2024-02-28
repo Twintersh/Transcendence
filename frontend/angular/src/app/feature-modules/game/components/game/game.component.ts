@@ -31,6 +31,7 @@ export class GameComponent implements OnInit {
 	};
 	players: GamePlayers = {} as GamePlayers;
 	local: boolean = false;
+	localOpp: string = '';
 	winModal!: NgbModalRef;
 
 	private routeSub: Subscription = new Subscription();
@@ -126,43 +127,18 @@ export class GameComponent implements OnInit {
 	
 	showtimer(ctx: CanvasRenderingContext2D, width: number, height: number): void {
 		ctx.fillStyle = "white";
-		ctx.font = "50px Gopher";
-		ctx.fillText("5", width / 2, height 	/ 2);
-		setTimeout(() => {
-			ctx.clearRect(0, 0, width, height);
-			ctx.fillStyle = "#53A6AC";
-			ctx.fillRect(0, 0, width, height);
-			ctx.fillStyle = "white";
-			ctx.fillText("4", width / 2, height / 2);
-		}, 1000);
-		setTimeout(() => {
-			ctx.clearRect(0, 0, width, height);
-			ctx.fillStyle = "#53A6AC";
-			ctx.fillRect(0, 0, width, height);
-			ctx.fillStyle = "white";
-			ctx.fillText("3", width / 2, height / 2);
-		}, 2000);
-		setTimeout(() => {
-			ctx.clearRect(0, 0, width, height);
-			ctx.fillStyle = "#53A6AC";
-			ctx.fillRect(0, 0, width, height);
-			ctx.fillStyle = "white";
-			ctx.fillText("2", width / 2, height / 2);
-		}, 3000);
-		setTimeout(() => {
-			ctx.clearRect(0, 0, width, height);
-			ctx.fillStyle = "#53A6AC";
-			ctx.fillRect(0, 0, width, height);
-			ctx.fillStyle = "white";
-			ctx.fillText("1", width / 2, height / 2);
-		}, 4000);
-		setTimeout(() => {
-			ctx.clearRect(0, 0, width, height);
-			ctx.fillStyle = "#53A6AC";
-			ctx.fillRect(0, 0, width, height);
-			ctx.fillStyle = "white";
-			ctx.fillText("GO!", width / 2 - 50, height / 2);
-		}, 5000);
+		const numbers = ["5", "4", "3", "2", "1", "GO!"];
+		const delay = 1000;
+	
+		numbers.forEach((number, index) => {
+			setTimeout(() => {
+				ctx.clearRect(0, 0, width, height);
+				ctx.fillStyle = "#53A6AC";
+				ctx.fillRect(0, 0, width, height);
+				ctx.fillStyle = "white";
+				ctx.fillText(number, width / 2 - (number === "GO!" ? 50 : 0), height / 2);
+			}, (index + 1) * delay);
+		});
 	}
 
 	ngOnDestroy() {

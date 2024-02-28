@@ -66,6 +66,7 @@ export class AuthenticationComponent {
 					const token: string = JSON.parse(JSON.stringify(response)).token;
 					this.cookieService.saveCookie('authToken', token);
 					this.modalService.dismissAll();
+					this.authService.isAuth();
 					this.router.navigate(['/home']);
 					this.toastr.success('Welcome to the community!', 'Success');
 				},

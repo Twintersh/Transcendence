@@ -1,6 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -24,7 +24,8 @@ export class LoginFormComponent implements OnInit {
 		private cookieService: CookieService, 
 		private router: Router, 
 		private toastService: ToastService,
-		private modalService: NgbModal
+		private modalService: NgbModal,
+		private activatedRoute: ActivatedRoute
 	) {
 		this.myForm = this.fb.group({
 			email: new FormControl('', [Validators.required, Validators.email]),
@@ -52,7 +53,7 @@ export class LoginFormComponent implements OnInit {
 					this.myForm.reset();
 					this.modalService.dismissAll();
 					this.authService.isAuthSubject.next(true);
-					this.router.navigate(['/home']);
+					this.router.navigate(['../home']);
 				},
 				error: (error) => {
 					if (error.status == 400)

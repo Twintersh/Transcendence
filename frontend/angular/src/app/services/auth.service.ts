@@ -1,9 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ActivatedRouteSnapshot, RouterStateSnapshot, Router, UrlTree } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, Router, UrlTree } from '@angular/router';
 
-import { catchError, map } from 'rxjs/operators';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Subject, Observable, map, take, first } from 'rxjs';
 
 import { CookieService } from './cookie.service'; 
 import { LocalDataManagerService } from './local-data-manager.service';
@@ -16,7 +15,7 @@ import { User } from '../models/user.model';
 export class AuthService {
 
 	window = window;
-	isAuthSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+	isAuthSubject: Subject<boolean> = new Subject<boolean>;
 	isAuth$: Observable<boolean> = this.isAuthSubject.asObservable();
 
 	constructor(
@@ -61,29 +60,20 @@ export class AuthService {
 	}
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-		return true;
-		this.isAuth$.subscribe((isAuth) => {
-			if (!isAuth) {
-				console.log('Unauthorized. Redirecting to landing page...');
-				return this.router.parseUrl('/');
-			}
-			else {
-				console.log('Authorized. Redirecting to the requested page...');
-				return true;
-			}
-		});
+		return this.isAuth();
 	}
 
-	public isAuth(): void {
+	public isAuth(): Observable<boolean> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 		
-		if (!token)
+		if (!token) {
 			this.isAuthSubject.next(false);
+		}
 
 		this.http.get<boolean>('http://127.0.0.1:8000/users/isAuth/', { headers }).subscribe({
 			next: (res) => {
-				this.isAuthSubject.next(res);
+				this.isAuthSubject.next(true);
 			},
 			error: (error) => {
 				if (error.status === 403) {
@@ -93,5 +83,6 @@ export class AuthService {
 				this.isAuthSubject.next(false);
 			}
 		});
+		return this.isAuth$;
 	}
 }
