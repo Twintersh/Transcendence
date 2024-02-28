@@ -5,7 +5,7 @@
 			<div class="usercard sticky-top">
 				<div class="backpanel">
 					<h2> {{ user.username }} </h2>
-					<div class="row my-4">
+					<div class="row mt-4 mb-5">
 						<div class="col-md-5">
 							<img class="img-fluid" *ngIf="user.avatar" [src]="user.avatar">
 						</div>	
@@ -14,7 +14,7 @@
 							<button class="btn btn-secondary w-100" (click)="editProfile()">Edit Profile</button>
 						</div>
 					</div>
-					<p>Achievements</p>
+					<h5>Achievements</h5>
 					<div class="achievements d-flex justify-content-around">
 						<img src="assets/logo.svg" style="height:45px">
 						<img src="assets/ballgreen.svg" style="height:45px">
@@ -52,15 +52,15 @@
 		</div>
 
 		<div class="col-md-8">
-			<div class="gameList px-4">
-				<h2>Game History</h2>
-				<div class="d-flex-column justify-content-evenly">
-					<div *ngIf="gameList?.length == 0">
-						<h5>No games played yet. Visit home to face your first opponent.</h5>
-					</div>
-					<div class="matchcontainer" *ngFor="let game of gameList">
-						<match [user]="user" [game]="game"></match>
-					</div>
+
+			<h2>Game History</h2>
+			<div class="h-100 px-4 d-flex flex-column justify-content-evenly">
+				<div *ngIf="gameList?.length == 0">
+					<h5>No games played yet...</h5>
+					<h5>Go face your first opponent to see how terrible you are!</h5>
+				</div>
+				<div class="matchcontainer" *ngFor="let game of gameList">
+					<match [user]="user" [game]="game"></match>
 				</div>
 			</div>
 		</div>

@@ -4,28 +4,31 @@
 		<button type="button" class="btn-close" aria-label="Close"></button>
 	</div>
 	<div class="offcanvas-body">
-		<div class="col">
-			<div class="row profile-pic">
-				<img [src]="avatar" alt="avatar" class="profile-pic">
-			</div>
-			<div class="row">
-				<button class="btn btn-primary" type="button" (click)="uploader.click()">Upload</button>
-			</div>
-			<div class="row">
-				<input hidden type="file" #uploader (change)="updateAvatar($event)"/>
-				<form [formGroup]="editForm">
-					<label for="username">Username</label>
-					<input type="username" class="form-control" type='text' formControlName="username" placeholder="Enter new username">
+		<div class="row mb-2">
+			<img [src]="avatar" alt="avatar" class="profile-pic">
+		</div>
+		<div class="row">
+			<button class="btn btn-primary" type="button" (click)="uploader.click()">Upload</button>
+		</div>
+		<div class="row mt-4">
+			<input hidden type="file" #uploader (change)="updateAvatar($event)"/>
+			<form [formGroup]="editForm">
+				<label for="username">Username</label>
+				<input type="username" class="form-control" type='text' formControlName="username" placeholder="Enter new username">
 
-					<label for="password">Password</label>
-					<input type="password" class="form-control" type='text' formControlName="password" placeholder="Enter new password">
-					<label for="password">Confirm Password</label>
-					<input type="password" class="form-control" type='text' formControlName="password" placeholder="Confirm new password">
-				</form>
+				<label for="password">Password</label>
+				<input type="password" class="form-control" type='text' formControlName="password" placeholder="Enter new password">
+				<label for="password">Confirm Password</label>
+				<input type="password" class="form-control" type='text' formControlName="password" placeholder="Confirm new password">
+			</form>
+		</div>
+		<div class="row mt-5">
+			<div class="col-8">
+				<button type="submit" class="btn btn-primary w-100" (click)="submitHandler()">Submit</button>
 			</div>
-			<div class="row buttons">
-				<button type="submit" class="btn btn-primary submit" (click)="submitHandler()">Submit</button>
-				<button class="btn btn-danger" (click)="close()">Cancel</button>
+
+			<div class="col-4">
+				<button class="btn btn-danger w-100" (click)="close()">Cancel</button>
 			</div>
 		</div>
 	</div>

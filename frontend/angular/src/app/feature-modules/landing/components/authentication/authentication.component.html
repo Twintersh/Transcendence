@@ -5,13 +5,15 @@
 		<button type="button" class="btn-close" (click)="close()"></button>
 	</div>
 
+
+	<!--		WHAT IS THAT BCHABOT????		-->
 	<div *ngIf="!signingUp else signupForm" class="modal-body">
 		<div class="row">
-			<div class="col-lg-5 text-center pt-5">
-				<button class="btn btn-primary mt-4 fs-4" type="button" (click)="signUp()">Sign Up</button>
-				<button class="btn btn-secondary mt-4 fs-5" type="button" (click)="sign42()">Log in with 42</button>
+			<div class="col-lg-5 text-center mt-lg-5 mt-0">
+				<button class="btn btn-primary m-2 fs-4" type="button" (click)="signUp()">Sign Up</button>
+				<button class="btn btn-secondary m-2 fs-5" type="button" (click)="sign42()">Log in with 42</button>
 			</div>
-			<div class="col-lg-7">
+			<div class="col-lg-7 order-first order-lg-1">
 				<img class="logo w-100" src="assets/logo.svg" alt="pongo">
 			</div>
 		</div>

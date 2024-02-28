@@ -1,12 +1,14 @@
 /* Header Styles */
-header {
+.header-logo {
 	font-size: 10rem;
     color: #FD8743;
 	display: flex;
     justify-content: center;
     align-items: center;
 
-	.logo {
+	img {
+
+
 		//border-radius: 50%;
    		//box-shadow: 5px 5px 0px black;
 		margin: 0rem 0.5rem;
@@ -18,7 +20,8 @@ header {
 }
 
 .landing-header {
-	height: 83vh;
+	min-height: 80vh;
+	margin-bottom: 100px;
 }
 
 .landing-content {

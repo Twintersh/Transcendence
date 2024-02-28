@@ -2,19 +2,19 @@
 	<div class="modal-header">
 		<h1 class="modal-title fs-3">Login</h1>
 		<button type="button" class="btn-close" (click)="close()"></button>
-</div>
-<div class="modal-body">
-	<form [formGroup]="myForm">
+	</div>
+	<div class="modal-body">
+		<form [formGroup]="myForm">
 
-		<label for="email">Email</label>
-		<input type="email" class="form-control" formControlName="email" placeholder="pongo@pong.com">
+			<label for="email">Email</label>
+			<input type="email" class="form-control" formControlName="email" placeholder="pongo@pong.com">
 
-		<label for="password">Password</label>
-		<input type="password" class="form-control" formControlName="password" placeholder="Enter password">
+			<label for="password">Password</label>
+			<input type="password" class="form-control" formControlName="password" placeholder="Enter password">
 
-	</form>
-</div>
-<div class="modal-footer">
-	<button type="submit" class="btn btn-primary btn-lg w-100"  [disabled]="myForm.invalid" (click)="submitHandler()" data-dismiss="modal">Submit</button>
-</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-primary btn-lg w-100"  [disabled]="myForm.invalid" (click)="submitHandler()" data-dismiss="modal">Submit</button>
+	</div>
 </div>
