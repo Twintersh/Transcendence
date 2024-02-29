@@ -21,4 +21,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Start the Django development server
 EXPOSE 8000
 
+ENV DJANGO_SETTINGS_MODULE=back.settings
+
 ENTRYPOINT ["/usr/bin/django-entrypoint.sh"]
