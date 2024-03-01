@@ -3,45 +3,108 @@
 	<button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="offcanvas"></button>
 </div>
 	
+
+
 <div class="offcanvas-body justify-content-center">
-	<h2>Online</h2>
-	<div class="d-flex-column justify-content-evenly">
-		<div class="list friends" *ngFor="let friend of friends">
-			<div *ngIf="friend.is_active">
-				<h3> {{ friend.username }} </h3>
+
+
+
+	<div class="row">
+
+			<h2 class="p-1 d-flex justify-content-between col-9" *ngIf="sentRequests?.length != 0 || rcvdRequests?.length != 0" (click)="pendingCollapsed = !pendingCollapsed" [attr.aria-expanded]="!pendingCollapsed" aria-controls="collapseExample">
+				Pending <span class="badge text-bg-secondary"> {{ sentRequests.length + rcvdRequests.length }}</span>
+			</h2>
+			<div #collapse="ngbCollapse" [(ngbCollapse)]="pendingCollapsed">
+
+				<ul class="list-group list-group-flush">
+					<li class="list-group-item bg-transparent sentRequest" *ngFor="let sentRequest of sentRequests">Invite sent to {{ sentRequest.toUser.username }} </li>
+					<li class="d-flex align-items-center justify-content-between list-group-item bg-transparent rcvdRequest" *ngFor="let rcvdRequest of rcvdRequests"> Received invite from {{ rcvdRequest.fromUser.username }} <button class="btn btn-primary" (click)="acceptFriend(rcvdRequest.fromUser.username)">Accept</button></li>
+				</ul>
+
 			</div>
-		</div>
+
+
+	</div>
+
+
+	<h2 class="p-1">Online</h2>
+	<div class="d-flex-column justify-content-evenly mb-3">
+
+		<ul class="list-group list-group-flush px-2">
+			
+			<li *ngIf="friends?.length == 0" class="list-group-item bg-transparent border-0">
+				You've got no friends for now!
+			</li>
+
+			<li ngbDropdown class="d-inline-block w-100 border-0">
+				<button type="button" class="btn btn-outline-secondary w-100" id="addFriendDropDown" ngbDropdownToggle>
+					Add a new friend
+				</button>
+				<div ngbDropdownMenu aria-labelledby="addFriendDropDown" class="p-1 w-100 border-0">
+					
+	
+						<form class="w-100" [formGroup]="myForm">
+							<input type="text" class="form-control" formControlName="username" placeholder="Enter username">
+						</form>
+						<button class="w-100 btn btn-primary" type="button" (click)="addFriend()">Add new friend</button>
+	
+	
+				</div>
+			</li>
+
+
+			<li class="list-group-item bg-transparent border-0" *ngFor="let friend of friends">
+				<div *ngIf="friend.is_active">
+					<div ngbDropdown class="d-inline-block w-100">
+						<a class="btn btn-secondary dropdown-toggle w-100" href="#" role="button" data-bs-toggle="dropdown" id="{dropdown${friend.username}}" ngbDropdownToggle>
+							{{ friend.username }}
+						</a>
+						<div ngbDropdownMenu aria-labelledby={#dropdown${friend.username}}>
+							<button ngbDropdownItem>Message</button>
+							<button ngbDropdownItem>Delete</button>
+							<button ngbDropdownItem>Something else</button>
+						</div>
+					</div>
+				</div>
+			</li>
+
+		</ul>
 	</div>
 	
-	<h2 (click)="pendingCollapsed = !pendingCollapsed" [attr.aria-expanded]="!pendingCollapsed" aria-controls="collapseExample">
-		Pending
-	</h2>
-	<div #collapse="ngbCollapse" [(ngbCollapse)]="pendingCollapsed">
-		<div class="d-flex-column justify-content-evenly">
-			<div class="list sentRequest" *ngFor="let sentRequest of sentRequests">
-				<span> Invite sent to {{ sentRequest.toUser.username }} </span>
-			</div>
-			<div class="list rcvdRequest" *ngFor="let rcvdRequest of rcvdRequests">
-				<span> Received invite from {{ rcvdRequest.fromUser.username }} </span>
-				<button class="btn btn-primary" (click)="acceptFriend(rcvdRequest.fromUser.username)">Accept</button>
-			</div>
-		</div>
-	</div>
-
-	<h2 (click)="offCollapsed = !offCollapsed" [attr.aria-expanded]="!offCollapsed" aria-controls="collapseExample">
+	<h2 class="p-1" (click)="offCollapsed = !offCollapsed" [attr.aria-expanded]="!offCollapsed" aria-controls="collapseExample">
 		Offline
 	</h2>
-	<div class="d-flex-column justify-content-evenly">
+	<div class="d-flex-column justify-content-evenly px-2">
 		<div class="friends" *ngFor="let friend of friends">
 			<div *ngIf="!friend.is_active">
-				<h3> {{ friend.username }} </h3>
+				<h4>- {{ friend.username }} </h4>
 			</div>
 		</div>
 	</div>
 
 
-	<form class="mt-4" [formGroup]="myForm">
+
+	<!-- <div ngbDropdown class="d-inline-block">
+
+		<a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" id="addFriendDropDown" ngbDropdownToggle>
+			Add
+		</a>
+		<div ngbDropdownMenu aria-labelledby="addFriendDropDown">
+			<div class="mb-3">
+				<input type="text" class="form-control" placeholder="Friend Name" aria-label="Friend Name" aria-describedby="addFriendSubmit">
+				<button class="btn btn-outline-secondary" type="button" id="addFriendSubmit">Button</button>
+			</div>
+		</div>
+	</div> -->
+
+
+
+
+
+
+	<!-- <form class="mt-4" [formGroup]="myForm">
 		<input type="text" class="form-control" formControlName="username" placeholder="Enter username">
 	</form>
-	<button class="btn btn-primary btn-lg w-100" type="button" (click)="addFriend()">Add new friend</button>
+	<button class="btn btn-primary btn-lg w-100" type="button" (click)="addFriend()">Add new friend</button> -->
+
 </div>

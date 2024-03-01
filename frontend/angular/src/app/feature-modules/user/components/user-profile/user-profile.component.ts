@@ -66,4 +66,17 @@ export class UserProfileComponent implements OnInit {
 			(error) => {}
 		);
 	}
+
+
+
+	// pongoProgressBar(): void {
+
+	// 	nbrGames = 5;
+		
+	// 	if (user.MatchesCount >= nbrGames)
+	// 		//spawn won button.
+	// 	else
+	// 		progressBarWidth = (user.MatchesCount / nbrGames) * 100;
+	// }
+
 }

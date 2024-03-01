@@ -21,3 +21,10 @@ h2 {
 	box-shadow: 5px 5px 0px 0px #000;
 	background-color: #9D95E7;
 }
+
+#addFriendDropdown , .btn-primary , .btn-primary:active , input , input:hover, input:focus{
+	box-shadow: none !important;
+	transform: translate(0px, 0px);
+	margin: 0;
+	border: 0 !important;
+}
