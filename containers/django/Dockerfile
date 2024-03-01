@@ -17,6 +17,7 @@ COPY ./requirements.txt .
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -U 'Twisted[tls,http2]'
 
 # Start the Django development server
 EXPOSE 8000
