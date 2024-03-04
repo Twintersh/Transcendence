@@ -6,15 +6,15 @@ import { PageNotFoundComponent } from './shared-modules/shared/pagenotfound/page
 import { UserProfileComponent } from './feature-modules/user/components/user-profile/user-profile.component';
 import { GameComponent } from './feature-modules/game/components/game/game.component';
 import { ChatComponent } from './feature-modules/chat/components/chat/chat.component';
-import { AuthService } from './services/auth.service';
+import { authGuard } from './guards/auth.guard';
 
 const routes: Routes = [
 	{ path: '', component: LandingComponent },
-	{ path: 'home', component: HomeComponent, canActivate: [AuthService] },
-	{ path: 'user', component: UserProfileComponent, canActivate: [AuthService] },
-	{ path: 'game/:matchId', component: GameComponent, canActivate: [AuthService] },
-	{ path: 'game/local/:matchId', component: GameComponent, canActivate: [AuthService] },
-	{ path: 'chat', component: ChatComponent, canActivate: [AuthService] },
+	{ path: 'home', component: HomeComponent, canActivate: [authGuard] },
+	{ path: 'user', component: UserProfileComponent, canActivate: [authGuard] },
+	{ path: 'game/:matchId', component: GameComponent, canActivate: [authGuard] },
+	{ path: 'game/local/:matchId', component: GameComponent, canActivate: [authGuard] },
+	{ path: 'chat', component: ChatComponent, canActivate: [authGuard] },
 	{ path: '**', component: PageNotFoundComponent, pathMatch: 'full' }
 ];
 

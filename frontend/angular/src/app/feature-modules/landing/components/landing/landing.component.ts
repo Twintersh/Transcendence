@@ -1,7 +1,7 @@
-import { Component, OnInit, booleanAttribute } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { map } from 'rxjs/operators';
+import { Subject, takeUntil } from 'rxjs';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -18,6 +18,8 @@ import { AuthenticationComponent } from '../authentication/authentication.compon
 
 export class LandingComponent implements OnInit {
 
+	private destroy$ = new Subject<void>();
+
 	constructor(
 		private authService: AuthService,
 		private router: Router,
@@ -29,25 +31,22 @@ export class LandingComponent implements OnInit {
 		if (this.router.url.includes('?token=')) {
 			console.log('token:', this.router.url.split('=')[1]);
 			this.cookieService.saveCookie('authToken', this.router.url.split('=')[1]);
-			this.isAuth();
 		}
-		else {
-			this.isAuth();
-		}
-	}
-
-	isAuth(): void {
-		this.authService.isAuth$.subscribe(isAuth => {
-			console.log('isAuth:', isAuth);
-		});
-		this.authService.isAuth$.subscribe(isAuth => {
-			if (isAuth) {
-				this.router.navigate(['../home']);
+		this.authService.isAuth().subscribe({
+			next: (isAuth) => {
+				if (isAuth) {
+					this.router.navigate(['/home']);
+				}
 			}
 		});
 	}
 
 	signup(): void {
 		this.modalService.open(AuthenticationComponent, { centered: true });
+	}
+
+	ngOnDestroy() {
+		this.destroy$.next();
+		this.destroy$.complete();
 	}
 }

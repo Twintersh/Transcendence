@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, RouterStateSnapshot, Router, UrlTree } from '@angular/router';
+import { Router } from '@angular/router';
 
-import { Subject, Observable, map, take, first } from 'rxjs';
+import { Subject, Observable, map, of, catchError, BehaviorSubject, tap } from 'rxjs';
 
 import { CookieService } from './cookie.service'; 
 import { LocalDataManagerService } from './local-data-manager.service';
@@ -15,7 +15,7 @@ import { User } from '../models/user.model';
 export class AuthService {
 
 	window = window;
-	isAuthSubject: Subject<boolean> = new Subject<boolean>;
+	isAuthSubject: Subject<boolean> = new Subject<boolean>();
 	isAuth$: Observable<boolean> = this.isAuthSubject.asObservable();
 
 	constructor(
@@ -28,7 +28,10 @@ export class AuthService {
 	}
 
   	public signup(newUser: User) {
-		return this.http.post('http://127.0.0.1:8000/users/signup/', newUser)
+		return this.http.post('http://127.0.0.1:8000/users/signup/', newUser).pipe(
+			tap(() => {
+				this.isAuthSubject.next(true); })
+		);
 	}	
 
 	public signup42() {
@@ -56,11 +59,10 @@ export class AuthService {
 	login(loginData: { email: string; password: string }): Observable<any> {
 		const headers = new HttpHeaders();
 
-		return this.http.post('http://127.0.0.1:8000/users/login/', loginData, { headers });
-	}
-
-	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-		return this.isAuth();
+		return this.http.post('http://127.0.0.1:8000/users/login/', loginData, { headers }).pipe(
+			tap(() => {
+				this.isAuthSubject.next(true); })
+		);
 	}
 
 	public isAuth(): Observable<boolean> {
@@ -69,20 +71,18 @@ export class AuthService {
 		
 		if (!token) {
 			this.isAuthSubject.next(false);
+			return of(false);
 		}
-
-		this.http.get<boolean>('http://127.0.0.1:8000/users/isAuth/', { headers }).subscribe({
-			next: (res) => {
-				this.isAuthSubject.next(true);
-			},
-			error: (error) => {
+	
+		return this.http.get<boolean>('http://127.0.0.1:8000/users/isAuth/', { headers }).pipe(
+			map(res => true),
+			catchError(error => {
 				if (error.status === 403) {
 					console.log('Unauthorized error. Redirecting to landing page...');
-					this.isAuthSubject.next(false);
 				}
 				this.isAuthSubject.next(false);
-			}
-		});
-		return this.isAuth$;
+				return of(false);
+			})
+		);
 	}
 }
