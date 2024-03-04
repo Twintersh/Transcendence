@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
-
+import { ActivatedRoute } from '@angular/router';
 import { NgbOffcanvas, NgbOffcanvasRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { Observable } from 'rxjs';
@@ -20,6 +20,7 @@ import { MatchComponent } from '../match/match.component';
   encapsulation: ViewEncapsulation.None
 })
 export class UserProfileComponent implements OnInit {
+	id: number = 0;
 	user: User = {} as User;
 	gameList: Game[] | null = null;
 	gameList$: Observable<Game[] | null> | null = null;
@@ -28,20 +29,31 @@ export class UserProfileComponent implements OnInit {
 
 	constructor(
 		private offcanvas: NgbOffcanvas,
-		private userService: UserService
+		private userService: UserService,
+		private route: ActivatedRoute
 	) { }
 
 	ngOnInit(): void {
-		this.userService.userInfo$.subscribe({
-			next: (response: User) => {
-				if (response && Object.keys(response).length >  0) {
-					this.user = response;
-					const avatarUrl = response.avatar['image' as keyof typeof response.avatar];
-					this.user.avatar = 'http://127.0.0.1:8000/' + avatarUrl;
-				}
+		this.route.url.subscribe({
+			next: (url) => {
+				this.id = parseInt(url[1].path);
+				console.log('this id is:', this.id);
 			},
 			error: (error) => {
 			  console.error('Fetch data user failed:', error);
+			},
+		});
+		this.userService.getUserInfosById(this.id).subscribe({
+			next: (response: User) => {
+				if (this.id != 0) {
+					this.user = response;
+					console.log('id:', this.id);
+					console.log('user:', response);
+				}
+				//this.user.avatar = 'http://127.0.0.1:8000' + response.avatar;
+			},
+			error: (error) => {
+				console.error('Fetch data user failed:', error);
 			},
 		});
 		this.gameList$ = this.userService.getUserMatches();
@@ -66,8 +78,6 @@ export class UserProfileComponent implements OnInit {
 			(error) => {}
 		);
 	}
-
-
 
 	// pongoProgressBar(): void {
 

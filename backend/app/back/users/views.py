@@ -127,6 +127,17 @@ def getUserInfo(request):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 @parser_classes([MultiPartParser, FileUploadParser])
+def getUserInfoById(request):
+    id = request.query_params.get('id')
+    user = get_object_or_404(User, id=id)
+    serializer = UserInfoSerializer(instance=user)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@swagger_auto_schema(method='GET')
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FileUploadParser])
 def getUserAvatar(request):
     user = request.user
     

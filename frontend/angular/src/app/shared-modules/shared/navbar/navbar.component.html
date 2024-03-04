@@ -18,7 +18,7 @@
 			<!-- Display items in offcanvas if the currentPage is not 'home' -->
 			<ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
 				<li class="nav-item"> <a class="nav-link" aria-current="page" href="/home">Home</a> </li>
-				<li class="nav-item"> <a class="nav-link" href="/user">Profile</a> </li>
+				<li class="nav-item"> <a class="nav-link" (click)="toMyProfile()" data-bs-dismiss="offcanvas">Profile</a> </li>
 				<li class="nav-item"> <a class="nav-link" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFriend" aria-controls="offcanvasFriend">Friends</a></li>
 				<li class="nav-item"> <a class="nav-link" aria-current="page" href="/chat">Chat</a> </li>
 			</ul>

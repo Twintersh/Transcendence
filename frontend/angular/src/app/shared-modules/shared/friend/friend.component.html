@@ -3,12 +3,7 @@
 	<button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="offcanvas"></button>
 </div>
 	
-
-
 <div class="offcanvas-body justify-content-center">
-
-
-
 	<div class="row">
 
 			<h2 class="p-1 d-flex justify-content-between col-9" *ngIf="sentRequests?.length != 0 || rcvdRequests?.length != 0" (click)="pendingCollapsed = !pendingCollapsed" [attr.aria-expanded]="!pendingCollapsed" aria-controls="collapseExample">
@@ -22,10 +17,7 @@
 				</ul>
 
 			</div>
-
-
 	</div>
-
 
 	<h2 class="p-1">Online</h2>
 	<div class="d-flex-column justify-content-evenly mb-3">
@@ -62,7 +54,7 @@
 						<div ngbDropdownMenu aria-labelledby={#dropdown${friend.username}}>
 							<button ngbDropdownItem>Message</button>
 							<button ngbDropdownItem>Delete</button>
-							<button ngbDropdownItem>Something else</button>
+							<button ngbDropdownItem (click)="toUserProfile(friend)">User profile</button>
 						</div>
 					</div>
 				</div>

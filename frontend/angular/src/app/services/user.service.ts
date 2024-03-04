@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 
 import { Observable, BehaviorSubject } from 'rxjs';
 
@@ -34,6 +34,15 @@ export class UserService {
 			this.localDataManager.saveData('userName', user.username);
 			this.localDataManager.saveData('userAvatar', user.avatar);
 		});
+	}
+
+	public getUserInfosById(id: number): Observable<User> {
+		const token = this.cookieService.getCookie('authToken');
+		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+		let params = new HttpParams().set('id', id.toString());
+
+		return this.http.get<User>('http://127.0.0.1:8000/users/getUserInfoById/', { headers, params });
 	}
 
 	public getUserMatches(): Observable<Game[]> {

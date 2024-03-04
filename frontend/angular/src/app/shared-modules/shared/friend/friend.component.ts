@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
 
 import { FriendService } from 'src/app/services/friend.service';
 import { ToastService } from 'src/app/services/toast.service';
+import { UserService } from 'src/app/services/user.service';
+
 import { User } from 'src/app/models/user.model';
 
 
@@ -23,7 +27,10 @@ export class FriendComponent implements OnInit {
 	constructor(
 		private readonly friendService: FriendService,
 		private readonly fb: FormBuilder,
-		private readonly toastService: ToastService
+		private readonly toastService: ToastService,
+		private readonly userService: UserService,
+		private readonly offcanvas: NgbOffcanvas,
+		private readonly router: Router
 	) {
 		this.myForm = this.fb.group({
 			username: new FormControl('', Validators.required)
@@ -80,5 +87,12 @@ export class FriendComponent implements OnInit {
 				this.toastService.showError('Failed to accept friend request.');
 			}
 		);
+	}
+
+	toUserProfile(friend: User): void {
+		if (friend) {
+			this.offcanvas.dismiss();
+			this.router.navigate(['/user/' + friend.id]);
+		}
 	}
 }

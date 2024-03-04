@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
+
+import { map, tap } from 'rxjs';
 
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 
-import { map, tap } from 'rxjs';
+import { AuthService } from '../../../services/auth.service';
+import { UserService } from '../../../services/user.service';
+
+import { User } from '../../../models/user.model';
 
 @Component({
   selector: 'navbar',
@@ -13,12 +17,13 @@ import { map, tap } from 'rxjs';
 })
 export class NavbarComponent implements OnInit {
 	isAuthenticated: boolean = false;
-	userAvatar?: string;
+	userId: number = 0;
 
 	constructor(
 		private router: Router, 
 		public authService: AuthService,
-		private offcanvas: NgbOffcanvas
+		private offcanvas: NgbOffcanvas,
+		private userService: UserService
 	) { }
 
 	ngOnInit() {
@@ -40,6 +45,18 @@ export class NavbarComponent implements OnInit {
 		this.isAuthenticated = false;
 		this.authService.isAuthSubject.next(false);
 		this.router.navigate(['/']);
+	}
+
+	toMyProfile(): void {
+		this.userService.userInfo$.subscribe({
+			next: (response) => {
+				if (response && Object.keys(response).length > 0) {
+					this.userId = response.id;
+				}
+			}
+		});
+		this.offcanvas.dismiss();
+		this.router.navigate(['/user/' + this.userId]);
 	}
 
 	ngOnDestroy() {
