@@ -1,9 +1,7 @@
-<div class="offcanvas-header">
-	<h4 class="offcanvas-title">Friends</h4>
-	<button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="offcanvas"></button>
-</div>
-	
-<div class="offcanvas-body justify-content-center">
+
+
+
+
 	<div class="row">
 
 			<h2 class="p-1 d-flex justify-content-between col-9" *ngIf="sentRequests?.length != 0 || rcvdRequests?.length != 0" (click)="pendingCollapsed = !pendingCollapsed" [attr.aria-expanded]="!pendingCollapsed" aria-controls="collapseExample">
@@ -19,33 +17,21 @@
 			</div>
 	</div>
 
+
+
+
+
+
 	<h2 class="p-1">Online</h2>
 	<div class="d-flex-column justify-content-evenly mb-3">
 
-		<ul class="list-group list-group-flush px-2">
+		<div class="px-2">
 			
-			<li *ngIf="friends?.length == 0" class="list-group-item bg-transparent border-0">
+			<div *ngIf="friends?.length == 0" class="d-inline-block w-100 my-1">
 				You've got no friends for now!
-			</li>
+			</div>
 
-			<li ngbDropdown class="d-inline-block w-100 border-0">
-				<button type="button" class="btn btn-outline-secondary w-100" id="addFriendDropDown" ngbDropdownToggle>
-					Add a new friend
-				</button>
-				<div ngbDropdownMenu aria-labelledby="addFriendDropDown" class="p-1 w-100 border-0">
-					
-	
-						<form class="w-100" [formGroup]="myForm">
-							<input type="text" class="form-control" formControlName="username" placeholder="Enter username">
-						</form>
-						<button class="w-100 btn btn-primary" type="button" (click)="addFriend()">Add new friend</button>
-	
-	
-				</div>
-			</li>
-
-
-			<li class="list-group-item bg-transparent border-0" *ngFor="let friend of friends">
+			<!-- <li class="d-inline-block w-100 my-1" *ngFor="let friend of friends">
 				<div *ngIf="friend.is_active">
 					<div ngbDropdown class="d-inline-block w-100">
 						<a class="btn btn-secondary dropdown-toggle w-100" href="#" role="button" data-bs-toggle="dropdown" id="{dropdown${friend.username}}" ngbDropdownToggle>
@@ -58,9 +44,26 @@
 						</div>
 					</div>
 				</div>
-			</li>
+			</li> -->
 
-		</ul>
+			<div class="d-inline-block w-100 my-1" *ngFor="let friend of friends">
+				<div *ngIf="friend.is_active">
+					<div ngbDropdown class="d-inline-block w-100">
+						<div class="w-100 d-flex justify-content-between bg-secondary p-2 friend">
+							{{ friend.username }}
+							<div>
+
+								<a href="#"><img class="mx-1" height="16px" width="16px" src="assets/chat/chat-left-text.svg"></a>
+								<a href="#"><img class="mx-1" height="16px" width="16px" src="assets/chat/file-earmark-person.svg"></a>
+								<a href="#"><img class="mx-1" height="16px" width="16px" src="assets/chat/person-slash.svg"></a>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
 	</div>
 	
 	<h2 class="p-1" (click)="offCollapsed = !offCollapsed" [attr.aria-expanded]="!offCollapsed" aria-controls="collapseExample">
@@ -76,18 +79,26 @@
 
 
 
-	<!-- <div ngbDropdown class="d-inline-block">
 
-		<a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" id="addFriendDropDown" ngbDropdownToggle>
-			Add
-		</a>
-		<div ngbDropdownMenu aria-labelledby="addFriendDropDown">
-			<div class="mb-3">
-				<input type="text" class="form-control" placeholder="Friend Name" aria-label="Friend Name" aria-describedby="addFriendSubmit">
-				<button class="btn btn-outline-secondary" type="button" id="addFriendSubmit">Button</button>
-			</div>
+
+	<div ngbDropdown class="d-inline-block w-100 mt-4">
+		<button type="button" class="btn btn-secondary w-100" id="addFriendDropDown" ngbDropdownToggle>
+			Add a new friend
+		</button>
+		<div ngbDropdownMenu aria-labelledby="addFriendDropDown" class="p-1 w-100 border-0">
+			
+
+				<form class="w-100" [formGroup]="myForm">
+					<input type="text" class="form-control" formControlName="username" placeholder="Enter username">
+				</form>
+				<button class="w-100 btn btn-primary" type="button" (click)="addFriend()">Add new friend</button>
+
+
 		</div>
-	</div> -->
+	</div>
+
+
+
 
 
 
@@ -98,5 +109,3 @@
 		<input type="text" class="form-control" formControlName="username" placeholder="Enter username">
 	</form>
 	<button class="btn btn-primary btn-lg w-100" type="button" (click)="addFriend()">Add new friend</button> -->
-
-</div>

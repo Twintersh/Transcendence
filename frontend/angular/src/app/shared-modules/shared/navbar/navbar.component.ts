@@ -1,17 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgModule, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { map, tap } from 'rxjs';
+
 
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 
 import { AuthService } from '../../../services/auth.service';
 import { UserService } from '../../../services/user.service';
 
-import { User } from '../../../models/user.model';
+import { FriendComponent } from '../friend/friend.component';
+
+
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'navbar',
+  standalone: true,
+  imports: [
+	CommonModule,
+	NgbModule,
+	FriendComponent,
+	FormsModule,
+	ReactiveFormsModule
+	],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
@@ -20,7 +34,7 @@ export class NavbarComponent implements OnInit {
 	userId: number = 0;
 
 	constructor(
-		private router: Router, 
+		private router: Router,
 		public authService: AuthService,
 		private offcanvas: NgbOffcanvas,
 		private userService: UserService

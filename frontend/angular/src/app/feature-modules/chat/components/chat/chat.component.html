@@ -1,32 +1,33 @@
 <div class="container-fluid h-50">
-	<div class="row">
-		<div class="col col-md-3">
+	<div class="row gx-5">
+		<div class="col-lg-3">
 			<div class="backpanel">
-				<h2>Friends</h2>
+				<!-- <h2>Friends</h2>
 				<ul class="friendsList">
 					<li class="friend" *ngFor="let friend of friends">
 						<img class="img-fluid" [src]="friend.avatar">
 						<h3 [class.selected]="friend === selectedFriend" (click)="onSelect(friend)">{{friend.username}}</h3>
 					</li>
-				</ul>
+				</ul> -->
+
+				<app-friend></app-friend>
+
 			</div>
 		</div>
 
-		<div class="col col-md-8">
-			<div class="row backpanel container-fluid">
+		<div class="col-lg-8">
+			<div id="ChatBox" class="row backpanel container-fluid">
 				<h2>Chat</h2>
-			</div>
-			<div class="row messages container-fluid">
 				<app-messages *ngIf="selectedFriend" [friend]="selectedFriend"></app-messages>
 			</div>
-			<div class="row backpanel container-fluid">
-				<div class="col col-md-10">
+			<div id="ChatInput" *ngIf="selectedFriend" class="row messages backpanel container-fluid">
+				<div class="col-md-10">
 					<form [formGroup]="myForm" >
 						<input type="text" id="text" class="form-control" formControlName="message" placeholder="Hey P'ierre, you wanna come out here ?">
 					</form>
 				</div>
-				<div class="col col-md-2">
-					<button class="btn btn-primary" type="button" (click)="sendMessage()">Send</button>
+				<div class="col-md-2">
+					<button class="btn btn-primary w-100" type="button" (click)="sendMessage()">Send</button>
 				</div>
 		</div>
 	</div>

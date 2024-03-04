@@ -5,7 +5,6 @@
 	</a>
 	<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
 		<span class="navbar-toggler-icon"></span>
-		<span class="badge badge-danger">4</span>
 	</button>
 
 	<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
@@ -26,6 +25,15 @@
 		</div>
 	</div>	
 	<div class="offcanvas offcanvas-end offcanvasFriend" tabindex="-1" id="offcanvasFriend" aria-labelledby="offcanvasFriend">
-		<app-friend></app-friend>
+		<div class="offcanvas-header">
+			<h4 class="offcanvas-title">Friends</h4>
+			<button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="offcanvas"></button>
+		</div>
+			
+		
+		<div class="offcanvas-body justify-content-center">
+			<app-friend></app-friend>
+		</div>
 	</div>
 </nav>
+

@@ -34,14 +34,14 @@ export class ChatComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.FriendSubscription = this.friendService.friends$.subscribe((res: any) => {
-			this.friends = res;
-			this.friends.forEach(friend => {
-				this.userService.getUserAvatar().subscribe((res: any) => {
-					friend.avatar = 'http://127.0.0.1:8000' + res.avatar;
-				});
-			});
-		});
+		// this.FriendSubscription = this.friendService.friends$.subscribe((res: any) => {
+		// 	this.friends = res;
+		// 	this.friends.forEach(friend => {
+		// 		this.userService.getUserAvatar().subscribe((res: any) => {
+		// 			friend.avatar = 'http://127.0.0.1:8000' + res.avatar;
+		// 		});
+		// 	});
+		// });
 	}
 
 	sendMessage(): void {

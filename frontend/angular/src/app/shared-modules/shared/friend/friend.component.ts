@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
+import { Component, NgModule, OnInit } from '@angular/core';
+
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FriendService } from 'src/app/services/friend.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -10,8 +12,17 @@ import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/models/user.model';
 
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 @Component({
   selector: 'app-friend',
+  standalone: true,
+  imports: [
+	CommonModule,
+	NgbModule,
+	FormsModule,
+	ReactiveFormsModule
+	],
   templateUrl: './friend.component.html',
   styleUrls: ['./friend.component.scss']
 })

@@ -23,34 +23,36 @@ import { HomeComponent } from './feature-modules/home/components/home/home.compo
 import { QueueModalComponent } from './feature-modules/home/components/queue-modal/queue-modal.component';
 import { AddPlayerModalComponent } from './feature-modules/home/components/add-player-modal/add-player-modal.component';
 import { WinModalComponent } from './feature-modules/game/components/win-modal/win-modal.component';
+import { NavbarComponent } from './shared-modules/shared/navbar/navbar.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomeComponent,
+declarations: [
+	AppComponent,
+	HomeComponent,
 	QueueModalComponent,
 	AddPlayerModalComponent,
 	WinModalComponent
-  ],
-  imports: [
+],
+imports: [
+	NavbarComponent,
 	HttpClientModule,
-    BrowserModule,
+	BrowserModule,
 	BrowserAnimationsModule,
 	CommonModule,
 	FormsModule,
 	ReactiveFormsModule,
-    AppRoutingModule,
-    OAuthModule.forRoot(),
+	AppRoutingModule,
+	OAuthModule.forRoot(),
 	ToastrModule.forRoot(),
-    LandingModule,
-    NgbModule,
-    UserModule,
-    SharedModule,
+	LandingModule,
+	NgbModule,
+	UserModule,
+	SharedModule,
 	ChatModule
-  ],
-  providers: [
+],
+providers: [
 	AuthInterceptor
-  ],
-  bootstrap: [AppComponent]
+],
+bootstrap: [AppComponent]
 })
 export class AppModule { }
