@@ -44,15 +44,19 @@ export class ChatComponent implements OnInit {
 		// });
 	}
 
+
 	sendMessage(): void {
 		if (this.myForm.invalid) {
 			return;
 		}
+		console.log("Attention les amis j'envoie un message!!!!!!!!!!!!!");
 		this.chatService.sendMessage(this.myForm.value);
 		this.myForm.reset();
 	}
 
 	onSelect(friend: User): void {
+		
+		console.log("JE CHANGE DE FRIEND.");
 		this.selectedFriend = friend;
 	}
 }

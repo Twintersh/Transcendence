@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 import { CookieService } from '../services/cookie.service';
+import { Message } from '../models/chat.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,8 @@ export class WebSocketService {
 	readonly queueMessages$: Subject<any> = new Subject<any>();
 
 	private chatSocket: WebSocket = {} as WebSocket;
-	public chatMessages$: Subject<any> = new Subject<any>();
+	private chatMessages: BehaviorSubject<Message[]> = new BehaviorSubject<Message[]>([]);
+	public chatMessages$ = this.chatMessages.asObservable();
 	
 	constructor(
 		private readonly cookieService: CookieService
@@ -73,7 +75,11 @@ export class WebSocketService {
 		}
 
 		this.chatSocket.onmessage = (event) => {
-			this.chatMessages$.next(JSON.parse(event.data));
+			const data: Message[] | {message: Message} = JSON.parse(event.data);
+			if (data instanceof Array)
+				this.chatMessages.next([...this.chatMessages.value, ...data])
+			else
+				this.chatMessages.next([...this.chatMessages.value, data.message])
 		}
 
 		this.chatSocket.onclose = () => {

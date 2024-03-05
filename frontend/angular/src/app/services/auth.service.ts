@@ -15,8 +15,12 @@ import { User } from '../models/user.model';
 export class AuthService {
 
 	window = window;
-	isAuthSubject: Subject<boolean> = new Subject<boolean>();
-	isAuth$: Observable<boolean> = this.isAuthSubject.asObservable();
+	private _isAuthSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+	public isAuth$: Observable<boolean> = this._isAuthSubject.asObservable();
+
+	get isAuthSubject() {
+		return this._isAuthSubject.value;
+	}
 
 	constructor(
 		private readonly http: HttpClient,
@@ -28,9 +32,10 @@ export class AuthService {
 	}
 
   	public signup(newUser: User) {
-		return this.http.post('http://127.0.0.1:8000/users/signup/', newUser).pipe(
+		return this.http.post('http://127.0.0.1:8000/users/signup/', newUser)
+		.pipe(
 			tap(() => {
-				this.isAuthSubject.next(true); })
+				this._isAuthSubject.next(true); })
 		);
 	}	
 
@@ -47,7 +52,7 @@ export class AuthService {
 			  this.cookieService.deleteCookie('authToken');
 			  this.localDataManager.removeData('userName');
 			  this.localDataManager.removeData('userAvatar');
-			  this.isAuthSubject.next(false);
+			  this._isAuthSubject.next(false);
 			},
 			error: (error) => {
 			  // Error: Handle the error if the logout fails
@@ -61,7 +66,7 @@ export class AuthService {
 
 		return this.http.post('http://127.0.0.1:8000/users/login/', loginData, { headers }).pipe(
 			tap(() => {
-				this.isAuthSubject.next(true); })
+				this._isAuthSubject.next(true); })
 		);
 	}
 
@@ -69,10 +74,10 @@ export class AuthService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 		
-		if (!token) {
-			this.isAuthSubject.next(false);
-			return of(false);
-		}
+		// if (!token) {
+		// 	this._isAuthSubject.next(false);
+		// 	return of(false);
+		// }
 	
 		return this.http.get<boolean>('http://127.0.0.1:8000/users/isAuth/', { headers }).pipe(
 			map(res => true),
@@ -80,7 +85,7 @@ export class AuthService {
 				if (error.status === 403) {
 					console.log('Unauthorized error. Redirecting to landing page...');
 				}
-				this.isAuthSubject.next(false);
+				this._isAuthSubject.next(false);
 				return of(false);
 			})
 		);

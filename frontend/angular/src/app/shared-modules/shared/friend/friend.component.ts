@@ -1,6 +1,6 @@
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
-import { Component, NgModule, OnInit } from '@angular/core';
+import { Component, NgModule, OnInit, EventEmitter, Output } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -13,6 +13,7 @@ import { User } from 'src/app/models/user.model';
 
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 
 @Component({
   selector: 'app-friend',
@@ -34,6 +35,8 @@ export class FriendComponent implements OnInit {
 
 	offCollapsed = true;
 	pendingCollapsed = true;
+
+	@Output() friendSelected: EventEmitter<User> = new EventEmitter<User>();
 
 	constructor(
 		private readonly friendService: FriendService,
@@ -59,6 +62,14 @@ export class FriendComponent implements OnInit {
 			this.sentRequests = res;
 		});
 	}
+
+
+
+  
+	onSelect(friend: User) {
+		this.friendSelected.emit(friend);
+	}
+  
 
 	addFriend(): void {
 		if (this.myForm.invalid) {

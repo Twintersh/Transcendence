@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { catchError } from 'rxjs';
 
 import { AuthService } from 'src/app/services/auth.service';
 import { CookieService } from 'src/app/services/cookie.service';
@@ -46,22 +47,18 @@ export class LoginFormComponent implements OnInit {
 
 	submitHandler(): void {
 		if(this.myForm.valid) {
-			this.authService.login(this.myForm.value).subscribe({
-				next: (response) => {
+			this.authService.login(this.myForm.value).pipe(
+				catchError((err) => {
+					// this.modalService.showError("cant login");
+					return err;
+				})
+			).subscribe((response) => {
 					this.cookieService.saveCookie('authToken', response.token);
 					this.toastService.showSuccess('Login successful');
 					this.myForm.reset();
 					this.modalService.dismissAll();
-					this.authService.isAuthSubject.next(true);
 					this.router.navigate(['../home']);
 				},
-				error: (error) => {
-					if (error.status == 400)
-						this.toastService.showError('Wrong password');
-					if (error.status == 404)
-						this.toastService.showError('Email not found');
-				}
-			}
 		)};
 	}
 

@@ -4,15 +4,15 @@
     </div>
 	<div *ngIf="win; else lose" class="modal-body">	
 		<div class="row">
-			<img class="img-fluid" src="../../../../../assets/game/win.svg" alt="win logo">
+			<img height="128px"  width="128px" src="../../../../../assets/game/win.svg" alt="win logo">
 			<h3> You Win </h3>
 		</div>
 		<div class="row">
 			<img class="img-fluid" src="{{ players.player1.avatar }}" alt="avatar" class="avatar">
 			<h3> {{ players.player1.score }} - {{ players.player2.score }} </h3>
-			<h3> {{ gameResult.duration }} </h3>
+			<h3> Time{{ gameResult.duration }}s </h3>
 		</div>
-    </div>
+	</div>
     <div class="modal-footer">
         <button type="button" class="btn btn-danger" (click)="leaveMatch()">Leave match</button>
     </div>
@@ -21,7 +21,7 @@
 <ng-template #lose>
 	<div class="modal-body">	
 		<div class="row">
-			<img class="img-fluid" src="../../../../../assets/game/lose.svg" alt="lose logo">
+			<img height="128px"  width="128px" src="../../../../../assets/game/lose.svg" alt="lose logo">
 			<h3> You Lose </h3>
 		</div>
 		<div class="row">

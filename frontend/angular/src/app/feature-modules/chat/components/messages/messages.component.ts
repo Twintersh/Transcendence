@@ -18,27 +18,30 @@ export class MessagesComponent implements OnInit {
 	private roomId = '';
 
 	constructor(
-		private readonly chatService: ChatService
+		private readonly chatService: ChatService,
 	) { }
 
 	ngOnInit(): void {
-		this.chatService.messages$.subscribe((message: any) => {
-			if (message['history'] != undefined) {
-				message['history'].forEach((msg: any) => {
-					this.messages.push(msg);
-				});
-			}
-			else {
-				this.messages.push(message.message);
-			}
+		this.chatService.messages$.subscribe((message: Message[]) => {
+			this.messages = message;
 		});
+
 	}
 
 	ngOnChanges(): void {
+
+
+
 		this.getRoomName();
-		this.messages = [];
-		this.friend = {} as User;
-		this.chatService.disconnectChat();
+		//this.messages = [];
+		//this.friend = {} as User;
+
+
+		// VVVV TO DO WHEN CHANGING SELECTED FRIEND VVVV
+		// this.chatService.disconnectChat();
+
+
+
 	}
 	
 	getRoomName(): void {

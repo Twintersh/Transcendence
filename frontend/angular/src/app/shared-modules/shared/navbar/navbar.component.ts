@@ -2,7 +2,7 @@ import { Component, NgModule, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { map, tap } from 'rxjs';
+import { filter, map, switchMap, tap } from 'rxjs';
 
 
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
@@ -42,22 +42,15 @@ export class NavbarComponent implements OnInit {
 
 	ngOnInit() {
 		this.authService.isAuth$.pipe(
-			map(isAuth => isAuth),
-			tap(isAuth => this.isAuthenticated = isAuth)
+			filter((isAuth) => isAuth),
+			tap(() => this.isAuthenticated = true),
+			tap(() => console.log(this.isAuthenticated))
 		).subscribe();
-		this.authService.isAuth().subscribe({
-			next: (isAuth) => {
-				if (isAuth) {
-					this.isAuthenticated = true;
-				}
-			}
-		});
 	}
 	
 	logout(): void {
 		this.authService.logout();
 		this.isAuthenticated = false;
-		this.authService.isAuthSubject.next(false);
 		this.router.navigate(['/']);
 	}
 

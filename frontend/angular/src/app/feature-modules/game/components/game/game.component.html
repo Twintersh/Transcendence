@@ -1,6 +1,6 @@
-<div class="container text-center">
+<!-- <div class="container text-center">
 	<div class="row">
-	  <div class="col">
+	  <div class="col-xl-2">
 		<div class="row">
 			<img class="img-fluid" [src]="players.player1.avatar" alt="Player1 Avatar">
 			<h4> {{ players.player1.username }} </h4>
@@ -9,7 +9,7 @@
 		</div>
 	  </div>
 
-	  <div class="col-8">
+	  <div class="col-xl-8">
 		<canvas #pongCanvas width="640" height="480" style="position: relative; margin:0 auto;"></canvas>
 		<img #background src="assets/game/background.svg" style="display:none">
 		<img #paddleLeft src="assets/game/paddleLeft.svg" style="display:none">
@@ -17,13 +17,38 @@
 		<img #gameBall src="assets/game/ball.svg" style="display:none">
 	  </div>
 
-	  <div class="col">
+	  <div class="col-xl-2">
 		<div class="row">
 			<img class="img-fluid" [src]="players.player2.avatar" alt="Player2 Avatar">
 			<h4> {{ players.player2.username }} </h4>
-			<h4>Score</h4>
+			<h4> Score </h4>
 			<h4> {{ players.player2.score }} </h4>
 		</div>
 	  </div>
+	</div>
+</div> -->
+
+
+<div class="container-fluid text-center">
+
+	<div class="row">
+		<div class="d-flex justify-content-center">
+			<img class="avatar" width="64px" height="64px" [src]="players.player1.avatar" alt="Player1 Avatar">
+			<div>
+				<h4> {{ players.player1.username }}VS.{{ players.player2.username }} </h4>
+				<h4> {{ players.player1.score }} - {{ players.player2.score }} </h4>
+			</div>
+			<img class="avatar" width="64px" height="64px" [src]="players.player2.avatar" alt="Player2 Avatar">
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="canvas-wrapper">
+			<canvas #pongCanvas width="640" height="480"></canvas>
+			<img #background src="assets/game/background.svg" style="display:none">
+			<img #paddleLeft src="assets/game/paddleLeft.svg" style="display:none">
+			<img #paddleRight src="assets/game/paddleRight.svg" style="display:none">
+			<img #gameBall src="assets/game/ball.svg" style="display:none">
+		</div>
 	</div>
 </div>

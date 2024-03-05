@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { WebSocketService } from './websocket.service';
 import { CookieService } from './cookie.service';
@@ -13,8 +13,8 @@ import { Message } from '../models/chat.model';
   providedIn: 'root'
 })
 export class ChatService {
-
-	readonly messages$: Subject<any> = this.webSocketService.chatMessages$;
+	private _messages: Message[] = [];
+	public messages$ = this.webSocketService.chatMessages$;
 
 	constructor (
 		private readonly http: HttpClient,
@@ -24,8 +24,8 @@ export class ChatService {
 
 	// passer en observable sur un tableau de messages, c'est mieux
 	ngOnInit(): void {
-		this.webSocketService.chatMessages$.subscribe((message: any) => {
-			this.messages$.next(message);
+		this.webSocketService.chatMessages$.subscribe((message: Message[]) => {
+			this._messages = message
 		});
 	}
 

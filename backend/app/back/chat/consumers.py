@@ -15,7 +15,7 @@ def save_message(room_name, content, sender):
 def get_history(room_name):
 	history = []
 	room = Room.objects.get(id=room_name)
-	messages = Message.objects.filter(room=room).order_by('timestamp')[:10]
+	messages = Message.objects.filter(room=room).order_by('timestamp')
 	for message in messages:
 		history.append({'sender' : message.sender.username, 'content' : message.content})
 	return history

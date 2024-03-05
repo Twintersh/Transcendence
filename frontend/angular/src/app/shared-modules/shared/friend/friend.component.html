@@ -49,7 +49,7 @@
 			<div class="d-inline-block w-100 my-1" *ngFor="let friend of friends">
 				<div *ngIf="friend.is_active">
 					<div ngbDropdown class="d-inline-block w-100">
-						<div class="w-100 d-flex justify-content-between bg-secondary p-2 friend">
+						<div class="w-100 d-flex justify-content-between bg-secondary p-2 friend" (click)="onSelect(friend)">
 							{{ friend.username }}
 							<div>
 
