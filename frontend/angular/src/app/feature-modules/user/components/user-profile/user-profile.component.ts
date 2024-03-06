@@ -37,27 +37,25 @@ export class UserProfileComponent implements OnInit {
 		this.route.url.subscribe({
 			next: (url) => {
 				this.id = parseInt(url[1].path);
-				console.log('this id is:', this.id);
 			},
 			error: (error) => {
 			  console.error('Fetch data user failed:', error);
 			},
 		});
-		if (this.id != 0) {
-			this.userService.getUserInfosById(this.id).subscribe({
-				next: (response: User) => {
-					
-						this.user = response;
-						console.log('user:', response);
-						this.SetPongoProgressBar();
-					
-					//this.user.avatar = 'http://127.0.0.1:8000' + response.avatar;
-				},
-				error: (error) => {
-					console.error('Fetch data user failed:', error);
-				},
-			});
-		}
+		this.userService.getUserInfosById(this.id).subscribe({
+			next: (response: User) => {
+				if (this.id != 0) {
+					console.log('this id is:', this.id);
+					console.log('user:', response);
+					this.user = response;
+					this.SetPongoProgressBar();
+				}
+				//this.user.avatar = 'http://127.0.0.1:8000' + response.avatar;
+			},
+			error: (error) => {
+				console.error('Fetch data user failed:', error);
+			},
+		});
 		this.gameList$ = this.userService.getUserMatches(this.id);
 		this.gameList$.subscribe({
 			next: (response: any) => {

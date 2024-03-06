@@ -42,7 +42,7 @@ export class UserService {
 
 		let params = new HttpParams().set('id', id.toString());
 
-		return this.http.get<User>('http://127.0.0.1:8000/users/getUserInfoById/', { headers, params });
+		return this.http.get<User>('http://127.0.0.1:8000/users/getUserInfoById', { headers, params });
 	}
 
 	public getUserMatches(id: number): Observable<Game[]> {

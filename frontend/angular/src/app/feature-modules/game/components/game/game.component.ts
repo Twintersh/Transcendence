@@ -61,18 +61,20 @@ export class GameComponent implements OnInit {
 		if (this.router.url.includes('local') || this.router.url.includes('tournament'))
 			this.local = true;
 		
-		this.gameService.getPlayers(this.gameElements.id).subscribe((res: any) => {
-			this.players.player1 = res.player1;
-			this.players.player1.avatar = 'http://127.0.0.1:8000' + this.players.player1.avatar;
-			if (this.local) {
-				this.players.player2.username = this.gameService.localOpp;
-				this.players.player2.avatar = this.players.player1.avatar;
-			}
-			else {
-				this.players.player2 = res.player2;
-				this.players.player2.avatar = 'http://127.0.0.1:8000' + this.players.player2.avatar;
-			}
-		});
+		if (!this.router.url.includes('tournament')) {
+			this.gameService.getPlayers(this.gameElements.id).subscribe((res: any) => {
+				this.players.player1 = res.player1;
+				this.players.player1.avatar = 'http://127.0.0.1:8000' + this.players.player1.avatar;
+				if (this.local) {
+					this.players.player2.username = this.gameService.localOpp;
+					this.players.player2.avatar = this.players.player1.avatar;
+				}
+				else {
+					this.players.player2 = res.player2;
+					this.players.player2.avatar = 'http://127.0.0.1:8000' + this.players.player2.avatar;
+				}
+			});
+		}
 		this.gameloop(this.gameElements.id, this.local);
 	}
 
