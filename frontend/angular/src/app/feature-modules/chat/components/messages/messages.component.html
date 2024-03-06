@@ -1,7 +1,7 @@
 <div *ngIf="friend">
-	<ul class="messages">
-		<li class="message" *ngFor="let msg of messages">
-			<h3>{{ msg.sender }}: {{ msg.content }}</h3>
-		</li>
-	</ul>
+	<div class="messages">
+		<div class="message" [ngClass]="{'sentMsg': msg.sender === friend.username}" *ngFor="let msg of messages">
+			<h4>{{ msg.sender }}: {{ msg.content }}</h4>
+		</div>
+	</div>
 </div>

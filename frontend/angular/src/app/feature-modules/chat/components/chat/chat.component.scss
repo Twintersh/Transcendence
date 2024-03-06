@@ -6,10 +6,9 @@
 }
 
 .messages {
-	overflow-y: auto;
-	margin-top: 1rem;
+	height: 65vh;
+	overflow-y: scroll;
 }
-
 
 h2 {
 	border: solid 4px #000;

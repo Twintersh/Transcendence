@@ -8,6 +8,7 @@ export interface User {
 	gameRatio?: number;
 	avatar: string;
 	is_active: boolean;
+	asWon: boolean;
 }
 
 export interface UpdatedUser {

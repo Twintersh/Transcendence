@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NgbOffcanvas, NgbOffcanvasRef } from '@ng-bootstrap/ng-bootstrap';
+import { NgbOffcanvas, NgbOffcanvasRef} from '@ng-bootstrap/ng-bootstrap';
 
 import { Observable } from 'rxjs';
 
@@ -47,8 +47,9 @@ export class UserProfileComponent implements OnInit {
 			next: (response: User) => {
 				if (this.id != 0) {
 					this.user = response;
-					console.log('id:', this.id);
+					console.log('user:', this.user);
 					console.log('user:', response);
+					this.SetPongoProgressBar();
 				}
 				//this.user.avatar = 'http://127.0.0.1:8000' + response.avatar;
 			},
@@ -79,14 +80,18 @@ export class UserProfileComponent implements OnInit {
 		);
 	}
 
-	// pongoProgressBar(): void {
+	SetPongoProgressBar(): void {
 
-	// 	nbrGames = 5;
-		
-	// 	if (user.MatchesCount >= nbrGames)
-	// 		//spawn won button.
-	// 	else
-	// 		progressBarWidth = (user.MatchesCount / nbrGames) * 100;
-	// }
+		let nbrGames: number = 5;
+
+
+		let pongoBar: HTMLElement | null = document.getElementById('pongoProgress');
+		this.user.asWon = false;
+
+		if (this.user.wonMatchesCount as number >= nbrGames)
+			this.user.asWon = true;
+		else if (pongoBar)
+			pongoBar.style.width = (this.user.wonMatchesCount as number / nbrGames) * 100 + "%";
+	}
 
 }

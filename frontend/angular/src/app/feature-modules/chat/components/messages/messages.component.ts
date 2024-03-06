@@ -29,19 +29,7 @@ export class MessagesComponent implements OnInit {
 	}
 
 	ngOnChanges(): void {
-
-
-
 		this.getRoomName();
-		//this.messages = [];
-		//this.friend = {} as User;
-
-
-		// VVVV TO DO WHEN CHANGING SELECTED FRIEND VVVV
-		// this.chatService.disconnectChat();
-
-
-
 	}
 	
 	getRoomName(): void {
