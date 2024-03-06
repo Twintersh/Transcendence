@@ -1,111 +1,82 @@
+<h2 class="p-1 d-flex justify-content-between" *ngIf="sentRequests?.length != 0 || rcvdRequests?.length != 0" (click)="pendingCollapsed = !pendingCollapsed" [attr.aria-expanded]="!pendingCollapsed" aria-controls="collapseExample">
+	Pending <span class="badge text-bg-secondary"> {{ sentRequests.length + rcvdRequests.length }}</span>
+</h2>
+<div #collapse="ngbCollapse" [(ngbCollapse)]="pendingCollapsed">
+
+	<ul class="list-group list-group-flush">
+		<li class="list-group-item bg-transparent sentRequest" *ngFor="let sentRequest of sentRequests">Invite sent to {{ sentRequest.toUser.username }} </li>
+		<li class="d-flex align-items-center justify-content-between list-group-item bg-transparent rcvdRequest" *ngFor="let rcvdRequest of rcvdRequests"> Received invite from {{ rcvdRequest.fromUser.username }} <button class="btn btn-secondary" (click)="acceptFriend(rcvdRequest.fromUser.username)">Accept</button></li>
+	</ul>
+
+</div>
 
 
+<h2 class="p-1">Online</h2>
+<div class="d-flex-column justify-content-evenly mb-3">
 
+	<div class="px-2">
+		
+		<div *ngIf="friends?.length == 0" class="d-inline-block w-100 my-1">
+			You've got no friends for now!
+		</div>
 
-	<div class="row">
-
-			<h2 class="p-1 d-flex justify-content-between col-9" *ngIf="sentRequests?.length != 0 || rcvdRequests?.length != 0" (click)="pendingCollapsed = !pendingCollapsed" [attr.aria-expanded]="!pendingCollapsed" aria-controls="collapseExample">
-				Pending <span class="badge text-bg-secondary"> {{ sentRequests.length + rcvdRequests.length }}</span>
-			</h2>
-			<div #collapse="ngbCollapse" [(ngbCollapse)]="pendingCollapsed">
-
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item bg-transparent sentRequest" *ngFor="let sentRequest of sentRequests">Invite sent to {{ sentRequest.toUser.username }} </li>
-					<li class="d-flex align-items-center justify-content-between list-group-item bg-transparent rcvdRequest" *ngFor="let rcvdRequest of rcvdRequests"> Received invite from {{ rcvdRequest.fromUser.username }} <button class="btn btn-primary" (click)="acceptFriend(rcvdRequest.fromUser.username)">Accept</button></li>
-				</ul>
-
-			</div>
-	</div>
-
-
-
-
-
-
-	<h2 class="p-1">Online</h2>
-	<div class="d-flex-column justify-content-evenly mb-3">
-
-		<div class="px-2">
-			
-			<div *ngIf="friends?.length == 0" class="d-inline-block w-100 my-1">
-				You've got no friends for now!
-			</div>
-
-			<!-- <li class="d-inline-block w-100 my-1" *ngFor="let friend of friends">
-				<div *ngIf="friend.is_active">
-					<div ngbDropdown class="d-inline-block w-100">
-						<a class="btn btn-secondary dropdown-toggle w-100" href="#" role="button" data-bs-toggle="dropdown" id="{dropdown${friend.username}}" ngbDropdownToggle>
-							{{ friend.username }}
-						</a>
-						<div ngbDropdownMenu aria-labelledby={#dropdown${friend.username}}>
-							<button ngbDropdownItem>Message</button>
-							<button ngbDropdownItem>Delete</button>
-							<button ngbDropdownItem (click)="toUserProfile(friend)">User profile</button>
-						</div>
+		<!-- <li class="d-inline-block w-100 my-1" *ngFor="let friend of friends">
+			<div *ngIf="friend.is_active">
+				<div ngbDropdown class="d-inline-block w-100">
+					<a class="btn btn-secondary dropdown-toggle w-100" href="#" role="button" data-bs-toggle="dropdown" id="{dropdown${friend.username}}" ngbDropdownToggle>
+						{{ friend.username }}
+					</a>
+					<div ngbDropdownMenu aria-labelledby={#dropdown${friend.username}}>
+						<button ngbDropdownItem>Message</button>
+						<button ngbDropdownItem>Delete</button>
+						<button ngbDropdownItem (click)="toUserProfile(friend)">User profile</button>
 					</div>
 				</div>
-			</li> -->
+			</div>
+		</li> -->
 
-			<div class="d-inline-block w-100 my-1" *ngFor="let friend of friends">
-				<div *ngIf="friend.is_active">
-					<div ngbDropdown class="d-inline-block w-100">
-						<div class="w-100 d-flex justify-content-between bg-secondary p-2 friend" (click)="onSelect(friend)">
-							{{ friend.username }}
-							<div>
+		<div class="d-inline-block w-100 my-1" *ngFor="let friend of friends">
+			<div *ngIf="friend.is_active">
+				<div ngbDropdown class="d-inline-block w-100">
+					<div class="w-100 d-flex justify-content-between bg-secondary p-2 friend" (click)="onSelect(friend)">
+						{{ friend.username }}
+						<div>
 
-								<a href="#"><img class="mx-1" height="16px" width="16px" src="assets/chat/chat-left-text.svg"></a>
-								<a href="#"><img class="mx-1" height="16px" width="16px" src="assets/chat/file-earmark-person.svg"></a>
-								<a href="#"><img class="mx-1" height="16px" width="16px" src="assets/chat/person-slash.svg"></a>
-								
-							</div>
+							<a href="#"><img class="mx-1" height="16px" width="16px" src="assets/chat/chat-left-text.svg"></a>
+							<a href="#"><img class="mx-1" height="16px" width="16px" src="assets/chat/file-earmark-person.svg"></a>
+							<a (click)="toUserProfile(friend)"><img class="mx-1" height="16px" width="16px" src="assets/chat/person-slash.svg"></a>
+							
 						</div>
 					</div>
 				</div>
 			</div>
+		</div>
 
+	</div>
+</div>
+
+<h2 class="p-1" (click)="offCollapsed = !offCollapsed" [attr.aria-expanded]="!offCollapsed" aria-controls="collapseExample">
+	Offline
+</h2>
+<div class="d-flex-column justify-content-evenly px-2">
+	<div class="friends" *ngFor="let friend of friends">
+		<div *ngIf="!friend.is_active">
+			<h4>- {{ friend.username }} </h4>
 		</div>
 	</div>
-	
-	<h2 class="p-1" (click)="offCollapsed = !offCollapsed" [attr.aria-expanded]="!offCollapsed" aria-controls="collapseExample">
-		Offline
-	</h2>
-	<div class="d-flex-column justify-content-evenly px-2">
-		<div class="friends" *ngFor="let friend of friends">
-			<div *ngIf="!friend.is_active">
-				<h4>- {{ friend.username }} </h4>
-			</div>
-		</div>
+</div>
+
+
+<div ngbDropdown class="d-inline-block w-100 mt-4">
+	<button type="button" class="btn btn-secondary w-100" id="addFriendDropDown" ngbDropdownToggle>
+		Add a new friend
+	</button>
+	<div ngbDropdownMenu aria-labelledby="addFriendDropDown" class="p-1 w-100 border-0">
+		
+			<form class="w-100" [formGroup]="myForm">
+				<input type="text" class="form-control" formControlName="username" placeholder="Enter username">
+			</form>
+			<button class="w-100 btn btn-primary" type="button" (click)="addFriend()">Add new friend</button>
+
 	</div>
-
-
-
-
-
-	<div ngbDropdown class="d-inline-block w-100 mt-4">
-		<button type="button" class="btn btn-secondary w-100" id="addFriendDropDown" ngbDropdownToggle>
-			Add a new friend
-		</button>
-		<div ngbDropdownMenu aria-labelledby="addFriendDropDown" class="p-1 w-100 border-0">
-			
-
-				<form class="w-100" [formGroup]="myForm">
-					<input type="text" class="form-control" formControlName="username" placeholder="Enter username">
-				</form>
-				<button class="w-100 btn btn-primary" type="button" (click)="addFriend()">Add new friend</button>
-
-
-		</div>
-	</div>
-
-
-
-
-
-
-
-
-
-	<!-- <form class="mt-4" [formGroup]="myForm">
-		<input type="text" class="form-control" formControlName="username" placeholder="Enter username">
-	</form>
-	<button class="btn btn-primary btn-lg w-100" type="button" (click)="addFriend()">Add new friend</button> -->
+</div>

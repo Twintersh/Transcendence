@@ -74,6 +74,10 @@ body {
 	&:hover {
 		border:solid 4px #000;
 	}
+
+	&:focus {
+		border:solid 4px #000;
+	}
 }
 
 .btn-lg	{

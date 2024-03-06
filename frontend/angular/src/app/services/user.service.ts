@@ -45,11 +45,13 @@ export class UserService {
 		return this.http.get<User>('http://127.0.0.1:8000/users/getUserInfoById/', { headers, params });
 	}
 
-	public getUserMatches(): Observable<Game[]> {
+	public getUserMatches(id: number): Observable<Game[]> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		return this.http.get<Game[]>('http://127.0.0.1:8000/users/getUserMatches/', { headers });
+		let params = new HttpParams().set('id', id.toString());
+
+		return this.http.get<Game[]>('http://127.0.0.1:8000/users/getUserMatches/', { headers, params });
 	}
 
 	public getUserAvatar(): Observable<any> {
