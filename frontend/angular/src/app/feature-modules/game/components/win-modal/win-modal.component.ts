@@ -23,7 +23,7 @@ export class WinModalComponent implements OnInit {
 	user: User = {} as User;
 	win: boolean = false;
 
-	constructor(
+	constructor (
 		private readonly ngbModal: NgbModal,
 		private readonly router: Router,
 		private readonly userService: UserService,
@@ -43,6 +43,6 @@ export class WinModalComponent implements OnInit {
 
 	leaveMatch() {
 		this.ngbModal.dismissAll();
-		this.router.navigate(['/user']);
+		this.router.navigate(['/user/' + this.user.id]);
 	}
 }

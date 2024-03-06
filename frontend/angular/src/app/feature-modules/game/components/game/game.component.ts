@@ -7,7 +7,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { GameService } from 'src/app/services/game.service';
 
-import { GameData, GamePlayers, GameResult } from 'src/app/models/game.model';
+import { GameData, GamePlayers } from 'src/app/models/game.model';
 import { WinModalComponent } from '../win-modal/win-modal.component';
 
 
@@ -29,7 +29,10 @@ export class GameComponent implements OnInit {
 		paddle2: {x: 0, y: 0, score: 0},
 		ball: {x: 0, y: 0},
 	};
-	players: GamePlayers = {} as GamePlayers;
+	players: GamePlayers = {
+		player1: {username: '', avatar: '', score: 0},
+		player2: {username: '', avatar: '', score: 0}
+	} as GamePlayers;
 	local: boolean = false;
 	localOpp: string = '';
 	winModal!: NgbModalRef;
@@ -55,7 +58,7 @@ export class GameComponent implements OnInit {
 			}
 		});
 
-		if (this.router.url.includes('local'))
+		if (this.router.url.includes('local') || this.router.url.includes('tournament'))
 			this.local = true;
 		
 		this.gameService.getPlayers(this.gameElements.id).subscribe((res: any) => {
@@ -70,7 +73,6 @@ export class GameComponent implements OnInit {
 				this.players.player2.avatar = 'http://127.0.0.1:8000' + this.players.player2.avatar;
 			}
 		});
-
 		this.gameloop(this.gameElements.id, this.local);
 	}
 
@@ -121,12 +123,9 @@ export class GameComponent implements OnInit {
 		this.winModal.componentInstance.players = players;
 	}
 	
-	NgOnDestroy() {
-		this.routeSub.unsubscribe();
-	}
-	
 	showtimer(ctx: CanvasRenderingContext2D, width: number, height: number): void {
 		ctx.fillStyle = "white";
+		ctx.font = "50px Gopher";
 		const numbers = ["5", "4", "3", "2", "1", "GO!"];
 		const delay = 1000;
 	

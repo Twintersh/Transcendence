@@ -15,6 +15,8 @@ import { WebSocketService } from 'src/app/services/websocket.service';
 export class AddPlayerModalComponent {
 
 	myForm: FormGroup;
+	private tournament: boolean = false;
+	private tournamentPlayers: string[] = [];
 	
 	constructor(
 		private fb: FormBuilder,
@@ -30,11 +32,18 @@ export class AddPlayerModalComponent {
 	addPlayer(): void {
 		if (!this.myForm.valid)
 			this.toastService.showInfo('Please enter a username');
-		this.ngbActiveModal.close(this.myForm.value.username);
+		if (!this.tournament)
+			this.ngbActiveModal.close(this.myForm.value.username);
+		else {
+			this.tournamentPlayers.push(this.myForm.value.username);
+			this.myForm.reset();
+			if (this.tournamentPlayers.length == 7)
+				this.ngbActiveModal.close(this.tournamentPlayers);
+		}
 	}
 
 	leaveMatch(): void {
 		this.myForm.reset();
-		this.ngbModal.dismissAll();
+		this.ngbModal.dismissAll('Leave match');
 	}
 }

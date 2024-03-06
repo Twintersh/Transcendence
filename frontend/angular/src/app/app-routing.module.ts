@@ -14,6 +14,7 @@ const routes: Routes = [
 	{ path: 'user/:userId', component: UserProfileComponent, canActivate: [authGuard] },
 	{ path: 'game/:matchId', component: GameComponent, canActivate: [authGuard] },
 	{ path: 'game/local/:matchId', component: GameComponent, canActivate: [authGuard] },
+	{ path: 'game/tournament/:matchId', component: GameComponent, canActivate: [authGuard] },
 	{ path: 'chat', component: ChatComponent, canActivate: [authGuard] },
 	{ path: '**', component: PageNotFoundComponent, pathMatch: 'full' }
 ];

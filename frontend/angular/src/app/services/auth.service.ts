@@ -27,9 +27,7 @@ export class AuthService {
 		private readonly cookieService: CookieService,
 		private readonly router: Router,
 		private readonly localDataManager: LocalDataManagerService
-	) { 
-		this.isAuth();
-	}
+	) { }
 
   	public signup(newUser: User) {
 		return this.http.post('http://127.0.0.1:8000/users/signup/', newUser)
@@ -74,10 +72,10 @@ export class AuthService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 		
-		// if (!token) {
-		// 	this._isAuthSubject.next(false);
-		// 	return of(false);
-		// }
+		if (!token) {
+			this._isAuthSubject.next(false);
+			return of(false);
+		}
 	
 		return this.http.get<boolean>('http://127.0.0.1:8000/users/isAuth/', { headers }).pipe(
 			map(res => true),

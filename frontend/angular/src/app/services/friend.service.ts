@@ -27,8 +27,6 @@ export class FriendService {
 		this.getSentFriendRequests();
 	}
 
-
-
 	public getUserFriends(): void {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);

@@ -288,7 +288,8 @@ def getBlockedUsers(request):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def getUserMatches(request):
-    user = request.user
+    id = request.query_params.get('id')
+    user = get_object_or_404(User, id=id)
     Matches = user.p1Matches.all() | user.p2Matches.all()
     MatchesSerializer = MatchSerializer(instance=Matches, many=True)
     return Response(MatchesSerializer.data, status=status.HTTP_200_OK)

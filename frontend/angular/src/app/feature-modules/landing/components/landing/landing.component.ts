@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, filter, tap } from 'rxjs';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -34,9 +34,8 @@ export class LandingComponent implements OnInit {
 		}
 		this.authService.isAuth().subscribe({
 			next: (isAuth) => {
-				if (isAuth) {
+				if (isAuth)
 					this.router.navigate(['/home']);
-				}
 			}
 		});
 	}
