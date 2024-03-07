@@ -83,6 +83,16 @@ export class NavbarComponent implements OnInit {
 		);
 	}
 
+	toChat(): void {
+		this.offcanvas.dismiss();
+		this.router.navigateByUrl('/chat');
+	}
+
+	toHome(): void {
+		this.offcanvas.dismiss();
+		this.router.navigateByUrl('/home');
+	}
+
 	ngOnDestroy() {
 		this.subscription.unsubscribe();
 		this.offcanvas.dismiss();

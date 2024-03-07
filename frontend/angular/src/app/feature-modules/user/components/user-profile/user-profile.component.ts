@@ -59,6 +59,7 @@ export class UserProfileComponent implements OnInit {
 	}
 
 	getUserById(): void {
+		console.log('fetching user:', this.id);
 		this.userService.getUserInfosById(this.id).subscribe({
 			next: (response: any) => {
 				console.log('user:', response);

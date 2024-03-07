@@ -24,13 +24,10 @@ export class TournamentService {
 		this.user = user;
 		this.tournamentPlayers = tournamentPlayers;
 		
-		for (let i = 0; i < 7; i++) {
-			this.gameService.getLocalMatch(this.user.username, this.user.username).subscribe((res: any) => {
-				this.matchesId.push(res['id']);
-				if (this.matchesId.length == 7)
-					this.launchTournament();
-			});
-		}
+		this.gameService.getLocalMatch(this.user.username, this.user.username).subscribe((res: any) => {
+			this.matchesId.push(res['id']);
+			this.launchTournament();
+		});
 	}
 
 	launchTournament(): void {
@@ -45,6 +42,10 @@ export class TournamentService {
 		this.tournamentPlayers.shift();
 		this.tournamentPlayers.shift();
 		this.winners.push(winner);
+		this.gameService.getLocalMatch(this.user.username, this.user.username).subscribe((res: any) => {
+			this.matchesId.push(res['id']);
+			this.launchTournament();
+		});
 		console.log(this.tournamentPlayers);
 		console.log(this.matchesId);
 		console.log(this.winners);
