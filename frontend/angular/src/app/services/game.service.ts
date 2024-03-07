@@ -41,7 +41,6 @@ export class GameService {
 		const body = { "player1" : player1, "player2" : player2 };
 		return this.http.post('http://127.0.0.1:8000/game/createMatch/', body, { headers });
 	}
-		
 
 	launchMatch(match_id: string, local: boolean): void {
 		this.webSocketService.connectMatch(match_id);

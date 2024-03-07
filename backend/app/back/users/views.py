@@ -88,9 +88,9 @@ def login(request):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 def isAuth(request):
 	if request.user.is_authenticated:
-		return Response("User is authenticated", status=status.HTTP_200_OK)
+		return Response(True, status=status.HTTP_200_OK)
 	else:
-		return Response("User is not authenticated", status=status.HTTP_401_UNAUTHORIZED)
+		return Response(False, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
@@ -99,7 +99,7 @@ def logout(request):
     request.user.auth_token.delete()
     request.user.is_active = False
     request.user.save()
-    return Response("User logged out", status=status.HTTP_200_OK)
+    return Response(True, status=status.HTTP_200_OK)
 
 @swagger_auto_schema(method='POST', request_body=UserUpdateSerializer)
 @api_view(['POST'])

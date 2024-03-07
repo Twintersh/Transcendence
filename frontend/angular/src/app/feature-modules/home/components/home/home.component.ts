@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { GameService } from 'src/app/services/game.service';
-import { CookieService } from 'src/app/services/cookie.service';
 import { UserService } from 'src/app/services/user.service';
 import { TournamentService } from 'src/app/services/tournament.service';
 
@@ -12,6 +11,7 @@ import { QueueModalComponent } from '../queue-modal/queue-modal.component';
 import { AddPlayerModalComponent } from '../add-player-modal/add-player-modal.component';
 
 import { User } from 'src/app/models/user.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -23,20 +23,43 @@ export class HomeComponent implements OnInit {
 	private modal!: NgbModalRef;
 	private user: User = {} as User;
 	private tournamentPlayers: string[] = [];
+	subscription = new Subscription();
 
 	constructor (
 		private readonly router: Router,
 		private readonly ngbModal: NgbModal,
 		private readonly gameService: GameService,
-		private readonly cookie: CookieService,
 		private readonly userService: UserService,
 		private readonly tournamentService: TournamentService
 	) { }
 
 	ngOnInit() {
-		this.userService.userInfo$.subscribe((res) => {
-			this.user = res;
-		});
+		this.subscription.add(
+			this.userService.userInfo$.subscribe({
+				next: (user) => {
+					this.user = user;
+					if (this.user.username == undefined) {
+						this.inializeUser();
+					}
+				},
+				error: (error) => {
+					console.error('Error:', error);
+				}
+			})
+		)
+	}
+
+	private inializeUser(): void {
+		this.subscription.add(
+			this.userService.getUserInfos().subscribe({
+				next: (res) => {
+					this.userService.nextUserInfo(res);
+				},
+				error: (error) => {
+					console.error('Error:', error);
+				}
+			})
+		)
 	}
 	
 	joinOnlineMatch() {
@@ -52,23 +75,28 @@ export class HomeComponent implements OnInit {
 				this.modal.componentInstance.status = 'Match found! Launching game...';
 				setTimeout(() => {
 					this.modal.close();
-					this.router.navigate(['/game/' + data['match_id']]);
+					this.router.navigateByUrl('/game/' + data['match_id']);
 				}, 2000);
 			}
 		});
 	}
 
 	createLocalMatch() {
-		const token: string = this.cookie.getCookie("authToken");
 		this.modal = this.ngbModal.open(AddPlayerModalComponent, { centered: true });
 		this.modal.result.then(
 			(result) => {
+				console.log(result);
 				if (result != undefined) {
 					this.gameService.localOpp = result;
-					this.gameService.getLocalMatch(this.user.username, this.user.username).subscribe((res) => {
-						console.log(res);
-						this.modal.close();
-						this.router.navigate(['/game/local/' + res['id']]);
+					this.gameService.getLocalMatch(this.user.username, this.user.username).subscribe({
+						next: (res) => {
+							console.log(res);
+							this.modal.close();
+							this.router.navigateByUrl('/game/local/' + res['id']);
+						},
+						error: (error) => {
+							console.error('Error:', error);
+						}
 					});
 				}
 			},
@@ -78,7 +106,6 @@ export class HomeComponent implements OnInit {
 	}
 
 	createTournament() {
-		const token: string = this.cookie.getCookie("authToken");
 		this.tournamentPlayers.push(this.user.username);
 		let modal: NgbModalRef = this.ngbModal.open(AddPlayerModalComponent, { centered: true });
 		modal.componentInstance.tournament = true;
@@ -94,6 +121,7 @@ export class HomeComponent implements OnInit {
 	}
 
 	ngOnDestroy() {
+		this.subscription.unsubscribe();
 		this.gameService.QueueMessages$.unsubscribe();
 	}
 }

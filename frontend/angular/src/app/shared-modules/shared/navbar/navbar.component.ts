@@ -1,21 +1,20 @@
-import { Component, NgModule, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { filter, map, switchMap, tap } from 'rxjs';
-
-
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AuthService } from '../../../services/auth.service';
 import { UserService } from '../../../services/user.service';
+import { LocalDataManagerService } from '../../../services/local-data-manager.service';
+import { CookieService } from '../../../services/cookie.service';
 
 import { FriendComponent } from '../friend/friend.component';
 
-
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { c } from 'vite/dist/node/types.d-AKzkD8vd';
+import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'navbar',
@@ -31,51 +30,61 @@ import { c } from 'vite/dist/node/types.d-AKzkD8vd';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-	isAuthenticated!: boolean;
+	isAuthenticated: boolean = false;
 	userId: number = 0;
+
+	subscription = new Subscription();
 
 	constructor(
 		private router: Router,
 		public authService: AuthService,
 		private offcanvas: NgbOffcanvas,
-		private userService: UserService
+		private userService: UserService,
+		private localDataManager: LocalDataManagerService,
+		private cookieService: CookieService
 	) { }
 
 	ngOnInit() {
-		// this.authService.isAuth$.pipe(
-		// 	filter((isAuth) => isAuth),
-		// 	tap(() => this.isAuthenticated = true),
-		// 	tap(() => console.log('isAuth in navbar is ', this.isAuthenticated))
-		// ).subscribe();
-		this.authService.isAuth().subscribe({
-			next: (isAuth) => {
-				console.log('isAuth in navbar is ', isAuth);
-				if (isAuth) {
-					this.isAuthenticated = true;
-				}
-			}
-		});
+		this.subscription.add(
+			this.authService.isAuth$.subscribe((res) => this.isAuthenticated = res)
+		);
 	}
 	
 	logout(): void {
-		this.authService.logout();
-		this.isAuthenticated = false;
-		this.router.navigate(['/']);
+		this.subscription.add(
+			this.authService.logout().subscribe({
+				next: (res) => {
+					console.log(res);
+					this.cookieService.deleteCookie('authToken');
+					this.localDataManager.removeData('userName');
+					this.localDataManager.removeData('userAvatar');
+					this.authService.nextValue(false);
+					this.router.navigateByUrl('/');
+				},
+				error: (error) => {
+					// Error: Handle the error if the logout fails
+					console.error('Logout failed:', error);
+				},
+			})
+		);
 	}
 
 	toMyProfile(): void {
-		this.userService.userInfo$.subscribe({
-			next: (response) => {
-				if (response && Object.keys(response).length > 0) {
-					this.userId = response.id;
-					this.offcanvas.dismiss();
-					this.router.navigate(['/user/' + this.userId]);
+		this.subscription.add(
+			this.userService.userInfo$.subscribe({
+				next: (response) => {
+					if (response && Object.keys(response).length > 0) {
+						this.userId = response.id;
+						this.offcanvas.dismiss();
+						this.router.navigateByUrl('/user/' + this.userId);
+					}
 				}
-			}
-		});
+			})
+		);
 	}
 
 	ngOnDestroy() {
+		this.subscription.unsubscribe();
 		this.offcanvas.dismiss();
 	}
 }

@@ -1,11 +1,12 @@
-import { OnInit, Component, ElementRef, ViewChild, Input } from '@angular/core';
-import { Router, ActivatedRoute, Params, NavigationSkipped, NavigationStart } from '@angular/router';
+import { OnInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { Router, ActivatedRoute, Params, NavigationStart } from '@angular/router';
 
 import { Subscription } from 'rxjs';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { GameService } from 'src/app/services/game.service';
+import { TournamentService } from 'src/app/services/tournament.service';
 
 import { GameData, GamePlayers } from 'src/app/models/game.model';
 import { WinModalComponent } from '../win-modal/win-modal.component';
@@ -34,6 +35,7 @@ export class GameComponent implements OnInit {
 		player2: {username: '', avatar: '', score: 0}
 	} as GamePlayers;
 	local: boolean = false;
+	tournament: boolean = false;
 	localOpp: string = '';
 	winModal!: NgbModalRef;
 
@@ -43,10 +45,17 @@ export class GameComponent implements OnInit {
 		private readonly router: Router,
 		private readonly routerActive: ActivatedRoute,
 		private readonly gameService: GameService,
-		private readonly modalService: NgbModal
+		private readonly modalService: NgbModal,
+		private readonly tournamentService: TournamentService
 	) { }
 
 	ngOnInit() {
+		if (this.router.url.includes('local') || this.router.url.includes('tournament'))
+			this.local = true;
+
+		if (this.router.url.includes('tournament'))
+			this.tournament = true;
+
 		this.routeSub = this.routerActive.params.subscribe((params: Params) => {
 			this.gameElements.id = params['matchId'];
 		});
@@ -57,24 +66,24 @@ export class GameComponent implements OnInit {
 				this.gameService.getGameElements().unsubscribe();
 			}
 		});
-
-		if (this.router.url.includes('local') || this.router.url.includes('tournament'))
-			this.local = true;
 		
-		if (!this.router.url.includes('tournament')) {
-			this.gameService.getPlayers(this.gameElements.id).subscribe((res: any) => {
-				this.players.player1 = res.player1;
-				this.players.player1.avatar = 'http://127.0.0.1:8000' + this.players.player1.avatar;
-				if (this.local) {
-					this.players.player2.username = this.gameService.localOpp;
-					this.players.player2.avatar = this.players.player1.avatar;
-				}
-				else {
-					this.players.player2 = res.player2;
-					this.players.player2.avatar = 'http://127.0.0.1:8000' + this.players.player2.avatar;
-				}
-			});
-		}
+		this.gameService.getPlayers(this.gameElements.id).subscribe((res: any) => {
+			this.players.player1 = res.player1;
+			this.players.player1.avatar = 'http://127.0.0.1:8000' + this.players.player1.avatar;
+			if (this.tournament) {
+				this.players.player1.username = this.tournamentService.tournamentPlayers[0];
+				this.players.player2.username = this.tournamentService.tournamentPlayers[1];
+				this.players.player2.avatar = this.players.player1.avatar;
+			}
+			else if (this.local) {
+				this.players.player2.username = this.gameService.localOpp;
+				this.players.player2.avatar = this.players.player1.avatar;
+			}
+			else {
+				this.players.player2 = res.player2;
+				this.players.player2.avatar = 'http://127.0.0.1:8000' + this.players.player2.avatar;
+			}
+		});
 		this.gameloop(this.gameElements.id, this.local);
 	}
 
@@ -119,10 +128,14 @@ export class GameComponent implements OnInit {
 
 	
 	endGame(data: GameData, players : GamePlayers): void {
+		console.log('end game');
+		console.log(data);
+		console.log(players);
 		this.winModal = this.modalService.open(WinModalComponent, { centered: true, backdrop : 'static', keyboard : false});
-		this.gameService.endGame();
 		this.winModal.componentInstance.gameResult = data;
 		this.winModal.componentInstance.players = players;
+		this.winModal.componentInstance.tournament = this.tournament;
+		this.gameService.endGame();
 	}
 	
 	showtimer(ctx: CanvasRenderingContext2D, width: number, height: number): void {

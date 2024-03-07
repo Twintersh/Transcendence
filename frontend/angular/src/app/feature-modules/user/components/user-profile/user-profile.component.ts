@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
 import { NgbOffcanvas, NgbOffcanvasRef} from '@ng-bootstrap/ng-bootstrap';
 
 import { Observable } from 'rxjs';
 
 import { UserService } from 'src/app/services/user.service';
+import { LocalDataManagerService } from 'src/app/services/local-data-manager.service';
 
 import { Game } from 'src/app/models/game.model';
 import { User } from 'src/app/models/user.model';
 
 import { EditOffcanvasComponent } from '../edit-offcanvas/edit-offcanvas.component';
-import { MatchComponent } from '../match/match.component';
 
 @Component({
   selector: 'app-user-profile',
@@ -30,7 +31,8 @@ export class UserProfileComponent implements OnInit {
 	constructor(
 		private offcanvas: NgbOffcanvas,
 		private userService: UserService,
-		private route: ActivatedRoute
+		private route: ActivatedRoute,
+		private localDataManager: LocalDataManagerService
 	) { }
 
 	ngOnInit(): void {
@@ -42,20 +44,9 @@ export class UserProfileComponent implements OnInit {
 			  console.error('Fetch data user failed:', error);
 			},
 		});
-		this.userService.getUserInfosById(this.id).subscribe({
-			next: (response: User) => {
-				if (this.id != 0) {
-					console.log('this id is:', this.id);
-					console.log('user:', response);
-					this.user = response;
-					this.SetPongoProgressBar();
-				}
-				//this.user.avatar = 'http://127.0.0.1:8000' + response.avatar;
-			},
-			error: (error) => {
-				console.error('Fetch data user failed:', error);
-			},
-		});
+
+		this.getUserById();
+
 		this.gameList$ = this.userService.getUserMatches(this.id);
 		this.gameList$.subscribe({
 			next: (response: any) => {
@@ -67,22 +58,54 @@ export class UserProfileComponent implements OnInit {
 		});
 	}
 
+	getUserById(): void {
+		this.userService.getUserInfosById(this.id).subscribe({
+			next: (response: any) => {
+				console.log('user:', response);
+				if (this.id != 0) {
+					this.user = response;
+					this.user.avatar = 'http://127.0.0.1:8000' + response.avatar.image;
+					this.SetPongoProgressBar();
+				}
+			},
+			error: (error) => {
+				console.error('Fetch data user failed:', error);
+			},
+		});
+	}
+
 	editProfile(): void {
 		this.edit = this.offcanvas.open(EditOffcanvasComponent, { animation: true, backdrop: true, panelClass: 'edit' });
 		this.edit.componentInstance.avatar = this.user?.avatar;
 		this.edit.result.then(
 			(result) => {
+				console.log('result:', result);
 				this.offcanvas.dismiss();
-				this.userService.getUserInfos();
+				this.refreshUserInfos();
 			},
-			(error) => {}
+			(error) => {
+				this.offcanvas.dismiss();
+				this.refreshUserInfos();
+			}
 		);
 	}
 
+	public refreshUserInfos(): void {
+		this.userService.getUserInfosById(this.user.id).subscribe({
+			next: (user) => {
+				this.userService.nextUserInfo(user);
+				this.localDataManager.saveData('userName', user.username);
+				this.localDataManager.saveData('userAvatar', user.avatar);
+			},
+			error: (error) => {
+				// Error: Handle the error if the user information retrieval fails
+				console.error('User information retrieval failed:', error);
+			}
+		});
+	}
+
 	SetPongoProgressBar(): void {
-
 		let nbrGames: number = 5;
-
 
 		let pongoBar: HTMLElement | null = document.getElementById('pongoProgress');
 		this.user.asWon = false;

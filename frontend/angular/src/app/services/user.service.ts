@@ -21,19 +21,17 @@ export class UserService {
 		private readonly http: HttpClient, 
 		private readonly cookieService: CookieService,
 		private readonly localDataManager: LocalDataManagerService
-	) { 
-		this.getUserInfos();
+	) {}
+
+	public nextUserInfo(user: User): void {
+		this.userInfoSubject.next(user);
 	}
 
-	public getUserInfos(): void {
+	public getUserInfos(): Observable<User> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 		
-		this.http.get<User>('http://127.0.0.1:8000/users/getUserInfo/', { headers }).subscribe(user => {
-			this.userInfoSubject.next(user);
-			this.localDataManager.saveData('userName', user.username);
-			this.localDataManager.saveData('userAvatar', user.avatar);
-		});
+		return this.http.get<User>('http://127.0.0.1:8000/users/getUserInfo/', { headers });
 	}
 
 	public getUserInfosById(id: number): Observable<User> {
@@ -61,7 +59,6 @@ export class UserService {
 		return this.http.get<any>('http://127.0.0.1:8000/users/getUserAvatar/', { headers });
 	}
 
-	// ON NE SUBSCRIBE PAS DANS UN SERVICE
 	public updateUserInfos(data: any): Observable<any> {
 		const token = this.cookieService.getCookie('authToken');//DRY
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);//DRY

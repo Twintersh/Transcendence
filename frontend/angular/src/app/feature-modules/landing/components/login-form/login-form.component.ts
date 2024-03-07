@@ -1,13 +1,13 @@
-import { Component, OnInit} from '@angular/core';
+import { Component} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { catchError } from 'rxjs';
 
 import { AuthService } from 'src/app/services/auth.service';
 import { CookieService } from 'src/app/services/cookie.service';
 import { ToastService } from 'src/app/services/toast.service';
+import { UserService } from 'src/app/services/user.service';
 
 
 @Component({
@@ -15,7 +15,7 @@ import { ToastService } from 'src/app/services/toast.service';
 	templateUrl: './login-form.component.html',
 	styleUrls: ['./login-form.component.scss'],
 })
-export class LoginFormComponent implements OnInit {
+export class LoginFormComponent {
 
 	myForm: FormGroup;
 
@@ -26,7 +26,7 @@ export class LoginFormComponent implements OnInit {
 		private router: Router, 
 		private toastService: ToastService,
 		private modalService: NgbModal,
-		private activatedRoute: ActivatedRoute
+		private userService: UserService
 	) {
 		this.myForm = this.fb.group({
 			email: new FormControl('', [Validators.required, Validators.email]),
@@ -40,27 +40,27 @@ export class LoginFormComponent implements OnInit {
 
 	get password() {
 		return this.myForm.get('password') as FormControl;
-	}
-
-	ngOnInit(): void {
 	}​
 
 	submitHandler(): void {
 		if(this.myForm.valid) {
-			this.authService.login(this.myForm.value).pipe(
-				catchError((err) => {
-					// this.modalService.showError("cant login");
-					return err;
-				})
-			).subscribe((response) => {
-					this.cookieService.saveCookie('authToken', response.token);
-					this.toastService.showSuccess('Login successful');
+			console.log(this.myForm.value);
+			this.authService.login(this.myForm.value).subscribe({
+				next: (res: any) => {
+					this.cookieService.saveCookie('authToken', res.token);
 					this.myForm.reset();
 					this.modalService.dismissAll();
-					this.router.navigate(['../home']);
+					this.authService.nextValue(true);
+					setTimeout(() => {
+						this.router.navigateByUrl('/home');
+					}, 0);
+					this.toastService.showSuccess('Login successful');
 				},
-		)};
-	}
+				error: () => {
+					this.toastService.showError('Login unsuccessful');
+				}
+			});
+	}};
 
 	close(): void {
 		this.modalService.dismissAll();

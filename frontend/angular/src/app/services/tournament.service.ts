@@ -10,9 +10,9 @@ import { User } from '../models/user.model';
 })
 export class TournamentService {
 
-	private tournamentPlayers: string[] = [];
-	private winners: string[] = [];
-	private user: User = {} as User;
+	public tournamentPlayers: string[] = [];
+	public winners: string[] = [];
+	private user!: User;
 	private matchesId: string[] = [];
 
 	constructor(
@@ -20,22 +20,38 @@ export class TournamentService {
 		private readonly router: Router
 	) { }
 
-	createTournament(user: User, tournamentPlayers: string[]) {
+	createTournament(user: User, tournamentPlayers: string[]): void {
 		this.user = user;
 		this.tournamentPlayers = tournamentPlayers;
 		
-		for (let i = 0; i < this.tournamentPlayers.length; i += 2) {
+		for (let i = 0; i < 7; i++) {
 			this.gameService.getLocalMatch(this.user.username, this.user.username).subscribe((res: any) => {
 				this.matchesId.push(res['id']);
-				if (this.matchesId.length == this.tournamentPlayers.length / 2)
+				if (this.matchesId.length == 7)
 					this.launchTournament();
 			});
 		}
 	}
 
-	launchTournament() {
+	launchTournament(): void {
 		console.log(this.tournamentPlayers);
 		console.log(this.matchesId);
-		this.router.navigate(['game/tournament/' + this.matchesId[0]]);
+		this.router.navigateByUrl('game/tournament/' + this.matchesId[0]);
+		//tournament modal next game
+	}
+
+	getNextGame(winner: string): void {
+		this.matchesId.shift();
+		this.tournamentPlayers.shift();
+		this.tournamentPlayers.shift();
+		this.winners.push(winner);
+		console.log(this.tournamentPlayers);
+		console.log(this.matchesId);
+		console.log(this.winners);
+		if (this.tournamentPlayers.length == 0) {
+			this.tournamentPlayers = this.winners;
+			this.winners = [];
+		}
+		document.location.href = 'http://127.0.0.1:4200/game/tournament/' + this.matchesId[0];
 	}
 }

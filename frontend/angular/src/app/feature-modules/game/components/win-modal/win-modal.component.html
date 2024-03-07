@@ -10,10 +10,11 @@
 		<div class="row">
 			<img class="img-fluid" src="{{ players.player1.avatar }}" alt="avatar" class="avatar">
 			<h3> {{ players.player1.score }} - {{ players.player2.score }} </h3>
-			<h3> Time{{ gameResult.duration }}s </h3>
+			<h3> Time {{ gameResult.duration }}s </h3>
 		</div>
 	</div>
-    <div class="modal-footer">
+    <div *ngIf="tournament; else single" class="modal-footer">
+		<button type="button" class="btn btn-danger" (click)="nextMatch()">Next Game</button>
         <button type="button" class="btn btn-danger" (click)="leaveMatch()">Leave match</button>
     </div>
 </div>
@@ -29,4 +30,10 @@
 			<h3> Time {{ gameResult.duration }}s </h3>
 		</div>
 	</div>
+</ng-template>
+
+<ng-template #single>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="leaveMatch()">Leave match</button>
+    </div>
 </ng-template>

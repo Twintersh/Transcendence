@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Subject, Observable, map, of, catchError, BehaviorSubject, tap } from 'rxjs';
+import { Observable, map, of, catchError, BehaviorSubject } from 'rxjs';
 
 import { CookieService } from './cookie.service'; 
 import { LocalDataManagerService } from './local-data-manager.service';
@@ -15,26 +15,27 @@ import { User } from '../models/user.model';
 export class AuthService {
 
 	window = window;
-	private _isAuthSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+	public _isAuthSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	public isAuth$: Observable<boolean> = this._isAuthSubject.asObservable();
 
-	get isAuthSubject() {
-		return this._isAuthSubject.value;
-	}
-
-	constructor(
+	
+	constructor (
 		private readonly http: HttpClient,
 		private readonly cookieService: CookieService,
 		private readonly router: Router,
 		private readonly localDataManager: LocalDataManagerService
 	) { }
+		
+	get isAuthSubject() {
+		return this._isAuthSubject.value;
+	}
+
+	public nextValue(value: boolean) {
+		this._isAuthSubject.next(value);
+	}
 
   	public signup(newUser: User) {
-		return this.http.post('http://127.0.0.1:8000/users/signup/', newUser)
-		.pipe(
-			tap(() => {
-				this._isAuthSubject.next(true); })
-		);
+		return this.http.post('http://127.0.0.1:8000/users/signup/', newUser);
 	}	
 
 	public signup42() {
@@ -42,30 +43,17 @@ export class AuthService {
 		this.window.location.href = url;
 	}
 
-	public logout(): void {
+	public logout(): Observable<boolean> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
-		this.http.get<any>('http://127.0.0.1:8000/users/logout/', { headers }).subscribe({
-			next: () => {
-			  this.cookieService.deleteCookie('authToken');
-			  this.localDataManager.removeData('userName');
-			  this.localDataManager.removeData('userAvatar');
-			  this._isAuthSubject.next(false);
-			},
-			error: (error) => {
-			  // Error: Handle the error if the logout fails
-			  console.error('Logout failed:', error);
-			},
-		});
+
+		return this.http.get<boolean>('http://127.0.0.1:8000/users/logout/', { headers });
 	}
 
-	login(loginData: { email: string; password: string }): Observable<any> {
+	public login(loginData: { email: string; password: string }): Observable<any> {
 		const headers = new HttpHeaders();
 
-		return this.http.post('http://127.0.0.1:8000/users/login/', loginData, { headers }).pipe(
-			tap(() => {
-				this._isAuthSubject.next(true); })
-		);
+		return this.http.post('http://127.0.0.1:8000/users/login/', loginData, { headers });
 	}
 
 	public isAuth(): Observable<boolean> {
@@ -78,7 +66,10 @@ export class AuthService {
 		}
 	
 		return this.http.get<boolean>('http://127.0.0.1:8000/users/isAuth/', { headers }).pipe(
-			map(res => true),
+			map(res => {
+				this._isAuthSubject.next(true);
+				return true;
+			}),
 			catchError(error => {
 				if (error.status === 403) {
 					console.log('Unauthorized error. Redirecting to landing page...');

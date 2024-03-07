@@ -14,6 +14,6 @@ export class PageNotFoundComponent {
 	) { }
 
 	goHome(): void{
-		this.router.navigate(['/']);
+		this.router.navigateByUrl('/');
 	}
 }

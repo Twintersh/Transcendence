@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Subject, filter, tap } from 'rxjs';
+import { Subject, Subscription, filter, tap } from 'rxjs';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -18,7 +18,7 @@ import { AuthenticationComponent } from '../authentication/authentication.compon
 
 export class LandingComponent implements OnInit {
 
-	private destroy$ = new Subject<void>();
+	private subscription = new Subscription();
 
 	constructor(
 		private authService: AuthService,
@@ -32,12 +32,13 @@ export class LandingComponent implements OnInit {
 			console.log('token:', this.router.url.split('=')[1]);
 			this.cookieService.saveCookie('authToken', this.router.url.split('=')[1]);
 		}
-		this.authService.isAuth().subscribe({
-			next: (isAuth) => {
-				if (isAuth)
-					this.router.navigate(['/home']);
-			}
-		});
+		this.subscription.add(
+			this.authService.isAuth().subscribe({
+				next: (res: boolean) => {
+					this.router.navigateByUrl('/home');
+				}
+			})
+		);
 	}
 
 	signup(): void {
@@ -45,7 +46,6 @@ export class LandingComponent implements OnInit {
 	}
 
 	ngOnDestroy() {
-		this.destroy$.next();
-		this.destroy$.complete();
+		this.subscription.unsubscribe();
 	}
 }
