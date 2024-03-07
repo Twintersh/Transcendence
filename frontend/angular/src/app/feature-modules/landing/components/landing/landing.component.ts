@@ -32,17 +32,15 @@ export class LandingComponent implements OnInit {
 			console.log('token:', this.router.url.split('=')[1]);
 			this.cookieService.saveCookie('authToken', this.router.url.split('=')[1]);
 		}
-		this.subscription.add(
-			this.authService.isAuth().subscribe({
-				next: (res: boolean) => {
-					this.router.navigateByUrl('/home');
-				}
-			})
-		);
 	}
 
 	signup(): void {
-		this.modalService.open(AuthenticationComponent, { centered: true });
+		console.log(this.authService.isAuthSubject);
+		if (this.authService.isAuthSubject) {
+			this.router.navigate(['/home']);
+		} else {
+			this.modalService.open(AuthenticationComponent, { centered: true });
+		}
 	}
 
 	ngOnDestroy() {

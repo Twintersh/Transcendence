@@ -8,6 +8,7 @@ import { CookieService } from './cookie.service';
 import { LocalDataManagerService } from './local-data-manager.service';
 
 import { User } from '../models/user.model';
+import { HTTP_MODE, IP_SERVER } from '../../env';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +36,7 @@ export class AuthService {
 	}
 
   	public signup(newUser: User) {
-		return this.http.post('http://127.0.0.1:8000/users/signup/', newUser);
+		return this.http.post(HTTP_MODE + IP_SERVER + '/users/signup/', newUser);
 	}	
 
 	public signup42() {
