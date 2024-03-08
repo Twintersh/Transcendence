@@ -12,4 +12,4 @@ fi
 
 python manage.py migrate
 
-daphne -e ssl:8000:privateKey=./ssl/nginx.key:certKey=./ssl/nginx.crt back.routing:application
+daphne -e ssl:port=8000:interface=$(IP_SERVER):privateKey=./ssl/nginx.key:certKey=./ssl/nginx.crt back.routing:application

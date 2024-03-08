@@ -31,10 +31,6 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
-    # healthcheck :
-    #   test:  nc -w 5 127.0.0.1 4200
-    #   interval: 5s
-    #   retries: 30
 
   redis:
     image: redislabs/redismod

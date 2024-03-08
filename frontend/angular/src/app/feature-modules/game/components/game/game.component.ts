@@ -69,7 +69,7 @@ export class GameComponent implements OnInit {
 		
 		this.gameService.getPlayers(this.gameElements.id).subscribe((res: any) => {
 			this.players.player1 = res.player1;
-			this.players.player1.avatar = 'http://127.0.0.1:8000' + this.players.player1.avatar;
+			this.players.player1.avatar = 'https://127.0.0.1:8000' + this.players.player1.avatar;
 			if (this.tournament) {
 				this.players.player1.username = this.tournamentService.tournamentPlayers[0];
 				this.players.player2.username = this.tournamentService.tournamentPlayers[1];
@@ -81,7 +81,7 @@ export class GameComponent implements OnInit {
 			}
 			else {
 				this.players.player2 = res.player2;
-				this.players.player2.avatar = 'http://127.0.0.1:8000' + this.players.player2.avatar;
+				this.players.player2.avatar = 'https://127.0.0.1:8000' + this.players.player2.avatar;
 			}
 		});
 		this.gameloop(this.gameElements.id, this.local);

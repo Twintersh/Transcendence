@@ -65,7 +65,7 @@ export class UserProfileComponent implements OnInit {
 				console.log('user:', response);
 				if (this.id != 0) {
 					this.user = response;
-					this.user.avatar = 'http://127.0.0.1:8000' + response.avatar.image;
+					this.user.avatar = 'https://127.0.0.1:8000' + response.avatar.image;
 					this.SetPongoProgressBar();
 				}
 			},

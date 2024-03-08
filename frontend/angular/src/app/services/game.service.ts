@@ -39,7 +39,7 @@ export class GameService {
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
 		const body = { "player1" : player1, "player2" : player2 };
-		return this.http.post('http://127.0.0.1:8000/game/createMatch/', body, { headers });
+		return this.http.post('https://127.0.0.1:8000/game/createMatch/', body, { headers });
 	}
 
 	launchMatch(match_id: string, local: boolean): void {
@@ -132,7 +132,7 @@ export class GameService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		return this.http.get(`http://127.0.0.1:8000/game/getPlayers/?id=${matchId}`, { headers });
+		return this.http.get(`https://127.0.0.1:8000/game/getPlayers/?id=${matchId}`, { headers });
 	}
 
 	disconnectQueue(): void {

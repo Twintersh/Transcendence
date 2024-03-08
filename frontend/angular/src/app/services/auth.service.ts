@@ -35,7 +35,7 @@ export class AuthService {
 	}
 
   	public signup(newUser: User) {
-		return this.http.post('http://127.0.0.1:8000/users/signup/', newUser);
+		return this.http.post('https://' + {{ IP_SERVER }}  + ':8000/users/signup/', newUser);
 	}	
 
 	public signup42() {
@@ -47,13 +47,13 @@ export class AuthService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		return this.http.get<boolean>('http://127.0.0.1:8000/users/logout/', { headers });
+		return this.http.get<boolean>('https://127.0.0.1:8000/users/logout/', { headers });
 	}
 
 	public login(loginData: { email: string; password: string }): Observable<any> {
 		const headers = new HttpHeaders();
 
-		return this.http.post('http://127.0.0.1:8000/users/login/', loginData, { headers });
+		return this.http.post('https://127.0.0.1:8000/users/login/', loginData, { headers });
 	}
 
 	public isAuth(): Observable<boolean> {
@@ -65,7 +65,7 @@ export class AuthService {
 			return of(false);
 		}
 	
-		return this.http.get<boolean>('http://127.0.0.1:8000/users/isAuth/', { headers }).pipe(
+		return this.http.get<boolean>('https://127.0.0.1:8000/users/isAuth/', { headers }).pipe(
 			map(res => {
 				this._isAuthSubject.next(true);
 				return true;

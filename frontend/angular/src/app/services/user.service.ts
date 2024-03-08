@@ -31,7 +31,7 @@ export class UserService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 		
-		return this.http.get<User>('http://127.0.0.1:8000/users/getUserInfo/', { headers });
+		return this.http.get<User>('https://127.0.0.1:8000/users/getUserInfo/', { headers });
 	}
 
 	public getUserInfosById(id: number): Observable<User> {
@@ -40,7 +40,7 @@ export class UserService {
 
 		let params = new HttpParams().set('id', id.toString());
 
-		return this.http.get<User>('http://127.0.0.1:8000/users/getUserInfoById', { headers, params });
+		return this.http.get<User>('https://127.0.0.1:8000/users/getUserInfoById', { headers, params });
 	}
 
 	public getUserMatches(id: number): Observable<Game[]> {
@@ -49,14 +49,14 @@ export class UserService {
 
 		let params = new HttpParams().set('id', id.toString());
 
-		return this.http.get<Game[]>('http://127.0.0.1:8000/users/getUserMatches/', { headers, params });
+		return this.http.get<Game[]>('https://127.0.0.1:8000/users/getUserMatches/', { headers, params });
 	}
 
 	public getUserAvatar(): Observable<any> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		return this.http.get<any>('http://127.0.0.1:8000/users/getUserAvatar/', { headers });
+		return this.http.get<any>('https://127.0.0.1:8000/users/getUserAvatar/', { headers });
 	}
 
 	public updateUserInfos(data: any): Observable<any> {

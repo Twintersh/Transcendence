@@ -42,7 +42,7 @@ def signup42(request):
              "client_id" : "u-s4t2ud-07f2dcaa8cb3bea2fc596723d624d6d09f0e930ed9b35c5d9b30f5a1159b7cce",
              "client_secret" : "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",
              "code" : auth_code,
-             "redirect_uri": "http://127.0.0.1:8000/users/signup42"}
+             "redirect_uri": "https://127.0.0.1:8000/users/signup42"}
     token_response = py_request.post(token_url, data=data)
     if token_response.status_code == 401:
         return Response(token_response, status=token_response.status_code)
@@ -58,14 +58,14 @@ def signup42(request):
     try :
         user = User.objects.get(username=username)
         token, created = Token.objects.get_or_create(user=user)
-        redirect_url = 'http://127.0.0.1:4200/?token=' + token.key
+        redirect_url = 'https://127.0.0.1:4200/?token=' + token.key
         return redirect(redirect_url)
     except User.DoesNotExist:
         user = User.objects.create(username=username, email=email, ft_auth=True)
         avatar = Avatar.objects.create(user=user, image=avatar_link)
         user.save()
         token = Token.objects.create(user=user)
-        redirect_url = 'http://127.0.0.1:4200/?token=' + token.key
+        redirect_url = 'https://127.0.0.1:4200/?token=' + token.key
         return redirect(redirect_url)
 
 @swagger_auto_schema(method='POST', request_body=UserLoginSerializer)

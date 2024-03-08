@@ -39,7 +39,7 @@ export class ChatService {
 
 		const body = { "username" : username };
 
-		return this.http.post('http://127.0.0.1:8000/chat/getRoomName/', body, { headers });
+		return this.http.post('https://127.0.0.1:8000/chat/getRoomName/', body, { headers });
 	}
 
 	sendMessage(message: Message): void {

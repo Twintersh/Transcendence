@@ -27,7 +27,7 @@
 		function getRoomName(user) {
 			// Make an API call to get the room name
 			// Replace the API_URL with the actual API endpoint
-			var API_URL = 'http://127.0.0.1:8000/chat/getRoomName/';
+			var API_URL = 'https://127.0.0.1:8000/chat/getRoomName/';
 			fetch(API_URL, {
 				method: 'POST',
 				body: JSON.stringify({ user: user }),

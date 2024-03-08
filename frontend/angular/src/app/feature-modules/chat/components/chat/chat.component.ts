@@ -38,7 +38,7 @@ export class ChatComponent implements OnInit {
 		// 	this.friends = res;
 		// 	this.friends.forEach(friend => {
 		// 		this.userService.getUserAvatar().subscribe((res: any) => {
-		// 			friend.avatar = 'http://127.0.0.1:8000' + res.avatar;
+		// 			friend.avatar = 'https://127.0.0.1:8000' + res.avatar;
 		// 		});
 		// 	});
 		// });
