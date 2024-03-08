@@ -30,6 +30,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 export class FriendComponent implements OnInit {
 	myForm: FormGroup;
 	friends: User[] = [];
+	blockedUsers: User[] = [];
 	rcvdRequests: any[] = [];
 	sentRequests: any[] = [];
 
@@ -61,13 +62,17 @@ export class FriendComponent implements OnInit {
 		this.friendService.sentRequests$.subscribe((res: any) => {
 			this.sentRequests = res;
 		});
+		this.friendService.getBlockedUsers().subscribe((res: any) => {
+			this.blockedUsers = res;
+			console.log(this.blockedUsers);
+		});
 	}
-
 
 
   
 	onSelect(friend: User) {
-		this.friendSelected.emit(friend);
+		if(!this.isBlocked(friend))
+			this.friendSelected.emit(friend);
 	}
   
 
@@ -117,4 +122,61 @@ export class FriendComponent implements OnInit {
 			this.router.navigateByUrl('/user/' + friend.id);
 		}
 	}
+
+	toChat(friend: User): void {
+		if (friend) {
+			this.offcanvas.dismiss();
+			this.router.navigateByUrl('/chat');
+		}
+	}
+
+
+
+
+	isBlocked(friend: User): boolean {
+
+		let toto: boolean = false;
+		this.blockedUsers.forEach((item: User) => {
+		if (item.username === friend.username) 
+			toto = true;
+		});
+
+		return toto;
+	}
+
+	blockUser(friend: User): void {
+		if (friend) {
+
+			this.friendService.blockFriend(friend).subscribe(
+				(res: any) => {
+					this.toastService.showSuccess('Friend blocked successfuly.');
+					
+					this.friendService.blockFriend(friend);
+				},
+				(err: any) => {
+					this.toastService.showError('Failed to block friend.');
+				}
+			);
+		}
+	}
+
+
+
+	unBlockUser(friend: User): void {
+		if (friend) {
+
+			this.friendService.unBlockFriend(friend).subscribe(
+				(res: any) => {
+					this.toastService.showSuccess('Friend blocked successfuly.');
+					
+					this.friendService.unBlockFriend(friend);
+				},
+				(err: any) => {
+					this.toastService.showError('Failed to block friend.');
+				}
+			);
+		}
+	}
+
+
 }

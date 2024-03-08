@@ -35,21 +35,21 @@
 					</div>
 
 					<div *ngIf="user.asWon">
-						<h1>YOU WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOON</h1>
+						<h3>YOU WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOON</h3>
 					</div>
 
-					<div class="statscontainer d-flex">
+					<div class="statscontainer d-flex justify-content-evenly">
 						<div>
-							<p>Games Played</p>
-							<p> {{ user.MatchesCount }} </p>
-						</div><p>Games Played</p>
-						<div>
-							<p>Games Won</p>
-							<p> {{ user.wonMatchesCount }} </p>
+							<p class="mb-0">Games Played</p>
+							<span class="badge text-bg-secondary">{{ user.MatchesCount }}</span>
 						</div>
 						<div>
-							<p>W/L Ratio</p>
-							<p> {{ user.gameRatio }} </p>
+							<p class="mb-0">Games Won</p>
+							<span class="badge text-bg-secondary">{{ user.wonMatchesCount }}</span>
+						</div>
+						<div>
+							<p class="mb-0">W/L Ratio</p>
+							<span class="badge text-bg-secondary">{{ user.gameRatio }}</span>
 						</div>
 					</div>
 				</div>
@@ -72,6 +72,7 @@
 					<match [user]="user" [game]="game"></match>
 				</div>
 			</div>
+
 		</div>
 	</div>
 </div>

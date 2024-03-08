@@ -76,4 +76,27 @@ export class FriendService {
 		return this.http.post('https://127.0.0.1:8000/users/acceptFriendRequest/', body, { headers });
 	}
 
+
+	public blockFriend(user: User): Observable<any | null> {
+		const token = this.cookieService.getCookie('authToken');
+		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+		return this.http.post('http://127.0.0.1:8000/users/blockUser/', user, { headers });
+	}
+
+	public unBlockFriend(user: User): Observable<any | null> {
+		const token = this.cookieService.getCookie('authToken');
+		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+		return this.http.post('http://127.0.0.1:8000/users/unBlockUser/', user, { headers });
+	}
+
+	public getBlockedUsers(): Observable<any | null> {
+		const token = this.cookieService.getCookie('authToken');
+		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+		return this.http.get('http://127.0.0.1:8000/users/getBlockedUsers/', { headers });
+	}
+
+
 }

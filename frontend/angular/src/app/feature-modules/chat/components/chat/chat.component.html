@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid mb-5">
 	<div class="row gx-5">
 		<div class="col-lg-3">
 			<div class="backpanel mb-5">
@@ -22,7 +22,7 @@
 			<div *ngIf="selectedFriend" class="row messages my-3 backpanel">
 				<app-messages [friend]="selectedFriend"></app-messages>
 			</div>
-			<div id="ChatInput" *ngIf="selectedFriend" class="row backpanel">
+			<div id="ChatInput" *ngIf="selectedFriend" class="row backpanel mb-4">
 				<div class="col-md-10">
 					<form [formGroup]="myForm" >
 						<input type="text" id="text" class="form-control" formControlName="message" placeholder="Hey P'ierre, you wanna come out here ?">

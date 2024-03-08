@@ -35,8 +35,8 @@
 		<div class="d-flex justify-content-center">
 			<img class="avatar" width="64px" height="64px" [src]="players.player1.avatar" alt="Player1 Avatar">
 			<div>
-				<h4> {{ players.player1.username }} VS. {{ players.player2.username }} </h4>
-				<h4> {{ players.player1.score }} - {{ players.player2.score }} </h4>
+				<h4> {{ players.player1.username }} <span class="badge text-bg-secondary">VS.</span> {{ players.player2.username }} </h4>
+				<h4> <span class="badge text-bg-primary">{{ players.player1.score }}</span> - <span class="badge text-bg-primary">{{ players.player2.score }}</span> </h4>
 			</div>
 			<img class="avatar" width="64px" height="64px" [src]="players.player2.avatar" alt="Player2 Avatar">
 		</div>
