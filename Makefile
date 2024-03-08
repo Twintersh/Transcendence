@@ -27,6 +27,7 @@ re: clean volumes prod
 
 prod: volumes
 	sed -i "s/-ipserver-/`ifconfig enp0s3 | grep -oP 'inet\s+\K[\d.]+'`/g" .env
+	sed -i "s/-ipserver-/`ifconfig enp0s3 | grep -oP 'inet\s+\K[\d.]+'`/g" frontend/angular/src/env.ts
 	@docker compose -f docker-compose.prod.yml up --build
 
 dev: volumes
