@@ -128,10 +128,10 @@ def getUserInfo(request):
 @permission_classes([IsAuthenticated])
 @parser_classes([MultiPartParser, FileUploadParser])
 def getUserInfoById(request):
-	id = request.query_params.get('id')
-	if id == None:
-		return Response("No id provided", status=status.HTTP_400_BAD_REQUEST)
-	user = get_object_or_404(User, id=id)
+	user_id = request.query_params.get('id')
+	if not user_id:
+		return Response("No user_ provided", status=status.HTTP_400_BAD_REQUEST)
+	user = get_object_or_404(User, id=user_id)
 	serializer = UserInfoSerializer(instance=user)
 	return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -289,7 +289,6 @@ def getBlockedUsers(request):
 @permission_classes([IsAuthenticated])
 def getUserMatches(request):
 	id = request.query_params.get('id')
-	print(id)
 	if not id:
 		return Response("No id provided", status=status.HTTP_400_BAD_REQUEST)
 	user = get_object_or_404(User, id=id)

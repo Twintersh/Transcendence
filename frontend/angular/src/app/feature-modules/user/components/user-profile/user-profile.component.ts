@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 
 import { NgbOffcanvas, NgbOffcanvasRef} from '@ng-bootstrap/ng-bootstrap';
 
@@ -31,17 +30,32 @@ export class UserProfileComponent implements OnInit {
 	constructor(
 		private offcanvas: NgbOffcanvas,
 		private userService: UserService,
+		private router: Router,
 		private route: ActivatedRoute,
 		private localDataManager: LocalDataManagerService
 	) { }
 
 	ngOnInit(): void {
+		this.router.events.subscribe((event) => {
+			if (event instanceof NavigationStart) {
+				this.route.url.subscribe({
+					next: (url) => {
+						this.id = parseInt(url[1].path);
+					},
+					error: (error) => {
+					  console.error('Bad Id:', error);
+					},
+				});
+				this.getUserById();
+			}
+		});
+
 		this.route.url.subscribe({
 			next: (url) => {
 				this.id = parseInt(url[1].path);
 			},
 			error: (error) => {
-			  console.error('Fetch data user failed:', error);
+			  console.error('Bad Id:', error);
 			},
 		});
 
