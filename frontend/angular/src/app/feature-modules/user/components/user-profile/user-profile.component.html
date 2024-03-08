@@ -35,8 +35,38 @@
 					</div>
 
 					<div *ngIf="user.asWon">
-						<h3>YOU WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOON</h3>
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#gameEndModal">Game Ending</button>
 					</div>
+
+
+
+					  
+					<!-- Modal -->
+					<div class="modal fade" id="gameEndModal" tabindex="-1" role="dialog" aria-labelledby="gameEndModalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="gameEndModalLabel">Modal title</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+								
+									<h1>You won my dude</h1>
+									<p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
+										Sapiente, at iusto aliquam eveniet sunt possimus odio impedit tempora cum veritatis velit autem accusamus mollitia debitis amet, et ipsam ipsum explicabo.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					
+					
+
+
+
+
 
 					<div class="statscontainer d-flex justify-content-evenly">
 						<div>
