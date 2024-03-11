@@ -10,6 +10,7 @@ import { LocalDataManagerService } from 'src/app/services/local-data-manager.ser
 
 import { Game } from 'src/app/models/game.model';
 import { User } from 'src/app/models/user.model';
+import { HTTP_MODE, IP_SERVER } from 'src/env';
 
 import { EditOffcanvasComponent } from '../edit-offcanvas/edit-offcanvas.component';
 
@@ -79,7 +80,7 @@ export class UserProfileComponent implements OnInit {
 				console.log('user:', response);
 				if (this.id != 0) {
 					this.user = response;
-					this.user.avatar = 'https://127.0.0.1:8000' + response.avatar.image;
+					this.user.avatar = HTTP_MODE + IP_SERVER + response.avatar.image;
 					this.SetPongoProgressBar();
 				}
 			},

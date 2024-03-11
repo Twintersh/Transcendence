@@ -33,8 +33,12 @@ export class LandingComponent implements OnInit {
 			this.cookieService.saveCookie('authToken', this.router.url.split('=')[1]);
 		}
 		this.subscription.add(
-			this.authService.isAuth$.subscribe( (res) => console.log(res))
-		)
+			this.authService.isAuth$.subscribe((res: boolean) => {
+				if (res) {
+					this.router.navigate(['/home']);
+				}
+			}
+		));
 	}
 
 	signup(): void {

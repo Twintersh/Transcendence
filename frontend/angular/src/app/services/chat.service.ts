@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Observable, Subject } from 'rxjs';
-
 import { WebSocketService } from './websocket.service';
 import { CookieService } from './cookie.service';
 
 import { Message } from '../models/chat.model';
+import { HTTP_MODE, IP_SERVER } from 'src/env';
 
 
 @Injectable({
@@ -39,7 +38,7 @@ export class ChatService {
 
 		const body = { "username" : username };
 
-		return this.http.post('https://127.0.0.1:8000/chat/getRoomName/', body, { headers });
+		return this.http.post(HTTP_MODE + IP_SERVER + '/chat/getRoomName/', body, { headers });
 	}
 
 	sendMessage(message: Message): void {

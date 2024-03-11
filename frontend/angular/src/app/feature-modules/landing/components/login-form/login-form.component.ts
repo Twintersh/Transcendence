@@ -44,16 +44,14 @@ export class LoginFormComponent {
 
 	submitHandler(): void {
 		if(this.myForm.valid) {
-			console.log(this.myForm.value);
+			console.log('res is login ');
 			this.authService.login(this.myForm.value).subscribe({
 				next: (res: any) => {
 					console.log('res is login ', res);
-					this.cookieService.saveCookie('authToken', res.token);
-					this.myForm.reset();
-					this.modalService.dismissAll();
 					this.authService.nextValue(true);
-					// this.router.navigateByUrl('/home');
-					this.router.navigate(['home'])
+					this.cookieService.saveCookie('authToken', res.token);
+					this.modalService.dismissAll();
+					this.router.navigate(['/home']);
 					this.toastService.showSuccess('Login successful');
 				},
 				error: () => {

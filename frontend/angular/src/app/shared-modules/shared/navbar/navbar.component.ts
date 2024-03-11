@@ -17,20 +17,20 @@ import { Subscription } from 'rxjs';
 
 
 @Component({
-  selector: 'navbar',
-  standalone: true,
-  imports: [
-	CommonModule,
-	NgbModule,
-	FriendComponent,
-	FormsModule,
-	ReactiveFormsModule
+	selector: 'navbar',
+	standalone: true,
+	imports: [
+		CommonModule,
+		NgbModule,
+		FriendComponent,
+		FormsModule,
+		ReactiveFormsModule
 	],
-  templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
+	templateUrl: './navbar.component.html',
+	styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-	isAuthenticated: boolean = false;
+	isAuthenticated!: boolean;
 	userId: number = 0;
 
 	subscription = new Subscription();

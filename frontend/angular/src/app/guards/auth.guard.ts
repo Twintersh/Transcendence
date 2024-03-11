@@ -1,17 +1,27 @@
 import { CanActivateFn } from '@angular/router';
 import { inject } from '@angular/core';
-import { Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 
 import { AuthService } from '../services/auth.service';
 
 
 
-export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean => {
+export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): any => {
 	const authService = inject(AuthService);
 
-	console.log(authService.isAuthSubject)
-
-	return true;
-};	
+	if (authService.isAuthValue === true) {
+		return true;
+	}
+	else {
+		authService.isAuth$.subscribe((res: boolean) => {
+			if (res) {
+				return of(true);
+			}
+			else {
+				return of(false);
+			}
+		});
+	}
+};

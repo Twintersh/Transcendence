@@ -18,6 +18,7 @@ export class AuthService {
 	window = window;
 	public _isAuthSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	public isAuth$: Observable<boolean> = this._isAuthSubject.asObservable();
+	public isAuthValue: boolean = false;
 
 	
 	constructor (
@@ -25,7 +26,9 @@ export class AuthService {
 		private readonly cookieService: CookieService,
 		private readonly router: Router,
 		private readonly localDataManager: LocalDataManagerService
-	) { }
+	) {
+		this.isAuth().subscribe();
+	}
 		
 	get isAuthSubject() {
 		return this._isAuthSubject.value;
@@ -33,6 +36,7 @@ export class AuthService {
 
 	public nextValue(value: boolean) {
 		this._isAuthSubject.next(value);
+		this.isAuthValue = value;
 	}
 
   	public signup(newUser: User) {
@@ -48,32 +52,29 @@ export class AuthService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		return this.http.get<boolean>('https://127.0.0.1:8000/users/logout/', { headers });
+		return this.http.get<boolean>(HTTP_MODE + IP_SERVER + '/users/logout/', { headers });
 	}
 
 	public login(loginData: { email: string; password: string }): Observable<any> {
 		const headers = new HttpHeaders();
 
-		return this.http.post('https://127.0.0.1:8000/users/login/', loginData, { headers });
+		return this.http.post(HTTP_MODE + IP_SERVER + '/users/login/', loginData, { headers });
 	}
 
 	public isAuth(): Observable<boolean> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
-		
-		if (!token) {
-			this._isAuthSubject.next(false);
-			return of(false);
-		}
 	
-		return this.http.get<boolean>('https://127.0.0.1:8000/users/isAuth/', { headers }).pipe(
+		return this.http.get<boolean>(HTTP_MODE + IP_SERVER + '/users/isAuth/', { headers }).pipe(
 			map(res => {
-				this._isAuthSubject.next(true);
+				this.nextValue(true);
+				return true;
 			}),
-			catchError(
-				console.log('Unauthorized error. Redirecting to landing page...');
-				this._isAuthSubject.next(false);
-			}
+			catchError(() => {
+				console.log('isAuth error');
+				this.nextValue(false);
+				return of(false);
+			})
 		);
 	}
 }

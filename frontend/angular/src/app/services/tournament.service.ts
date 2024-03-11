@@ -53,6 +53,7 @@ export class TournamentService {
 			this.tournamentPlayers = this.winners;
 			this.winners = [];
 		}
+		this.router.navigateByUrl('game/tournament/' + this.matchesId[0]);
 		document.location.href = 'https://127.0.0.1:4200/game/tournament/' + this.matchesId[0];
 	}
 }

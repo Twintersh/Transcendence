@@ -6,6 +6,7 @@ import { Observable, BehaviorSubject, tap } from 'rxjs';
 import { CookieService } from './cookie.service';
 
 import { User } from '../models/user.model';
+import { HTTP_MODE, IP_SERVER } from '../../env';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,7 @@ export class FriendService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		this.http.get<User[]>('https://127.0.0.1:8000/users/getUserFriends/', { headers }).subscribe(
+		this.http.get<User[]>(HTTP_MODE + IP_SERVER + '/users/getUserFriends/', { headers }).subscribe(
 			(res: User[]) => {
 				this.friendsSubject.next(res);
 			}
@@ -42,7 +43,7 @@ export class FriendService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		this.http.get<any>('https://127.0.0.1:8000/users/getReceivedRequests/', { headers }).subscribe(
+		this.http.get<any>(HTTP_MODE + IP_SERVER + '/users/getReceivedRequests/', { headers }).subscribe(
 			(res: any) => {
 				this.rcvdRequestsSubject.next(res);
 			}
@@ -53,7 +54,7 @@ export class FriendService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		this.http.get<any>('https://127.0.0.1:8000/users/getSentRequests/', { headers }).subscribe(
+		this.http.get<any>(HTTP_MODE + IP_SERVER + '/users/getSentRequests/', { headers }).subscribe(
 			(res: any) => {
 				this.sentRequestsSubject.next(res);
 			}
@@ -64,7 +65,7 @@ export class FriendService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		return this.http.post('https://127.0.0.1:8000/users/sendFriendRequest/', username, { headers });
+		return this.http.post(HTTP_MODE + IP_SERVER + '/users/sendFriendRequest/', username, { headers });
 	}
 
 	public acceptFriendRequest(username: string): Observable<any | null> {
@@ -73,7 +74,7 @@ export class FriendService {
 
 		const body = { "username": username };
 
-		return this.http.post('https://127.0.0.1:8000/users/acceptFriendRequest/', body, { headers });
+		return this.http.post(HTTP_MODE + IP_SERVER + '/users/acceptFriendRequest/', body, { headers });
 	}
 
 
@@ -81,21 +82,21 @@ export class FriendService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		return this.http.post('http://127.0.0.1:8000/users/blockUser/', user, { headers });
+		return this.http.post(HTTP_MODE + IP_SERVER + '/users/blockUser/', user, { headers });
 	}
 
 	public unBlockFriend(user: User): Observable<any | null> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		return this.http.post('http://127.0.0.1:8000/users/unBlockUser/', user, { headers });
+		return this.http.post(HTTP_MODE + IP_SERVER + '/users/unBlockUser/', user, { headers });
 	}
 
 	public getBlockedUsers(): Observable<any | null> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		return this.http.get('http://127.0.0.1:8000/users/getBlockedUsers/', { headers });
+		return this.http.get(HTTP_MODE + IP_SERVER + '/users/getBlockedUsers/', { headers });
 	}
 
 
