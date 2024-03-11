@@ -69,15 +69,11 @@ export class AuthService {
 		return this.http.get<boolean>('https://127.0.0.1:8000/users/isAuth/', { headers }).pipe(
 			map(res => {
 				this._isAuthSubject.next(true);
-				return true;
 			}),
-			catchError(error => {
-				if (error.status === 403) {
-					console.log('Unauthorized error. Redirecting to landing page...');
-				}
+			catchError(
+				console.log('Unauthorized error. Redirecting to landing page...');
 				this._isAuthSubject.next(false);
-				return of(false);
-			})
+			}
 		);
 	}
 }

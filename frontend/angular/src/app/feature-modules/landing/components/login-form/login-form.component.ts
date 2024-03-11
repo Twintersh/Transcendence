@@ -47,13 +47,13 @@ export class LoginFormComponent {
 			console.log(this.myForm.value);
 			this.authService.login(this.myForm.value).subscribe({
 				next: (res: any) => {
+					console.log('res is login ', res);
 					this.cookieService.saveCookie('authToken', res.token);
 					this.myForm.reset();
 					this.modalService.dismissAll();
 					this.authService.nextValue(true);
-					setTimeout(() => {
-						this.router.navigateByUrl('/home');
-					}, 0);
+					// this.router.navigateByUrl('/home');
+					this.router.navigate(['home'])
 					this.toastService.showSuccess('Login successful');
 				},
 				error: () => {
