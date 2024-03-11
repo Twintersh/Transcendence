@@ -1,11 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { Observable, map, of, catchError, BehaviorSubject } from 'rxjs';
 
 import { CookieService } from './cookie.service'; 
-import { LocalDataManagerService } from './local-data-manager.service';
 
 import { User } from '../models/user.model';
 import { HTTP_MODE, IP_SERVER } from '../../env';
@@ -24,8 +22,6 @@ export class AuthService {
 	constructor (
 		private readonly http: HttpClient,
 		private readonly cookieService: CookieService,
-		private readonly router: Router,
-		private readonly localDataManager: LocalDataManagerService
 	) {
 		this.isAuth().subscribe();
 	}
@@ -37,6 +33,9 @@ export class AuthService {
 	public nextValue(value: boolean) {
 		this._isAuthSubject.next(value);
 		this.isAuthValue = value;
+		if (value === false) {
+			this.cookieService.deleteCookie('authToken');
+		}
 	}
 
   	public signup(newUser: User) {
@@ -64,6 +63,11 @@ export class AuthService {
 	public isAuth(): Observable<boolean> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+		if (token === undefined || token === '' || token === null) {
+			this.nextValue(false);
+			return of(false);
+		}
 	
 		return this.http.get<boolean>(HTTP_MODE + IP_SERVER + '/users/isAuth/', { headers }).pipe(
 			map(res => {

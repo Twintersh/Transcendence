@@ -11,7 +11,7 @@ import { AuthService } from '../services/auth.service';
 export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): any => {
 	const authService = inject(AuthService);
 
-	if (authService.isAuthValue === true) {
+	if (authService.isAuthSubject === true) {
 		return true;
 	}
 	else {

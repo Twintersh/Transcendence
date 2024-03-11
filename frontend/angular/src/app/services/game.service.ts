@@ -136,7 +136,7 @@ export class GameService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		return this.http.get(HTTP_MODE + IP_SERVER + `game/getPlayers/?id=${matchId}`, { headers });
+		return this.http.get(HTTP_MODE + IP_SERVER + `/game/getPlayers/?id=${matchId}`, { headers });
 	}
 
 	disconnectQueue(): void {
