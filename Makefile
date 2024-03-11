@@ -1,4 +1,3 @@
-
 help:
 	@echo "Usage: make [target]"
 	@echo "Targets:"
@@ -8,10 +7,10 @@ help:
 	@echo "  re: Rebuild containers and run production mode"
 	@echo "  prod: Run in production mode"
 	@echo "  dev: Run in development mode"
-
+	
 volumes:
 	@mkdir -p volumes/db volumes/redis
-
+	
 clean:
 	@docker compose down -v
 	@sudo rm -rf volumes
@@ -19,19 +18,19 @@ clean:
 	# @docker stop $(docker ps -a -q)
 	# @docker rm $(docker ps -a -q)
 	@/etc/init.d/redis-server stop
-
+	
 stop:
 	@docker compose down
 
 re: clean volumes prod
 
 prod: volumes
-	@/etc/init.d/redis-server stop
+	sed -i '1s/[^ ]*[^ ]/true/5' frontend/angular/src/env.ts
 	sed -i "s/-ipserver-/`ifconfig enp0s3 | grep -oP 'inet\s+\K[\d.]+'`/g" .env
 	sed -i "s/-ipserver-/`ifconfig enp0s3 | grep -oP 'inet\s+\K[\d.]+'`/g" frontend/angular/src/env.ts
-
 	@docker compose -f docker-compose.prod.yml up --build
 
 dev: volumes
-	@/etc/init.d/redis-server stop
+	sed -i '1s/[^ ]*[^ ]/false/5' frontend/angular/src/env.ts
+	sed -e 's/[^ ]*[^ ]/was/5' frontend/angular/src/env.ts
 	@docker compose -f docker-compose.yml up
