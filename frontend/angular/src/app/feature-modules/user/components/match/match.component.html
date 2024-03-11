@@ -8,8 +8,7 @@
 		<h3> {{ game.lScore }} </h3>
 	</div>
 	<div class="matchPlayers">
-		<h4> {{ user.username }} </h4>
-		<h4> Player 2 </h4>
+		<h4> {{ this.game.player2.username }} </h4>
 	</div>
 </div>
 
@@ -24,8 +23,7 @@
 			<h3> {{ game.wScore }} </h3>
 		</div>
 		<div class="matchPlayers">
-			<h4> {{ user.username }} </h4>
-			<h4> Player 2 </h4>
+			<h4> {{ this.game.winner.username }} </h4>
 		</div>
 	</div>
 </ng-template>

@@ -131,13 +131,13 @@ export class FriendComponent implements OnInit {
 	}
 
 	isBlocked(friend: User): boolean {
-		let toto: boolean = false;
+		let blockedBool: boolean = false;
 		this.blockedUsers.forEach((item: User) => {
 		if (item.username === friend.username) 
-			toto = true;
+			blockedBool = true;
 		});
 
-		return toto;
+		return blockedBool;
 	}
 
 	blockUser(friend: User): void {
@@ -145,8 +145,10 @@ export class FriendComponent implements OnInit {
 			this.friendService.blockFriend(friend).subscribe(
 				(res: any) => {
 					this.toastService.showSuccess('Friend blocked successfuly.');
-					
 					this.friendService.blockFriend(friend);
+
+					//Reload the page to show modifications????
+
 				},
 				(err: any) => {
 					this.toastService.showError('Failed to block friend.');
@@ -162,8 +164,10 @@ export class FriendComponent implements OnInit {
 			this.friendService.unBlockFriend(friend).subscribe(
 				(res: any) => {
 					this.toastService.showSuccess('Friend blocked successfuly.');
-					
 					this.friendService.unBlockFriend(friend);
+
+					//Reload the page to show modifications????
+					
 				},
 				(err: any) => {
 					this.toastService.showError('Failed to block friend.');

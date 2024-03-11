@@ -5,6 +5,8 @@ export interface Game {
 	lScore: number;
 	wScore: number;
 	winner: User;
+	player1: User;
+	player2: User;
 }
 
 export interface GameData {

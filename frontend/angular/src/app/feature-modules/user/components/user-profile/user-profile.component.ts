@@ -65,6 +65,7 @@ export class UserProfileComponent implements OnInit {
 		this.gameList$ = this.userService.getUserMatches(this.id);
 		this.gameList$.subscribe({
 			next: (response: any) => {
+				console.log(response);
 				this.gameList = response;
 			},
 			error: (error) => {
