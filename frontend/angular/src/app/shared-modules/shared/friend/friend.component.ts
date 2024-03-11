@@ -119,7 +119,7 @@ export class FriendComponent implements OnInit {
 	toUserProfile(friend: User): void {
 		if (friend) {
 			this.offcanvas.dismiss();
-			this.router.navigate(['/user/' + friend.id]);
+			this.router.navigateByUrl('/user/' + friend.id);
 		}
 	}
 

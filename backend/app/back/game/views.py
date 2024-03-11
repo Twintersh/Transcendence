@@ -14,8 +14,6 @@ def index(request):
     return render(request, "game/index.html")
 
 @api_view(['GET'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def getPlayers(request):
     match_id = request.query_params.get('id')
     print('match_id in getplayers is:')

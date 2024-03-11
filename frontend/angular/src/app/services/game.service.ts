@@ -42,7 +42,7 @@ export class GameService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		const body = { "player1" : player1, "player2" : player2 };
+		const body = { "player1" : player1, "player2" : player1 };
 		return this.http.post(HTTP_MODE + IP_SERVER + '/game/createMatch/', body, { headers });
 	}
 
@@ -145,6 +145,7 @@ export class GameService {
 
 	endGame() {
 		this.gameEnded = true;
+		this.gameElements$.complete();
 		document.removeEventListener('keydown', this.sendInputsLocal.bind(this), false);
 		document.removeEventListener('keyup', this.sendInputsLocal.bind(this), false);
 		document.removeEventListener('keydown', this.sendInputs.bind(this), false);

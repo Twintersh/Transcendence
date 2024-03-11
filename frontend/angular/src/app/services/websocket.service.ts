@@ -48,7 +48,7 @@ export class WebSocketService {
 
 	connectMatch(match_id: string): void {
 		const token: string = this.cookieService.getCookie("authToken");
-		const matchSocket: string = 'ws://localhost:8000/ws/game/' + match_id + '/?token=' + token;
+		const matchSocket: string = 'ws://127.0.0.1:8000/ws/game/' + match_id + '/?token=' + token;
 
 		this.matchSocket = new WebSocket(matchSocket);
 

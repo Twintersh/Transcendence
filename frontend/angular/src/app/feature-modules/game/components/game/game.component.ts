@@ -51,14 +51,14 @@ export class GameComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		if (this.router.url.includes('local') || this.router.url.includes('tournament'))
-			this.local = true;
-
-		if (this.router.url.includes('tournament'))
-			this.tournament = true;
-
+		this.gameService.gameEnded = false;
 		this.routeSub = this.routerActive.params.subscribe((params: Params) => {
 			this.gameElements.id = params['matchId'];
+			if (this.router.url.includes('local') || this.router.url.includes('tournament'))
+				this.local = true;
+	
+			if (this.router.url.includes('tournament'))
+				this.tournament = true;
 		});
 
 		this.router.events.subscribe((event) => {
@@ -72,6 +72,9 @@ export class GameComponent implements OnInit {
 			this.players.player1 = res.player1;
 			this.players.player1.avatar = HTTP_MODE + IP_SERVER + this.players.player1.avatar;
 			if (this.tournament) {
+				console.log('get player tournament is ',res);
+				console.log('tournament players 1 is ', this.tournamentService.tournamentPlayers[0]);
+				console.log('tournament players 2 is ', this.tournamentService.tournamentPlayers[1]);
 				this.players.player1.username = this.tournamentService.tournamentPlayers[0];
 				this.players.player2.username = this.tournamentService.tournamentPlayers[1];
 				this.players.player2.avatar = this.players.player1.avatar;
@@ -84,12 +87,9 @@ export class GameComponent implements OnInit {
 				this.players.player2 = res.player2;
 				this.players.player2.avatar = HTTP_MODE + IP_SERVER + this.players.player2.avatar;
 			}
-
-			console.log("This.Players in game.component.ts");
-			console.log(this.players);
-			
+			console.log("This.Players in game.component.ts is ", this.players);
+			this.gameloop(this.gameElements.id, this.local);
 		});
-		this.gameloop(this.gameElements.id, this.local);
 	}
 
 	gameloop(match_id: string, local: boolean): void {
@@ -133,9 +133,6 @@ export class GameComponent implements OnInit {
 
 	
 	endGame(data: GameData, players : GamePlayers): void {
-		console.log('end game');
-		console.log(data);
-		console.log(players);
 		this.winModal = this.modalService.open(WinModalComponent, { centered: true, backdrop : 'static', keyboard : false});
 		this.winModal.componentInstance.gameResult = data;
 		this.winModal.componentInstance.players = players;

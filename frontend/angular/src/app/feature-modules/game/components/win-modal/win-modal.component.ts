@@ -41,28 +41,32 @@ export class WinModalComponent implements OnInit {
 	ngOnInit(): void {
 		this.userService.userInfo$.subscribe((user: User) => {
 			this.user = user;
+			if ((this.user.username === this.players.player1.username && this.gameResult.winner === 'P1')
+			|| (this.user.username === this.players.player2.username && this.gameResult.winner === 'P2')) {
+				this.win = true;
+				this.winner = this.user.username;
+			}
+			else {
+				this.winner = this.gameResult.winner === 'P1' ? this.players.player1.username : this.players.player2.username;
+			}
 		});
-		if ((this.user.username === this.players.player1.username && this.gameResult.winner === 'P1')
-		|| (this.user.username === this.players.player2.username && this.gameResult.winner === 'P2')) {
-			this.win = true;
-			this.winner = this.user.username;
-		}
-		else {
-			this.winner = this.gameResult.winner === 'P1' ? this.players.player1.username : this.players.player2.username;
-		}
 	}
 
 	leaveMatch() {
 		this.ngbModal.dismissAll();
 		this.router.navigateByUrl('/user/' + this.user.id);
+		this.tournamentService.tournamentPlayers = [];
+		this.tournamentService.winners = [];
 	}
 
 	nextMatch() {
-		console.log('this.gameResult.winner');
+		console.log('this nextmatch winner is ,', this.gameResult.winner);
+		console.log('this player1 tournament is ,', this.tournamentService.tournamentPlayers[0]);
+		console.log('this player2 tournament is ,', this.tournamentService.tournamentPlayers[1]);
 		if (this.gameResult.winner === 'P1')
-			this.tournamentService.getNextGame(this.players.player1.username);
+			this.tournamentService.getNextGame(this.tournamentService.tournamentPlayers[0]);
 		else
-			this.tournamentService.getNextGame(this.players.player2.username);
+			this.tournamentService.getNextGame(this.tournamentService.tournamentPlayers[1]);
 		this.ngbModal.dismissAll();
 	}
 }

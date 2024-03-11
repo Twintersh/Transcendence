@@ -23,7 +23,9 @@ export class AuthService {
 		private readonly http: HttpClient,
 		private readonly cookieService: CookieService,
 	) {
-		this.isAuth().subscribe();
+		this.isAuth().subscribe((res: boolean) => {
+			this.isAuthValue = res;
+		});
 	}
 		
 	get isAuthSubject() {

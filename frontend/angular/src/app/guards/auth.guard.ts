@@ -1,27 +1,39 @@
-import { CanActivateFn } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 import { of } from 'rxjs';
 
 import { AuthService } from '../services/auth.service';
+import { CookieService } from '../services/cookie.service';
+import { c } from 'vite/dist/node/types.d-FdqQ54oU';
 
 
 
 export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): any => {
 	const authService = inject(AuthService);
+	const router = inject(Router);
+	const cookieService = inject(CookieService);
 
-	if (authService.isAuthSubject === true) {
-		return true;
+	if (cookieService.getCookie('authToken') === '') {
+		return false
 	}
 	else {
-		authService.isAuth$.subscribe((res: boolean) => {
-			if (res) {
-				return of(true);
-			}
-			else {
-				return of(false);
-			}
-		});
+		return true;
 	}
-};
+	// if (authService.isAuthSubject === true) {
+	// 	return true;
+	// }
+	// else {
+	// 	authService.isAuth$.subscribe((res: boolean) => {
+	// 		console.log('res', res);
+	// 		if (res) {
+	// 			return of(true);
+	// 		}
+	// 		else {
+	// 			router.navigateByUrl('/');
+	// 			return of(false);
+	// 		}
+	// 	});
+	// };
+}

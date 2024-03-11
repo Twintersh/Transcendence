@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 
 import { NgbOffcanvas, NgbOffcanvasRef} from '@ng-bootstrap/ng-bootstrap';
 
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { UserService } from 'src/app/services/user.service';
 import { LocalDataManagerService } from 'src/app/services/local-data-manager.service';
@@ -28,6 +28,8 @@ export class UserProfileComponent implements OnInit {
 
 	private edit!: NgbOffcanvasRef;
 
+	subscription: Subscription = new Subscription();
+
 	constructor(
 		private offcanvas: NgbOffcanvas,
 		private userService: UserService,
@@ -37,28 +39,32 @@ export class UserProfileComponent implements OnInit {
 	) { }
 
 	ngOnInit(): void {
-		this.router.events.subscribe((event) => {
-			if (event instanceof NavigationStart) {
-				this.route.url.subscribe({
-					next: (url) => {
-						this.id = parseInt(url[1].path);
-					},
-					error: (error) => {
-					  console.error('Bad Id:', error);
-					},
-				});
-				this.getUserById();
-			}
-		});
+		this.subscription.add(
+			this.router.events.subscribe((event) => {
+				if (event instanceof NavigationStart) {
+					this.route.url.subscribe({
+						next: (url) => {
+							this.id = parseInt(url[1].path);
+						},
+						error: (error) => {
+						console.error('Bad Id:', error);
+						},
+					});
+					this.getUserById();
+				}
+			})
+		);
 
-		this.route.url.subscribe({
-			next: (url) => {
-				this.id = parseInt(url[1].path);
-			},
-			error: (error) => {
-			  console.error('Bad Id:', error);
-			},
-		});
+		this.subscription.add(
+			this.route.url.subscribe({
+				next: (url) => {
+					this.id = parseInt(url[1].path);
+				},
+				error: (error) => {
+				console.error('Bad Id:', error);
+				},
+			})
+		);
 
 		this.getUserById();
 		
@@ -74,35 +80,46 @@ export class UserProfileComponent implements OnInit {
 		});
 	}
 
-	getUserById(): void {
-		console.log('fetching user:', this.id);
-		this.userService.getUserInfosById(this.id).subscribe({
-			next: (response: any) => {
-				console.log('user:', response);
-				if (this.id != 0) {
-					this.user = response;
-					this.user.avatar = HTTP_MODE + IP_SERVER + response.avatar.image;
-					this.SetPongoProgressBar();
-				}
-			},
-			error: (error) => {
-				console.error('Fetch data user failed:', error);
-			},
-		});
+	private getUserById(): void {
+		this.subscription.add(
+			this.userService.userInfo$.subscribe({
+				next: (user: User) => {
+					if (user.id === this.id) {
+						// setbool to bool
+					}
+				},
+				error: (error) => {
+					console.error('Error:', error);
+				},
+			})
+		)
+		this.subscription.add(
+			this.userService.getUserInfosById(this.id).subscribe({
+				next: (response: any) => {
+					console.log('user:', response);
+					if (this.id != 0) {
+						this.user = response;
+						this.user.avatar = HTTP_MODE + IP_SERVER + response.avatar.image;
+						this.SetPongoProgressBar();
+					}
+				},
+				error: (error) => {
+					console.error('Fetch data user failed:', error);
+				},
+			})
+		);
 	}
 
-	editProfile(): void {
+	public editProfile(): void {
 		this.edit = this.offcanvas.open(EditOffcanvasComponent, { animation: true, backdrop: true, panelClass: 'edit' });
 		this.edit.componentInstance.avatar = this.user?.avatar;
 		this.edit.result.then(
 			(result) => {
-				console.log('result:', result);
 				this.offcanvas.dismiss();
 				this.refreshUserInfos();
 			},
 			(error) => {
 				this.offcanvas.dismiss();
-				this.refreshUserInfos();
 			}
 		);
 	}
@@ -121,7 +138,7 @@ export class UserProfileComponent implements OnInit {
 		});
 	}
 
-	SetPongoProgressBar(): void {
+	private SetPongoProgressBar(): void {
 		let nbrGames: number = 5;
 
 		let pongoBar: HTMLElement | null = document.getElementById('pongoProgress');

@@ -112,7 +112,7 @@ export class HomeComponent implements OnInit {
 		modal.result.then(
 			(result) => {
 				this.tournamentPlayers.push(...result);
-				this.tournamentService.createTournament(this.user, this.tournamentPlayers);
+				this.tournamentService.createTournament(this.tournamentPlayers);
 			},
 			(reason) => {
 				console.log(reason);
