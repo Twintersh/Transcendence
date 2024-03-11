@@ -32,5 +32,4 @@ prod: volumes
 
 dev: volumes
 	sed -i '1s/[^ ]*[^ ]/false/5' frontend/angular/src/env.ts
-	sed -e 's/[^ ]*[^ ]/was/5' frontend/angular/src/env.ts
 	@docker compose -f docker-compose.yml up
