@@ -62,6 +62,12 @@ export class UserProfileComponent implements OnInit {
 
 		this.getUserById();
 
+		if(Object.keys(this.user).length === 0)
+		{
+			this.router.navigate(["/userNotFound"]);
+			return;
+		}
+		
 		this.gameList$ = this.userService.getUserMatches(this.id);
 		this.gameList$.subscribe({
 			next: (response: any) => {

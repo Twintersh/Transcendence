@@ -146,9 +146,6 @@ export class FriendComponent implements OnInit {
 				(res: any) => {
 					this.toastService.showSuccess('Friend blocked successfuly.');
 					this.friendService.blockFriend(friend);
-
-					//Reload the page to show modifications????
-
 				},
 				(err: any) => {
 					this.toastService.showError('Failed to block friend.');
@@ -164,10 +161,7 @@ export class FriendComponent implements OnInit {
 			this.friendService.unBlockFriend(friend).subscribe(
 				(res: any) => {
 					this.toastService.showSuccess('Friend blocked successfuly.');
-					this.friendService.unBlockFriend(friend);
-
-					//Reload the page to show modifications????
-					
+					this.friendService.unBlockFriend(friend);					
 				},
 				(err: any) => {
 					this.toastService.showError('Failed to block friend.');
