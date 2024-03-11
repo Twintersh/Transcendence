@@ -5,7 +5,7 @@ import { WebSocketService } from './websocket.service';
 import { CookieService } from './cookie.service';
 
 import { Message } from '../models/chat.model';
-import { HTTP_MODE, IP_SERVER } from 'src/env';
+import { HTTP_MODE, IP_SERVER } from '../../env';
 
 
 @Injectable({

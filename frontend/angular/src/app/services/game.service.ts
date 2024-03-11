@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { Observable, Subject } from 'rxjs';
+import { HTTP_MODE, IP_SERVER } from '../../env';
 
 import { CookieService } from './cookie.service';
 import { WebSocketService } from './websocket.service';

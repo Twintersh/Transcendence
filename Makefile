@@ -26,13 +26,12 @@ stop:
 re: clean volumes prod
 
 prod: volumes
-	sed -i '1s/[^ ]*[^ ]/true/5' frontend/angular/src/env.ts
+	@/etc/init.d/redis-server stop
 	sed -i "s/-ipserver-/`ifconfig enp0s3 | grep -oP 'inet\s+\K[\d.]+'`/g" .env
 	sed -i "s/-ipserver-/`ifconfig enp0s3 | grep -oP 'inet\s+\K[\d.]+'`/g" frontend/angular/src/env.ts
 
 	@docker compose -f docker-compose.prod.yml up --build
 
 dev: volumes
-	sed -i '1s/[^ ]*[^ ]/false/5' frontend/angular/src/env.ts
-	sed -e 's/[^ ]*[^ ]/was/5' frontend/angular/src/env.ts
+	@/etc/init.d/redis-server stop
 	@docker compose -f docker-compose.yml up

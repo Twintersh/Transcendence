@@ -5,6 +5,8 @@ import { Observable, BehaviorSubject, tap } from 'rxjs';
 
 import { CookieService } from './cookie.service';
 
+import { HTTP_MODE, IP_SERVER } from '../../env';
+
 import { User } from '../models/user.model';
 import { HTTP_MODE, IP_SERVER } from '../../env';
 

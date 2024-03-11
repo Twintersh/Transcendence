@@ -18,10 +18,11 @@ COPY ./requirements.txt .
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install -U 'Twisted[tls,http2]'
-
-# Start the Django development server
+#  Start the Django development server
 EXPOSE 8000
 
 ENV DJANGO_SETTINGS_MODULE=back.settings
+
+CMD daphne -e ssl:port=8000:privateKey=./ssl/nginx.key:certKey=./ssl/nginx.crt back.routing:application
 
 ENTRYPOINT ["/usr/bin/django-entrypoint.sh"]
