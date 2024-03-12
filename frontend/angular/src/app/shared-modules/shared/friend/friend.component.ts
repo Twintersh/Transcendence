@@ -8,9 +8,13 @@ import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveF
 import { FriendService } from 'src/app/services/friend.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { UserService } from 'src/app/services/user.service';
+import { GameService } from 'src/app/services/game.service';
 
 import { User } from 'src/app/models/user.model';
 
+
+import { InviteModalComponent } from '../invite-modal/invite-modal.component';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -28,6 +32,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./friend.component.scss']
 })
 export class FriendComponent implements OnInit {
+
+	private modal!: NgbModalRef;
 	myForm: FormGroup;
 	friends: User[] = [];
 	blockedUsers: User[] = [];
@@ -45,6 +51,8 @@ export class FriendComponent implements OnInit {
 		private readonly toastService: ToastService,
 		private readonly userService: UserService,
 		private readonly offcanvas: NgbOffcanvas,
+		private readonly ngbModal: NgbModal,
+		private readonly gameService: GameService,
 		private readonly router: Router
 	) {
 		this.myForm = this.fb.group({
@@ -130,6 +138,31 @@ export class FriendComponent implements OnInit {
 		}
 	}
 
+
+
+
+
+	sendGameInvite(friend: User): void {
+		this.gameService.getMatch(false);
+		this.gameService.QueueMessages$.subscribe((data) => {
+			if (data['message'] == "connected to queue") {
+				this.modal = this.ngbModal.open(InviteModalComponent, { centered: true, backdrop : 'static', keyboard : false});
+				this.modal.componentInstance.opponentFound = false;
+			}
+			else if (data['response'] == "match_found") {
+				this.gameService.disconnectQueue();
+				this.modal.componentInstance.opponentFound = true;
+				this.modal.componentInstance.status = 'Match found! Launching game...';
+				setTimeout(() => {
+					this.modal.close();
+					this.router.navigateByUrl('/game/' + data['match_id']);
+				}, 2000);
+			}
+		});
+	}
+
+
+
 	isBlocked(friend: User): boolean {
 		let blockedBool: boolean = false;
 		this.blockedUsers.forEach((item: User) => {
@@ -153,8 +186,6 @@ export class FriendComponent implements OnInit {
 			);
 		}
 	}
-
-
 
 	unBlockUser(friend: User): void {
 		if (friend) {
