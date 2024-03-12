@@ -12,8 +12,6 @@ import { HTTP_MODE, IP_SERVER } from '../../env';
   providedIn: 'root'
 })
 export class AuthService {
-
-	window = window;
 	public _isAuthSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	public isAuth$: Observable<boolean> = this._isAuthSubject.asObservable();
 	public isAuthValue: boolean = false;
@@ -46,7 +44,7 @@ export class AuthService {
 
 	public signup42() {
 		const url: string = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-07f2dcaa8cb3bea2fc596723d624d6d09f0e930ed9b35c5d9b30f5a1159b7cce&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fusers%2Fsignup42&response_type=code';
-		this.window.location.href = url;
+		document.location.href = url;
 	}
 
 	public logout(): Observable<boolean> {

@@ -87,7 +87,6 @@ export class GameComponent implements OnInit {
 				this.players.player2 = res.player2;
 				this.players.player2.avatar = HTTP_MODE + IP_SERVER + this.players.player2.avatar;
 			}
-			console.log("This.Players in game.component.ts is ", this.players);
 			this.gameloop(this.gameElements.id, this.local);
 		});
 	}
@@ -158,7 +157,7 @@ export class GameComponent implements OnInit {
 	}
 
 	ngOnDestroy() {
-		this.routeSub.unsubscribe();
-		this.gameService.getGameElements().unsubscribe();
+		//this.routeSub.unsubscribe();
+		//this.gameService.getGameElements().unsubscribe();
 	}
 }

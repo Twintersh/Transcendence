@@ -72,7 +72,6 @@ export class FriendComponent implements OnInit {
 		});
 		this.friendService.getBlockedUsers().subscribe((res: any) => {
 			this.blockedUsers = res;
-			console.log(this.blockedUsers);
 		});
 	}
 

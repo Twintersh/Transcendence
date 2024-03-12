@@ -12,7 +12,7 @@
 			<h3> Time {{ gameResult.duration }}s </h3>
 		</div>
 	</div>
-    <div *ngIf="tournament; else single" class="modal-footer">
+    <div *ngIf="tournament && !endTournament; else single" class="modal-footer">
 		<button type="button" class="btn btn-danger" (click)="nextMatch()">Next Game</button>
         <button type="button" class="btn btn-danger" (click)="leaveMatch()">Leave match</button>
     </div>

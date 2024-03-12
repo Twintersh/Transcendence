@@ -30,9 +30,8 @@ export class GameService {
 		private readonly webSocketService: WebSocketService
 	) { }
 
-	getMatch(local: boolean): void {
+	getMatch(): void {
 		this.webSocketService.connectQueue();
-
 		this.webSocketService.queueMessages$.subscribe((data) => {
 			this.QueueMessages$.next(data);
 		});
@@ -47,11 +46,14 @@ export class GameService {
 	}
 
 	launchMatch(match_id: string, local: boolean): void {
+		this.gameEnded = false;
 		this.webSocketService.connectMatch(match_id);
 		
 		this.webSocketService.messages$.subscribe((data) => {
 			if (!this.gameEnded)
 				this.gameElements$.next(data);
+			else
+				this.gameElements$.complete();
 		});
 		
 		// Additional setup for keyboard events (optional)
@@ -145,7 +147,6 @@ export class GameService {
 
 	endGame() {
 		this.gameEnded = true;
-		this.gameElements$.complete();
 		document.removeEventListener('keydown', this.sendInputsLocal.bind(this), false);
 		document.removeEventListener('keyup', this.sendInputsLocal.bind(this), false);
 		document.removeEventListener('keydown', this.sendInputs.bind(this), false);

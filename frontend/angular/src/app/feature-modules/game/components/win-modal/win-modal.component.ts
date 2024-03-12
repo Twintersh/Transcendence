@@ -30,6 +30,7 @@ export class WinModalComponent implements OnInit {
 	user!: User;
 	win: boolean = false;
 	winner!: string;
+	endTournament: boolean = false;
 
 	constructor (
 		private readonly ngbModal: NgbModal,
@@ -50,6 +51,14 @@ export class WinModalComponent implements OnInit {
 				this.winner = this.gameResult.winner === 'P1' ? this.players.player1.username : this.players.player2.username;
 			}
 		});
+		if (this.tournament) {
+			console.log('players in modal win', this.tournamentService.tournamentPlayers);
+			console.log('winners in modal win', this.tournamentService.winners);
+		}
+		if (this.tournament && this.tournamentService.tournamentPlayers.length === 2 && this.tournamentService.winners.length === 0) {
+			console.log('Tournament ended');
+			this.endTournament = true;
+		}
 	}
 
 	leaveMatch() {
@@ -60,9 +69,7 @@ export class WinModalComponent implements OnInit {
 	}
 
 	nextMatch() {
-		console.log('this nextmatch winner is ,', this.gameResult.winner);
-		console.log('this player1 tournament is ,', this.tournamentService.tournamentPlayers[0]);
-		console.log('this player2 tournament is ,', this.tournamentService.tournamentPlayers[1]);
+		this.ngbModal.dismissAll();
 		if (this.gameResult.winner === 'P1')
 			this.tournamentService.getNextGame(this.tournamentService.tournamentPlayers[0]);
 		else
