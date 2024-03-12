@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Subject, Subscription, filter, tap } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { AuthService } from '../../../../services/auth.service';
 import { CookieService } from '../../../../services/cookie.service';
@@ -24,12 +26,12 @@ export class LandingComponent implements OnInit {
 		private authService: AuthService,
 		private router: Router,
 		private modalService: NgbModal,
-		private cookieService: CookieService
+		private cookieService: CookieService,
+		private http: HttpClient
 	) { }
 
 	ngOnInit() {
-		if (this.router.url.includes('?token=')) {
-			console.log('token:', this.router.url.split('=')[1]);
+		if (this.router.url.includes('?code=')) {
 			this.cookieService.saveCookie('authToken', this.router.url.split('=')[1]);
 		}
 		this.subscription.add(

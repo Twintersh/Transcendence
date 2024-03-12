@@ -30,8 +30,10 @@ export class AddPlayerModalComponent {
 	}
 
 	addPlayer(): void {
-		if (!this.myForm.valid)
+		if (!this.myForm.valid) {
 			this.toastService.showInfo('Please enter a username');
+			return;
+		}
 		if (!this.tournament)
 			this.ngbActiveModal.close(this.myForm.value.username);
 		else {

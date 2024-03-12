@@ -6,6 +6,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { GameService } from 'src/app/services/game.service';
 import { UserService } from 'src/app/services/user.service';
 import { TournamentService } from 'src/app/services/tournament.service';
+import { WebSocketService } from 'src/app/services/websocket.service';
 
 import { QueueModalComponent } from '../queue-modal/queue-modal.component';
 import { AddPlayerModalComponent } from '../add-player-modal/add-player-modal.component';
@@ -30,7 +31,8 @@ export class HomeComponent implements OnInit {
 		private readonly ngbModal: NgbModal,
 		private readonly gameService: GameService,
 		private readonly userService: UserService,
-		private readonly tournamentService: TournamentService
+		private readonly tournamentService: TournamentService,
+		private readonly websocketService: WebSocketService
 	) { }
 
 	ngOnInit() {
@@ -63,8 +65,9 @@ export class HomeComponent implements OnInit {
 	}
 	
 	joinOnlineMatch() {
-		this.gameService.getMatch(false);
-		this.gameService.QueueMessages$.subscribe((data) => {
+		this.gameService.getMatch();
+		this.websocketService.queueMessages$.subscribe((data) => {
+			console.log(data);
 			if (data['message'] == "connected to queue") {
 				this.modal = this.ngbModal.open(QueueModalComponent, { centered: true, backdrop : 'static', keyboard : false});
 				this.modal.componentInstance.opponentFound = false;

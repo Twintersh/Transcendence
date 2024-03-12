@@ -72,8 +72,11 @@ export class UserProfileComponent implements OnInit {
 		this.gameList$ = this.userService.getUserMatches(this.id);
 		this.gameList$.subscribe({
 			next: (response: any) => {
-				console.log(response);
 				this.gameList = response;
+				this.gameList?.forEach((game: Game) => {
+					if (game.winner === null || game.player1.username === null || game.player2.username === null)
+						this.gameList?.splice(this.gameList.indexOf(game), 1);
+				});
 			},
 			error: (error) => {
 				console.error('Fetch data game list failed:', error);
@@ -97,7 +100,6 @@ export class UserProfileComponent implements OnInit {
 		this.subscription.add(
 			this.userService.getUserInfosById(this.id).subscribe({
 				next: (response: any) => {
-					console.log('user:', response);
 					if (this.id != 0) {
 						this.user = response;
 						this.user.avatar = HTTP_MODE + IP_SERVER + response.avatar.image;

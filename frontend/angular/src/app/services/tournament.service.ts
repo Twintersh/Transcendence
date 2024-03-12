@@ -49,23 +49,18 @@ export class TournamentService {
 		this.matchesId = '';
 		this.tournamentPlayers.shift();
 		this.tournamentPlayers.shift();
-		console.log('tournament players are ', this.tournamentPlayers);
 		this.winners.push(winner);
-		console.log('winner is', this.winners);
 		if (this.tournamentPlayers.length == 0 && this.winners.length != 1) {
 			this.tournamentPlayers = this.winners;
 			this.winners = [];
 		}
 		this.gameService.getLocalMatch(this.user.username, this.user.username).subscribe((res: any) => {
 			this.matchesId = res['id'];
-			console.log('user is ', this.user);
-			console.log('next game player are ', this.tournamentPlayers[0], this.tournamentPlayers[1]);
-			console.log('next game id ', this.matchesId);
 			this.router.navigateByUrl('home');
 			setTimeout(() => {
 				this.websocketService.closeMatch();
 				this.router.navigateByUrl('game/tournament/' + this.matchesId);
-			}, 50);
+			}, 0);
 		});
 	}
 
