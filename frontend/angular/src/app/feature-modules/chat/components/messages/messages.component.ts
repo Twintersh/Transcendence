@@ -25,7 +25,6 @@ export class MessagesComponent implements OnInit {
 		this.chatService.messages$.subscribe((message: Message[]) => {
 			this.messages = message;
 		});
-
 	}
 
 	ngOnChanges(): void {

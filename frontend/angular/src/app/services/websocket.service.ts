@@ -52,7 +52,6 @@ export class WebSocketService {
 
 		this.queueWebSocket.onmessage = (event) => {
 			this.queueMessages$.next(JSON.parse(event.data));
-			console.log('WebSocket message received:', event.data);
 		}
 	}
 

@@ -67,7 +67,6 @@ export class HomeComponent implements OnInit {
 	joinOnlineMatch() {
 		this.gameService.getMatch();
 		this.websocketService.queueMessages$.subscribe((data) => {
-			console.log(data);
 			if (data['message'] == "connected to queue") {
 				this.modal = this.ngbModal.open(QueueModalComponent, { centered: true, backdrop : 'static', keyboard : false});
 				this.modal.componentInstance.opponentFound = false;
@@ -88,12 +87,10 @@ export class HomeComponent implements OnInit {
 		this.modal = this.ngbModal.open(AddPlayerModalComponent, { centered: true });
 		this.modal.result.then(
 			(result) => {
-				console.log(result);
 				if (result != undefined) {
 					this.gameService.localOpp = result;
 					this.gameService.getLocalMatch(this.user.username, this.user.username).subscribe({
 						next: (res) => {
-							console.log(res);
 							this.modal.close();
 							this.router.navigateByUrl('/game/local/' + res['id']);
 						},

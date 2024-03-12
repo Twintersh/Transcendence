@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
@@ -16,7 +16,7 @@ import { MessagesComponent } from '../messages/messages.component';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent {
 	friends: User[] = [];
 	FriendSubscription: Subscription = new Subscription();
 	myForm: FormGroup;
@@ -33,30 +33,15 @@ export class ChatComponent implements OnInit {
 		});
 	}
 
-	ngOnInit(): void {
-		// this.FriendSubscription = this.friendService.friends$.subscribe((res: any) => {
-		// 	this.friends = res;
-		// 	this.friends.forEach(friend => {
-		// 		this.userService.getUserAvatar().subscribe((res: any) => {
-		// 			friend.avatar = 'https://127.0.0.1:8000' + res.avatar;
-		// 		});
-		// 	});
-		// });
-	}
-
-
 	sendMessage(): void {
 		if (this.myForm.invalid) {
 			return;
 		}
-		console.log("Attention les amis j'envoie un message!!!!!!!!!!!!!");
 		this.chatService.sendMessage(this.myForm.value);
 		this.myForm.reset();
 	}
 
 	onSelect(friend: User): void {
-		
-		console.log("JE CHANGE DE FRIEND.");
 		this.selectedFriend = friend;
 	}
 }

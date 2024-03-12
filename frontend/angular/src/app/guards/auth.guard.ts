@@ -21,19 +21,4 @@ export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: R
 	else {
 		return true;
 	}
-	// if (authService.isAuthSubject === true) {
-	// 	return true;
-	// }
-	// else {
-	// 	authService.isAuth$.subscribe((res: boolean) => {
-	// 		console.log('res', res);
-	// 		if (res) {
-	// 			return of(true);
-	// 		}
-	// 		else {
-	// 			router.navigateByUrl('/');
-	// 			return of(false);
-	// 		}
-	// 	});
-	// };
 }

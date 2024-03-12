@@ -5,7 +5,7 @@
 	<div *ngIf="win; else lose" class="modal-body">	
 		<div class="row">
 			<img height="128px"  width="128px" src="../../../../../assets/game/win.svg" alt="win logo">
-			<h3> You Won!!! </h3>
+			<h3> {{ status }} </h3>
 		</div>
 		<div class="row">
 			<h3> <span class="badge text-bg-secondary">{{ players.player1.score }}</span> - <span class="badge text-bg-secondary">{{ players.player2.score }}</span> </h3>
@@ -22,7 +22,7 @@
 	<div class="modal-body">	
 		<div class="row">
 			<img height="128px"  width="128px" src="../../../../../assets/game/lose.svg" alt="lose logo">
-			<h3> You Lost... </h3>
+			<h3> {{ status }} </h3>
 		</div>
 		<div class="row">
 			<h3> <span class="badge text-bg-secondary">{{ players.player1.score }}</span> - <span class="badge text-bg-secondary">{{ players.player2.score }}</span> </h3>

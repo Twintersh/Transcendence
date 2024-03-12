@@ -72,12 +72,11 @@ export class GameComponent implements OnInit {
 			this.players.player1 = res.player1;
 			this.players.player1.avatar = HTTP_MODE + IP_SERVER + this.players.player1.avatar;
 			if (this.tournament) {
-				console.log('get player tournament is ',res);
-				console.log('tournament players 1 is ', this.tournamentService.tournamentPlayers[0]);
-				console.log('tournament players 2 is ', this.tournamentService.tournamentPlayers[1]);
 				this.players.player1.username = this.tournamentService.tournamentPlayers[0];
+				this.players.player1.score = 0;
 				this.players.player2.username = this.tournamentService.tournamentPlayers[1];
 				this.players.player2.avatar = this.players.player1.avatar;
+				this.players.player2.score = 0;
 			}
 			else if (this.local) {
 				this.players.player2.username = this.gameService.localOpp;

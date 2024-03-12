@@ -54,7 +54,6 @@ export class NavbarComponent implements OnInit {
 		this.subscription.add(
 			this.authService.logout().subscribe({
 				next: (res) => {
-					console.log(res);
 					this.cookieService.deleteCookie('authToken');
 					this.localDataManager.removeData('userName');
 					this.localDataManager.removeData('userAvatar');

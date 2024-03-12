@@ -46,12 +46,12 @@ export class UserProfileComponent implements OnInit {
 					this.route.url.subscribe({
 						next: (url) => {
 							this.id = parseInt(url[1].path);
+							this.getUserById();
 						},
 						error: (error) => {
-						console.error('Bad Id:', error);
+							console.error('Bad Id:', error);
 						},
 					});
-					this.getUserById();
 				}
 			})
 		);
@@ -69,19 +69,21 @@ export class UserProfileComponent implements OnInit {
 
 		this.getUserById();
 			
-		this.gameList$ = this.userService.getUserMatches(this.id);
-		this.gameList$.subscribe({
-			next: (response: any) => {
-				this.gameList = response;
-				this.gameList?.forEach((game: Game) => {
-					if (game.winner === null || game.player1.username === null || game.player2.username === null)
-						this.gameList?.splice(this.gameList.indexOf(game), 1);
-				});
-			},
-			error: (error) => {
-				console.error('Fetch data game list failed:', error);
-			},
-		});
+		if (this.user) {
+			this.gameList$ = this.userService.getUserMatches(this.id);
+			this.gameList$.subscribe({
+				next: (response: any) => {
+					this.gameList = response;
+					this.gameList?.forEach((game: Game) => {
+						if (game.winner === null || game.player1.username === null || game.player2.username === null)
+							this.gameList?.splice(this.gameList.indexOf(game), 1);
+					});
+				},
+				error: (error) => {
+					console.error('Fetch data game list failed.');
+				},
+			});
+		}
 	}
 
 	private getUserById(): void {
@@ -107,7 +109,10 @@ export class UserProfileComponent implements OnInit {
 					}
 				},
 				error: (error) => {
-					console.error('Fetch data user failed:', error);
+					console.error('Fetch data user failed.');
+					this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+						this.router.navigate(['/userNotFound']);
+					});
 				},
 			})
 		);
@@ -128,16 +133,18 @@ export class UserProfileComponent implements OnInit {
 	}
 
 	public refreshUserInfos(): void {
-		this.userService.getUserInfosById(this.user.id).subscribe({
-			next: (user) => {
-				this.userService.nextUserInfo(user);
-				this.localDataManager.saveData('userName', user.username);
-				this.localDataManager.saveData('userAvatar', user.avatar);
-			},
-			error: (error) => {
-				console.error('User information retrieval failed:', error);
-			}
-		});
+		this.subscription.add(	
+			this.userService.getUserInfosById(this.user.id).subscribe({
+				next: (user) => {
+					this.userService.nextUserInfo(user);
+					this.localDataManager.saveData('userName', user.username);
+					this.localDataManager.saveData('userAvatar', user.avatar);
+				},
+				error: (error) => {
+					console.error('User information retrieval failed:', error);
+				}
+			})
+		);
 	}
 
 	private SetPongoProgressBar(): void {
@@ -150,6 +157,10 @@ export class UserProfileComponent implements OnInit {
 			this.user.asWon = true;
 		else if (pongoBar)
 			pongoBar.style.width = (this.user.wonMatchesCount as number / nbrGames) * 100 + "%";
+	}
+
+	ngOnDestroy(): void {
+		this.subscription.unsubscribe();
 	}
 
 }
