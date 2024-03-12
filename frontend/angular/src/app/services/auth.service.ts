@@ -43,14 +43,11 @@ export class AuthService {
 	}	
 
 	public signup42() {
-		var httpmode = 'http';
+		var httpmode = HTTP_MODE.slice(0, -3);
 		var ip = IP_SERVER.slice(0, -5);
 		console.log(ip)
-		if (PROD_MODE === true) {
-			httpmode = 'https';
-		}
 		const url: string = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-07f2dcaa8cb3bea2fc596723d624d6d09f0e930ed9b35c5d9b30f5a1159b7cce&redirect_uri=' + httpmode + '%3A%2F%2F' + ip + '%3A8000%2Fusers%2Fsignup42%2F&response_type=code';
-		this.window.location.href = url;
+		document.location.href = url;
 	}
 
 	public logout(): Observable<boolean> {

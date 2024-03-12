@@ -31,7 +31,7 @@ export class WebSocketService {
 		}
 		this.queueWebSocket = null;
 		const token = this.cookieService.getCookie('authToken');
-		this.queueWebSocket$ = new WebSocket(WS_MODE + IP_SERVER + '/ws/game/queue/' + '?token=' + token);
+		this.queueWebSocket = new WebSocket(WS_MODE + IP_SERVER + '/ws/game/queue/' + '?token=' + token);
 
 		this.queueWebSocket.onopen = () => {
 			this.queueWebSocket?.send(JSON.stringify({

@@ -39,7 +39,7 @@ export class AddPlayerModalComponent {
 		else {
 			this.tournamentPlayers.push(this.myForm.value.username);
 			this.myForm.reset();
-			if (this.tournamentPlayers.length == 7)
+			if (this.tournamentPlayers.length === 3)
 				this.ngbActiveModal.close(this.tournamentPlayers);
 		}
 	}

@@ -74,9 +74,12 @@ export class UserProfileComponent implements OnInit {
 			this.gameList$.subscribe({
 				next: (response: any) => {
 					this.gameList = response;
-					this.gameList?.forEach((game: Game) => {
+					this.gameList?.forEach((game: Game, index) => {
 						if (game.winner === null || game.player1.username === null || game.player2.username === null)
-							this.gameList?.splice(this.gameList.indexOf(game), 1);
+						{
+							console.log(index);
+							this.gameList?.splice(index, 1);
+						}
 					});
 				},
 				error: (error) => {

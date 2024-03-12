@@ -47,13 +47,8 @@ export class TournamentService {
 
 	getNextGame(winner: string): void {
 		this.matchesId = '';
-		this.tournamentPlayers.shift();
-		this.tournamentPlayers.shift();
-		this.winners.push(winner);
-		if (this.tournamentPlayers.length == 0 && this.winners.length != 1) {
-			this.tournamentPlayers = this.winners;
-			this.winners = [];
-		}
+		console.log('players in getnextmatch are', this.tournamentPlayers);
+		console.log('winners in getnextmatch are', this.winners);
 		this.gameService.getLocalMatch(this.user.username, this.user.username).subscribe((res: any) => {
 			this.matchesId = res['id'];
 			this.router.navigateByUrl('home');

@@ -11,6 +11,9 @@
 			<h3> <span class="badge text-bg-secondary">{{ players.player1.score }}</span> - <span class="badge text-bg-secondary">{{ players.player2.score }}</span> </h3>
 			<h3> Time {{ gameResult.duration }}s </h3>
 		</div>
+		<div *ngIf="tournament && nextPlayers[0]">
+			<h3> Next game : {{ nextPlayers[0] }} VS {{ nextPlayers[1] }} </h3>
+		</div>
 	</div>
     <div *ngIf="tournament && !endTournament; else single" class="modal-footer">
 		<button type="button" class="btn btn-danger" (click)="nextMatch()">Next Game</button>
