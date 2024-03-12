@@ -15,9 +15,10 @@
 			</div>
 		</div>
 
-		<div class="col-lg-8">
+		<div class="col-lg-8 mb-5">
 			<div class="row backpanel">
-				<h2>Chat</h2>
+				<h2 class="text-center">Chat<span *ngIf="selectedFriend">ting with {{selectedFriend.username}}</span></h2>
+				<button *ngIf="selectedFriend" class="btn btn-secondary w-100" type="button" (click)="sendGameInvite(selectedFriend)">Invite to play</button>
 			</div>
 			<div *ngIf="selectedFriend" class="row messages my-3 backpanel">
 				<app-messages [friend]="selectedFriend"></app-messages>
@@ -28,7 +29,7 @@
 						<input type="text" id="text" class="form-control" formControlName="message" placeholder="Hey P'ierre, you wanna come out here ?">
 					</form>
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-2">				
 					<button class="btn btn-primary w-100" type="button" (click)="sendMessage()">Send</button>
 				</div>
 			</div>

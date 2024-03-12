@@ -1,15 +1,18 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
+import { Router } from '@angular/router';
+
 import { Subscription } from 'rxjs';
 
-import { User } from 'src/app/models/user.model'
 
-import { FriendService } from 'src/app/services/friend.service';
-import { UserService } from 'src/app/services/user.service';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+
 import { ChatService } from 'src/app/services/chat.service';
+import { GameService } from 'src/app/services/game.service';
+import { UserService } from 'src/app/services/user.service';
 
-import { MessagesComponent } from '../messages/messages.component';
+import { User } from 'src/app/models/user.model'
 
 @Component({
   selector: 'app-chat',
@@ -22,10 +25,14 @@ export class ChatComponent {
 	myForm: FormGroup;
 	selectedFriend!: User;
 
+	private modal!: NgbModalRef;
+
 	constructor(
 		private readonly fb: FormBuilder,
-		private readonly friendService: FriendService,
+		private readonly router: Router,
+		private readonly gameService: GameService,
 		private readonly userService: UserService,
+		private readonly ngbModal: NgbModal,
 		private readonly chatService: ChatService
 	) { 
 		this.myForm = this.fb.group({
@@ -44,4 +51,12 @@ export class ChatComponent {
 	onSelect(friend: User): void {
 		this.selectedFriend = friend;
 	}
+
+	sendGameInvite(friend: User): void {
+		this.myForm.value.message = "/invite";
+		console.log('form is ', this.myForm.value)
+		this.chatService.sendMessage(this.myForm.value);
+		console.log(friend.username);
+	}
+
 }

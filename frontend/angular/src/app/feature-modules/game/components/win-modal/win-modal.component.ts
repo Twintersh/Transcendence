@@ -46,6 +46,7 @@ export class WinModalComponent implements OnInit {
 		this.winner = '';
 
 		this.userService.userInfo$.subscribe((user: User) => {
+			console.log(user);
 			this.user = user;
 			if ((this.user.username === this.players.player1.username && this.gameResult.winner === 'P1')
 			|| (this.user.username === this.players.player2.username && this.gameResult.winner === 'P2')) {

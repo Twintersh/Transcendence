@@ -5,6 +5,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { HTTP_MODE, IP_SERVER, WS_MODE} from '../../env';
 
 import { CookieService } from '../services/cookie.service';
+
 import { Message } from '../models/chat.model';
 
 @Injectable({
@@ -25,7 +26,7 @@ export class WebSocketService {
 		private readonly cookieService: CookieService
 	) { }
 	
-	connectQueue(): void {
+	connectQueue(friend:string | null): void {
 		if (this.queueWebSocket?.readyState === WebSocket.OPEN) {
 			this.queueWebSocket.close();
 		}
@@ -35,7 +36,8 @@ export class WebSocketService {
 
 		this.queueWebSocket.onopen = () => {
 			this.queueWebSocket?.send(JSON.stringify({
-				'message' : 'join'
+				'message' : 'join',
+				'friend' : friend
 			}));
 			this.queueMessages$.next({
 				'message' : 'connected to queue'
@@ -109,7 +111,8 @@ export class WebSocketService {
 				this.chatMessages.next([...this.chatMessages.value, data.message])
 		}
 
-		this.chatSocket.onclose = () => {
+		this.chatSocket.onclose = (err) => {
+			console.log(err);
 			console.log('Chat WebSocket connection closed:');
 		}
 	}

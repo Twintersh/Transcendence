@@ -30,18 +30,19 @@ export class GameService {
 		private readonly webSocketService: WebSocketService
 	) { }
 
-	getMatch(): void {
-		this.webSocketService.connectQueue();
+	getMatch(friend: string | null): void {
+		this.webSocketService.connectQueue(friend);
 		this.webSocketService.queueMessages$.subscribe((data) => {
 			this.QueueMessages$.next(data);
 		});
 	}
 
+
 	getLocalMatch(player1: string, player2: string): Observable<any> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		const body = { "player1" : player1, "player2" : player1 };
+		const body = { "player1" : player1, "player2" : player2 };
 		return this.http.post(HTTP_MODE + IP_SERVER + '/game/createMatch/', body, { headers });
 	}
 

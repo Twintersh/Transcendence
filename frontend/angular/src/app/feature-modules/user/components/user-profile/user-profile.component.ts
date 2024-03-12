@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 
 import { NgbOffcanvas, NgbOffcanvasRef} from '@ng-bootstrap/ng-bootstrap';
 
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import { UserService } from 'src/app/services/user.service';
 import { LocalDataManagerService } from 'src/app/services/local-data-manager.service';
@@ -25,7 +25,6 @@ export class UserProfileComponent implements OnInit {
 	id: number = 0;
 	user: User = {} as User;
 	gameList: Game[] | null = null;
-	gameList$: Observable<Game[] | null> | null = null;
 
 	private edit!: NgbOffcanvasRef;
 
@@ -68,25 +67,17 @@ export class UserProfileComponent implements OnInit {
 		);
 
 		this.getUserById();
-			
-		if (this.user) {
-			this.gameList$ = this.userService.getUserMatches(this.id);
-			this.gameList$.subscribe({
+		
+		this.subscription.add(
+			this.userService.getUserMatches(this.id).subscribe({
 				next: (response: any) => {
 					this.gameList = response;
-					this.gameList?.forEach((game: Game, index) => {
-						if (game.winner === null || game.player1.username === null || game.player2.username === null)
-						{
-							console.log(index);
-							this.gameList?.splice(index, 1);
-						}
-					});
 				},
 				error: (error) => {
-					console.error('Fetch data game list failed.');
+					console.error('Fetch data game list failed:', error);
 				},
-			});
-		}
+			})
+		)
 	}
 
 	private getUserById(): void {

@@ -65,7 +65,7 @@ export class HomeComponent implements OnInit {
 	}
 	
 	joinOnlineMatch() {
-		this.gameService.getMatch();
+		this.gameService.getMatch(null);
 		this.websocketService.queueMessages$.subscribe((data) => {
 			if (data['message'] == "connected to queue") {
 				this.modal = this.ngbModal.open(QueueModalComponent, { centered: true, backdrop : 'static', keyboard : false});

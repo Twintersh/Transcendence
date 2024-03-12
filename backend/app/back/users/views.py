@@ -299,6 +299,8 @@ def getUserMatches(request):
 	if not id:
 		return Response("No id provided", status=status.HTTP_400_BAD_REQUEST)
 	user = get_object_or_404(User, id=id)
+	user.p1Matches.filter(winner=None).delete()
+	user.p2Matches.filter(winner=None).delete()
 	Matches = user.p1Matches.all() | user.p2Matches.all()
 	MatchesSerializer = MatchSerializer(instance=Matches, many=True)
 	return Response(MatchesSerializer.data, status=status.HTTP_200_OK)
