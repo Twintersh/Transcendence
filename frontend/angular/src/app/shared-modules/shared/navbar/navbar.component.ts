@@ -61,7 +61,6 @@ export class NavbarComponent implements OnInit {
 					this.router.navigateByUrl('/');
 				},
 				error: (error) => {
-					// Error: Handle the error if the logout fails
 					console.error('Logout failed:', error);
 				},
 			})

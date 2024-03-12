@@ -52,8 +52,7 @@ export class EditOffcanvasComponent {
 						this.offcanvas.dismiss();
 					},
 					error: (error) => {
-						// Error: Handle the error if the user information update fails
-						console.error('User information update failed:', error);
+						console.log('User information update failed:', error);
 					},
 				})
 			)
@@ -68,8 +67,7 @@ export class EditOffcanvasComponent {
 				this.localDataManager.saveData('userAvatar', user.avatar);
 			},
 			error: (error) => {
-				// Error: Handle the error if the user information retrieval fails
-				console.error('User information retrieval failed:', error);
+				console.log('User information retrieval failed:', error);
 			}
 		});
 	}
@@ -78,15 +76,12 @@ export class EditOffcanvasComponent {
 		const formData = new FormData();
 		formData.append('file', event.target.files[0]);
 		if (event.target.files[0].size > 1000000) {
-			// Error: Handle the error if the file size is too large
 			this.toastr.error('File size is too large');
 		}
 		else if (event.target.files[0].type !== 'image/png' && event.target.files[0].type !== 'image/jpeg') {
-			// Error: Handle the error if the file type is not supported
 			this.toastr.error('File type is not supported');
 		}
 		else {
-			// Success: Update the user's profile picture
 			this.refreshUserInfos();
 			this.userService.updateProfilePicture(formData);
 			this.toastr.success('Profile picture updated');

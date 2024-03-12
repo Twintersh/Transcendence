@@ -118,7 +118,6 @@ export class WebSocketService {
 	}
 
 	send(message: any) {
-		// Send data to the server
 		this.matchSocket?.send(message);
 	}
 
@@ -127,7 +126,6 @@ export class WebSocketService {
 	}
 
 	closeMatch() {
-		// Close the match WebSocket connection
 		this.matchSocket?.close();
 	}
 

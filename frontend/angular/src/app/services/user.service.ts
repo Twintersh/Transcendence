@@ -75,7 +75,6 @@ export class UserService {
 				this.getUserInfos();
 			},
 			error: (error) => {
-				// Error: Handle the error if the user information update fails
 				console.error('User information update failed:', error);
 			},
 		});

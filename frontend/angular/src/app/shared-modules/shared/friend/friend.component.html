@@ -20,21 +20,6 @@
 			You've got no friends for now!
 		</div>
 
-		<!-- <li class="d-inline-block w-100 my-1" *ngFor="let friend of friends">
-			<div *ngIf="friend.is_active">
-				<div ngbDropdown class="d-inline-block w-100">
-					<a class="btn btn-secondary dropdown-toggle w-100" href="#" role="button" data-bs-toggle="dropdown" id="{dropdown${friend.username}}" ngbDropdownToggle>
-						{{ friend.username }}
-					</a>
-					<div ngbDropdownMenu aria-labelledby={#dropdown${friend.username}}>
-						<button ngbDropdownItem>Message</button>
-						<button ngbDropdownItem>Delete</button>
-						<button ngbDropdownItem (click)="toUserProfile(friend)">User profile</button>
-					</div>
-				</div>
-			</div>
-		</li> -->
-
 		<div class="d-inline-block w-100 my-1" *ngFor="let friend of friends">
 			<div *ngIf="friend.is_active">
 				<div class="d-inline-block w-100">

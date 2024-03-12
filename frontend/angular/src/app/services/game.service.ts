@@ -37,7 +37,6 @@ export class GameService {
 		});
 	}
 
-
 	getLocalMatch(player1: string, player2: string): Observable<any> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
@@ -57,7 +56,6 @@ export class GameService {
 				this.gameElements$.complete();
 		});
 		
-		// Additional setup for keyboard events (optional)
 		if (local) {
 			document.addEventListener('keydown', this.sendInputsLocal.bind(this), false);
 			document.addEventListener('keyup', this.sendInputsLocal.bind(this), false);
@@ -67,8 +65,7 @@ export class GameService {
 			document.addEventListener('keyup', this.sendInputs.bind(this), false);
 		}
 	}
-		
-	// Send keyboard inputs to the server
+
 	private sendInputs(e: KeyboardEvent): void {
 		if (this.gameEnded)
 			return;
@@ -80,7 +77,6 @@ export class GameService {
 			this.input = 1;
 		else if (e.keyCode == 87)
 			this.input = -1;
-		// Send keyboard input to the server using WebSocketService
 		this.webSocketService.send(JSON.stringify({
 			'message': this.input})
 		);
@@ -130,7 +126,6 @@ export class GameService {
 		return this.QueueMessages$;
 	}
 	
-	// Get an observable for game elements' positions
 	getGameElements(): Subject<any> {
 		return this.gameElements$;
 	}
