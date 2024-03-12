@@ -21,6 +21,7 @@ import { EditOffcanvasComponent } from '../edit-offcanvas/edit-offcanvas.compone
   encapsulation: ViewEncapsulation.None
 })
 export class UserProfileComponent implements OnInit {
+	isItMe: boolean = false;
 	id: number = 0;
 	user: User = {} as User;
 	gameList: Game[] | null = null;
@@ -67,7 +68,7 @@ export class UserProfileComponent implements OnInit {
 		);
 
 		this.getUserById();
-		
+			
 		this.gameList$ = this.userService.getUserMatches(this.id);
 		this.gameList$.subscribe({
 			next: (response: any) => {
@@ -82,10 +83,10 @@ export class UserProfileComponent implements OnInit {
 
 	private getUserById(): void {
 		this.subscription.add(
-			this.userService.userInfo$.subscribe({
+			this.userService.getUserInfos().subscribe({
 				next: (user: User) => {
 					if (user.id === this.id) {
-						// setbool to bool
+						this.isItMe = true;
 					}
 				},
 				error: (error) => {
@@ -132,7 +133,6 @@ export class UserProfileComponent implements OnInit {
 				this.localDataManager.saveData('userAvatar', user.avatar);
 			},
 			error: (error) => {
-				// Error: Handle the error if the user information retrieval fails
 				console.error('User information retrieval failed:', error);
 			}
 		});

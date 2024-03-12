@@ -1,28 +1,28 @@
 <div class="container text-center">
 	<div class="row">
 
-		<div class="col-md-4">
+		<div class="col-md-4 mb-5">
 			<div class="usercard sticky-top">
 				<div class="backpanel">
 					<h2> {{ user.username }} </h2>
-					<div class="row mt-4 mb-5">
+					<div class="row mt-4 mb-3">
 						<div class="col-md-5">
-							<img class="img-fluid" *ngIf="user.avatar" [src]="user.avatar">
+							<img class="img-fluid mb-3" *ngIf="user.avatar" [src]="user.avatar">
 						</div>	
 						<div class="col-md-7">
 							<p> {{ user.username }}, you really are Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-							<button class="btn btn-secondary w-100" (click)="editProfile()">Edit Profile</button>
+							<button *ngIf="isItMe" class="btn btn-secondary w-100" (click)="editProfile()">Edit Profile</button>
 						</div>
 					</div>
-					<h5>Achievements</h5>
+					<!-- <h5>Achievements</h5>
 					<div class="achievements d-flex justify-content-around">
 						<img src="assets/logo.svg" style="height:45px">
 						<img src="assets/ballgreen.svg" style="height:45px">
 						<img src="assets/logo.svg" style="height:45px">
-					</div>
+					</div> -->
 				</div>
 
-				<div class="backpanel mt-4">
+				<div class="backpanel my-4">
 					<h2>Games Stats</h2>
 
 					<div *ngIf="!user.asWon" class="position-relative m-4">
@@ -34,39 +34,13 @@
 						<img style="height: 50px;  margin-left: -25px;" src="assets/ballgreen.svg" class="spinning position-absolute top-0 start-100">
 					</div>
 
-					<div *ngIf="user.asWon">
-						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#gameEndModal">Game Ending</button>
+					<div *ngIf="user.asWon && isItMe" class="my-5">
+						<h3>You saved pongi</h3>
+						<h4>You're such a great pong player, good job!</h4>
 					</div>
-
-
-
-					  
-					<!-- Modal -->
-					<div class="modal fade" id="gameEndModal" tabindex="-1" role="dialog" aria-labelledby="gameEndModalLabel" aria-hidden="true">
-						<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="gameEndModalLabel">Modal title</h5>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-										<span aria-hidden="true">&times;</span>
-									</button>
-								</div>
-								<div class="modal-body">
-								
-									<h1>You won my dude</h1>
-									<p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
-										Sapiente, at iusto aliquam eveniet sunt possimus odio impedit tempora cum veritatis velit autem accusamus mollitia debitis amet, et ipsam ipsum explicabo.</p>
-								</div>
-							</div>
-						</div>
+					<div *ngIf="user.asWon && !isItMe" class="my-5">
+						<h3>This user saved pongi!</h3>
 					</div>
-
-					
-					
-
-
-
-
 
 					<div class="statscontainer d-flex justify-content-evenly">
 						<div>

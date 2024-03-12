@@ -41,7 +41,7 @@
 					<div [ngClass]="{'blockedUser': isBlocked(friend) }" class="w-100 d-flex justify-content-between bg-secondary p-2 friend" (click)="onSelect(friend)" >
 						{{ friend.username }}
 						<div *ngIf="!isBlocked(friend)">
-							<a (click)="sendGameInvite(friend)"><img class="mx-1 interactableButton" height="20px" width="20px" src="assets/chat/chat-left-text.svg"></a>
+							<a (click)="sendGameInvite(friend)"><img class="mx-1 interactableButton" height="20px" width="20px" src="assets/chat/play-circle.svg"></a>
 							<a (click)="toChat(friend)"><img class="mx-1 interactableButton" height="20px" width="20px" src="assets/chat/chat-left-text.svg"></a>
 							<a (click)="toUserProfile(friend)"><img class="mx-1 interactableButton" height="20px" width="20px" src="assets/chat/file-earmark-person.svg"></a>
 							<a (click)="blockUser(friend)"><img class="mx-1 interactableButton" height="20px" width="20px" src="assets/chat/person-slash.svg"></a>
