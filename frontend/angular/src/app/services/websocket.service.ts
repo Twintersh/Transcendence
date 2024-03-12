@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { BehaviorSubject, Subject } from 'rxjs';
 
+import { HTTP_MODE, IP_SERVER, WS_MODE} from '../../env';
+
 import { CookieService } from '../services/cookie.service';
 import { Message } from '../models/chat.model';
 
@@ -29,7 +31,7 @@ export class WebSocketService {
 		}
 		this.queueWebSocket = null;
 		const token = this.cookieService.getCookie('authToken');
-		this.queueWebSocket = new WebSocket('ws://' + "127.0.0.1:8000" +'/ws/game/queue/' + '?token=' + token);
+		this.queueWebSocket$ = new WebSocket(WS_MODE + IP_SERVER + '/ws/game/queue/' + '?token=' + token);
 
 		this.queueWebSocket.onopen = () => {
 			this.queueWebSocket?.send(JSON.stringify({
@@ -65,7 +67,7 @@ export class WebSocketService {
 		}
 		this.matchSocket = null;
 		const token: string = this.cookieService.getCookie("authToken");
-		const matchSocket: string = 'ws://127.0.0.1:8000/ws/game/' + match_id + '/?token=' + token;
+		const matchSocket: string = WS_MODE + IP_SERVER + '/ws/game/' + match_id + '/?token=' + token;
 
 		this.matchSocket = new WebSocket(matchSocket);
 
@@ -93,7 +95,7 @@ export class WebSocketService {
 	connectChat(roomId: string): void {
 		const token = this.cookieService.getCookie('authToken');
 
-		this.chatSocket = new WebSocket('ws://' + "127.0.0.1:8000" +'/ws/chat/' + roomId + '/?token=' + token);
+		this.chatSocket = new WebSocket(WS_MODE + IP_SERVER + '/ws/chat/' + roomId + '/?token=' + token);
 
 		this.chatSocket.onopen = () => {
 			console.log('Chat WebSocket connection established.');

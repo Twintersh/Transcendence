@@ -32,18 +32,24 @@ def signup(request):
         token = Token.objects.create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
 
-@api_view(['GET'])
+@api_view(['POST'])
 def signup42(request):
 	auth_code = request.query_params.get('code')
 
 	client_id = os.environ.get('42_CLIENT_ID')
 	client_secret = os.environ.get('42_SECRET_KEY')
+
+	httpmode = str(os.environ.get('HTTP_MODE'))
+	ipserv = str(os.environ.get('IP_SERVER'))
+	uri = httpmode + ipserv + "/users/signup42/"
+
 	token_url = 'https://api.intra.42.fr/oauth/token'
 	data = {"grant_type" : "authorization_code",
 			"client_id" : client_id,
 			"client_secret" : client_secret,
 			"code" : auth_code,
-			"redirect_uri": "http://127.0.0.1:8000/users/signup42"} # to https://
+			"redirect_uri": uri
+    } # to https://
 	token_response = py_request.post(token_url, data=data)
 	if token_response.status_code == 401:
 		return Response(token_response, status=token_response.status_code)
@@ -59,14 +65,14 @@ def signup42(request):
 	try :
 		user = User.objects.get(username=username)
 		token, created = Token.objects.get_or_create(user=user)
-		redirect_url = 'https://127.0.0.1:4200/?token=' + token.key
+		redirect_url = httpmode + ipserv + ':4200/?token=' + token.key
 		return redirect(redirect_url)
 	except User.DoesNotExist:
 		user = User.objects.create(username=username, email=email, ft_auth=True)
 		avatar = Avatar.objects.create(user=user, image=avatar_link)
 		user.save()
 		token = Token.objects.create(user=user)
-		redirect_url = 'https://127.0.0.1:4200/?token=' + token.key
+		redirect_url = httpmode + ipserv + '4200/?token=' + token.key
 		return redirect(redirect_url)
 
 @swagger_auto_schema(method='POST', request_body=UserLoginSerializer)
@@ -76,7 +82,7 @@ def login(request):
     serializer.is_valid(raise_exception=True)
     user = get_object_or_404(User, email=serializer.data['email'])
     if user.ft_auth:
-        return Response("This user is authentified with 42", status=status.HTTP_400_BAD_REQUEST)
+        return Response("This user is authenticated with 42", status=status.HTTP_400_BAD_REQUEST)
     if not user.check_password(request.data['password']):
         return Response("Wrong password", status=status.HTTP_400_BAD_REQUEST)
     token, created = Token.objects.get_or_create(user=user)

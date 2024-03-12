@@ -15,6 +15,7 @@ clean:
 	@docker compose down -v
 	@sudo rm -rf volumes
 	@docker system prune -af
+	@docker volume prune -f
 	# @docker stop $(docker ps -a -q)
 	# @docker rm $(docker ps -a -q)
 	@/etc/init.d/redis-server stop

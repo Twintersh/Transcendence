@@ -6,7 +6,7 @@ import { Observable, map, of, catchError, BehaviorSubject } from 'rxjs';
 import { CookieService } from './cookie.service'; 
 
 import { User } from '../models/user.model';
-import { HTTP_MODE, IP_SERVER } from '../../env';
+import { HTTP_MODE, IP_SERVER, PROD_MODE } from '../../env';
 
 @Injectable({
   providedIn: 'root'
@@ -43,8 +43,14 @@ export class AuthService {
 	}	
 
 	public signup42() {
-		const url: string = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-07f2dcaa8cb3bea2fc596723d624d6d09f0e930ed9b35c5d9b30f5a1159b7cce&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fusers%2Fsignup42&response_type=code';
-		document.location.href = url;
+		var httpmode = 'http';
+		var ip = IP_SERVER.slice(0, -5);
+		console.log(ip)
+		if (PROD_MODE === true) {
+			httpmode = 'https';
+		}
+		const url: string = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-07f2dcaa8cb3bea2fc596723d624d6d09f0e930ed9b35c5d9b30f5a1159b7cce&redirect_uri=' + httpmode + '%3A%2F%2F' + ip + '%3A8000%2Fusers%2Fsignup42%2F&response_type=code';
+		this.window.location.href = url;
 	}
 
 	public logout(): Observable<boolean> {
@@ -70,7 +76,7 @@ export class AuthService {
 		}
 	
 		return this.http.get<boolean>(HTTP_MODE + IP_SERVER + '/users/isAuth/', { headers }).pipe(
-			map(res => {
+			map(() => {
 				this.nextValue(true);
 				return true;
 			}),
