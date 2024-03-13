@@ -145,7 +145,10 @@ def getUserInfo(request):
 @permission_classes([IsAuthenticated])
 @parser_classes([MultiPartParser, FileUploadParser])
 def getUserInfoById(request):
-	user_id = request.query_params.get('id')
+	try :
+		user_id = request.query_params.get('id')
+	except ValueError:
+		return Response("Invalid ID", status=status.HTTP_400_BAD_REQUEST)
 	if not user_id:
 		return Response("No user_ provided", status=status.HTTP_400_BAD_REQUEST)
 	user = get_object_or_404(User, id=user_id)

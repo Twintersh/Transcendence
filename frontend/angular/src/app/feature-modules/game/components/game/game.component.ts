@@ -12,7 +12,6 @@ import { UserService } from 'src/app/services/user.service';
 import { GameData, GamePlayers } from 'src/app/models/game.model';
 import { WinModalComponent } from '../win-modal/win-modal.component';
 
-
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
@@ -87,8 +86,6 @@ export class GameComponent implements OnInit {
 				this.players.player2 = res.player2;
 				this.players.player2.avatar = this.userService.cleanUserAvatar(this.players.player2.ft_auth, res.player2.avatar.image);
 			}
-			console.log('player1', this.players.player1);
-			console.log('player2', this.players.player2);
 			this.gameloop(this.gameElements.id, this.local);
 		});
 	}
@@ -132,7 +129,6 @@ export class GameComponent implements OnInit {
 			ctx.drawImage(paddleR, this.gameElements.paddle2.x,  this.gameElements.paddle2.y,  25,  100);
 		});
 	}
-
 	
 	endGame(data: GameData, players : GamePlayers): void {
 		this.winModal = this.modalService.open(WinModalComponent, { centered: true, backdrop : 'static', keyboard : false});
@@ -157,10 +153,5 @@ export class GameComponent implements OnInit {
 				ctx.fillText(number, width / 2 - (number === "GO!" ? 50 : 0), height / 2);
 			}, (index + 1) * delay);
 		});
-	}
-
-	ngOnDestroy() {
-		//this.routeSub.unsubscribe();
-		//this.gameService.getGameElements().unsubscribe();
 	}
 }

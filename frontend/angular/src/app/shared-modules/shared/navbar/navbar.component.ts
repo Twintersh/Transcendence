@@ -68,11 +68,11 @@ export class NavbarComponent implements OnInit {
 		this.subscription.add(
 			this.authService.logout().subscribe({
 				next: (res) => {
+					this.isAuthenticated = false;
 					this.offcanvas.dismiss();
 					this.cookieService.deleteCookie('authToken');
 					this.localDataManager.removeData('userName');
 					this.localDataManager.removeData('userAvatar');
-					this.isAuthenticated = false;
 					this.authService.nextValue(false);
 					this.router.navigateByUrl('/');
 				},

@@ -10,7 +10,6 @@ import { LocalDataManagerService } from 'src/app/services/local-data-manager.ser
 
 import { Game } from 'src/app/models/game.model';
 import { User } from 'src/app/models/user.model';
-import { HTTP_MODE, IP_SERVER } from 'src/env';
 
 import { EditOffcanvasComponent } from '../edit-offcanvas/edit-offcanvas.component';
 
@@ -104,9 +103,7 @@ export class UserProfileComponent implements OnInit {
 				},
 				error: (error) => {
 					console.error('Fetch data user failed.');
-					this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-						this.router.navigate(['/userNotFound']);
-					});
+					this.router.navigate(['/userNotFound']);
 				},
 			})
 		);
@@ -135,6 +132,7 @@ export class UserProfileComponent implements OnInit {
 					this.localDataManager.saveData('userAvatar', user.avatar);
 				},
 				error: (error) => {
+					this.router.navigate(['/userNotFound']);
 					console.error('User information retrieval failed:', error);
 				}
 			})

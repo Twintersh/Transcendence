@@ -77,8 +77,6 @@ export class WinModalComponent implements OnInit {
 			this.nextPlayers.push(this.tournamentService.tournamentPlayers[0]);
 			this.nextPlayers.push(this.tournamentService.tournamentPlayers[1]);
 		}
-		console.log('tournament player', this.tournamentService.tournamentPlayers);
-		console.log('tournament winners', this.tournamentService.winners);
 		if (this.tournament && this.tournamentService.tournamentPlayers.length === 1 && this.tournamentService.winners.length === 0) {
 			this.endTournament = true;
 			this.status = this.winner + ' wins the tournament';

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 import { Observable, BehaviorSubject } from 'rxjs';
 
 import { CookieService } from './cookie.service';
-import { LocalDataManagerService } from './local-data-manager.service';
 
 import { Game } from 'src/app/models/game.model';
 import { User } from '../models/user.model';
@@ -21,7 +21,7 @@ export class UserService {
 	constructor(
 		private readonly http: HttpClient, 
 		private readonly cookieService: CookieService,
-		private readonly localDataManager: LocalDataManagerService
+		private readonly router: Router
 	) {}
 
 	public cleanUserAvatar(ft_auth: boolean, avatar: string): string {
@@ -53,8 +53,8 @@ export class UserService {
 	}
 
 	public getUserInfosById(id: number): Observable<User> {
-		if (id === 0 || id === undefined || id === null || isNaN(id) === true) {
-			return new Observable<User>();
+		if (id === undefined || Number.isInteger(id) === false) {
+			id = 900000;
 		}
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
@@ -65,8 +65,8 @@ export class UserService {
 	}
 
 	public getUserMatches(id: number): Observable<Game[]> {
-		if (id === 0 || id === undefined || id === null || isNaN(id) === true) {
-			return new Observable<Game[]>();
+		if (id === undefined || Number.isInteger(id) === false) {
+			id = 900000;
 		}
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
