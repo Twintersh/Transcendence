@@ -73,7 +73,7 @@ def callback(request):
         user.is_active = True
         token, created = Token.objects.get_or_create(user=user)
         user.save()
-        redirect_url = httpmode + ipserv + ':4200/?token=' + token.key     #443 POUR LE PROD MODE
+        redirect_url = httpmode + ipserv + ':443/?token=' + token.key     #443 POUR LE PROD MODE
         return redirect(redirect_url)
     except User.DoesNotExist:
         user = User.objects.create(username=username, email=email, ft_auth=True)
@@ -82,7 +82,7 @@ def callback(request):
         user.is_active = True
         token = Token.objects.create(user=user)
         user.save()
-        redirect_url = httpmode + ipserv + ':4200/?token=' + token.key
+        redirect_url = httpmode + ipserv + ':443/?token=' + token.key
         return redirect(redirect_url)
 
 @swagger_auto_schema(method='POST', request_body=UserLoginSerializer)

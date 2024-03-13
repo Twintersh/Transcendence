@@ -117,11 +117,13 @@ export class WebSocketService {
 	}
 
 	send(message: any) {
-		this.matchSocket?.send(message);
+		if (this.matchSocket?.readyState === WebSocket.OPEN)
+			this.matchSocket?.send(message);
 	}
 
 	sendChatMessage(message: any) {
-		this.chatSocket.send(message);
+		if (this.chatSocket?.readyState === WebSocket.OPEN)
+			this.chatSocket.send(message);
 	}
 
 	closeMatch() {

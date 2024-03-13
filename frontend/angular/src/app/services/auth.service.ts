@@ -21,9 +21,9 @@ export class AuthService {
 		private readonly http: HttpClient,
 		private readonly cookieService: CookieService,
 	) {
-		// this.isAuth().subscribe((res: boolean) => {
-		// 	this.isAuthValue = res;
-		// });
+		this.isAuth().subscribe((res: boolean) => {
+			this.isAuthValue = res;
+		});
 	}
 		
 	get isAuthSubject() {
@@ -33,6 +33,9 @@ export class AuthService {
 	public nextValue(value: boolean) {
 		this._isAuthSubject.next(value);
 		this.isAuthValue = value;
+		if (value === false) {
+			this.cookieService.deleteCookie('authToken');
+		}
 	}
 
   	public signup(newUser: User) {

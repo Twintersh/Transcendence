@@ -21,11 +21,11 @@ clean:
 	@/etc/init.d/redis-server stop
 	
 stop:
-	@docker compose down
+	@docker compose -f docker-compose.prod.yml down
 	@/etc/init.d/redis-server stop
 
 start:
-	@docker compose up
+	@docker compose -f docker-compose.prod.yml up
 
 re: clean volumes prod
 

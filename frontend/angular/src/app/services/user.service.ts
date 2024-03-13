@@ -25,6 +25,9 @@ export class UserService {
 	) {}
 
 	public cleanUserAvatar(ft_auth: boolean, avatar: string): string {
+		if (avatar === undefined || ft_auth === undefined) {
+			return '';
+		}
 		let avatarUrl: string = '';
 		if (ft_auth === false) {
 			avatarUrl = HTTP_MODE + IP_SERVER + avatar;
@@ -50,6 +53,9 @@ export class UserService {
 	}
 
 	public getUserInfosById(id: number): Observable<User> {
+		if (id === 0 || id === undefined || id === null || isNaN(id) === true) {
+			return new Observable<User>();
+		}
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
@@ -59,6 +65,9 @@ export class UserService {
 	}
 
 	public getUserMatches(id: number): Observable<Game[]> {
+		if (id === 0 || id === undefined || id === null || isNaN(id) === true) {
+			return new Observable<Game[]>();
+		}
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
@@ -82,6 +91,9 @@ export class UserService {
 	}
 
 	public updateProfilePicture(data: any): void {
+		if (data === null || data === undefined) {
+			return;
+		}
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 		this.http.post(HTTP_MODE + IP_SERVER + '/users/uploadAvatar/', data, { headers }).subscribe({

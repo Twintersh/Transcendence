@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from users.serializers import UserMatchSerializer
+from users.serializers import UserMatchSerializer, UserInfoSerializer
 from rest_framework.parsers import MultiPartParser, FileUploadParser
 from rest_framework.response import Response
 from rest_framework import status
@@ -21,12 +21,12 @@ def getPlayers(request):
     if not match_id:
         return Response("No match id provided", status=status.HTTP_400_BAD_REQUEST)
     match = get_object_or_404(Match, id=match_id)
-    serializer = Avatarserializer(instance=match.player1.avatar)
-    p1Avatar = serializer.data['image']
-    serializer = Avatarserializer(instance=match.player2.avatar)
-    p2Avatar = serializer.data['image']
-    response = {"player1" : {"username" : match.player1.username, "avatar" : p1Avatar},
-                "player2" : {"username" : match.player2.username, "avatar" : p2Avatar}}
+    serializer = UserInfoSerializer(instance=match.player1)
+    p1 = serializer.data
+    serializer = UserInfoSerializer(instance=match.player2)
+    p2 = serializer.data
+    response = {"player1" : p1,
+                "player2" : p2}
     return Response(response, status=status.HTTP_200_OK)
 
 @api_view(['POST'])

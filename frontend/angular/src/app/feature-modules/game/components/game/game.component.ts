@@ -11,7 +11,6 @@ import { UserService } from 'src/app/services/user.service';
 
 import { GameData, GamePlayers } from 'src/app/models/game.model';
 import { WinModalComponent } from '../win-modal/win-modal.component';
-import { HTTP_MODE, IP_SERVER } from 'src/env';
 
 
 @Component({
@@ -33,8 +32,8 @@ export class GameComponent implements OnInit {
 		ball: {x: 0, y: 0},
 	};
 	players: GamePlayers = {
-		player1: {username: '', avatar: '', score: 0},
-		player2: {username: '', avatar: '', score: 0}
+		player1: {username: '', avatar: '', score: 0, ft_auth: false},
+		player2: {username: '', avatar: '', score: 0, ft_auth: false}
 	} as GamePlayers;
 	local: boolean = false;
 	tournament: boolean = false;
@@ -72,7 +71,7 @@ export class GameComponent implements OnInit {
 		
 		this.gameService.getPlayers(this.gameElements.id).subscribe((res: any) => {
 			this.players.player1 = res.player1;
-			this.players.player1.avatar = this.userService.cleanUserAvatar(this.players.player1.ft_auth, this.players.player1.avatar);
+			this.players.player1.avatar = this.userService.cleanUserAvatar(this.players.player1.ft_auth, res.player1.avatar.image);
 			if (this.tournament) {
 				this.players.player1.username = this.tournamentService.tournamentPlayers[0];
 				this.players.player1.score = 0;
@@ -86,8 +85,10 @@ export class GameComponent implements OnInit {
 			}
 			else {
 				this.players.player2 = res.player2;
-				this.players.player2.avatar = this.userService.cleanUserAvatar(this.players.player2.ft_auth, this.players.player2.avatar);
+				this.players.player2.avatar = this.userService.cleanUserAvatar(this.players.player2.ft_auth, res.player2.avatar.image);
 			}
+			console.log('player1', this.players.player1);
+			console.log('player2', this.players.player2);
 			this.gameloop(this.gameElements.id, this.local);
 		});
 	}
