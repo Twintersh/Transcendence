@@ -54,9 +54,7 @@ export class ChatComponent {
 
 	sendGameInvite(friend: User): void {
 		this.myForm.value.message = "/invite";
-		console.log('form is ', this.myForm.value)
 		this.chatService.sendMessage(this.myForm.value);
-		console.log(friend.username);
 	}
 
 }

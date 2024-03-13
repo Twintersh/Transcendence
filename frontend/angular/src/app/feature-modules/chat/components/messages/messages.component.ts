@@ -49,9 +49,10 @@ export class MessagesComponent implements OnInit {
 				let matchId: string = msg.content.slice(8);
 				this.chatService.removeInvites(this.roomId).subscribe({
 					next: (res: any) => {
-						console.log(res);
+						console.log('Invites removed');
 					},
 					error: () => {
+						console.error('Error removing invites');
 					}
 				});
 				this.router.navigateByUrl('/game/' + matchId);
@@ -80,13 +81,11 @@ export class MessagesComponent implements OnInit {
 			this.userService.getUserInfos().subscribe({
 				next: (user: User) => {
 					myUsername = user.username;
-					console.log(myUsername);
 					this.gameService.getLocalMatch(myUsername, friend.username).subscribe({
 						next: (res) => {
 							let msg = {
 								message: '/accept ' + res['id']
 							}
-							console.log('msg is ', msg);
 							this.chatService.sendMessage(msg);
 						},
 						error: (error) => {

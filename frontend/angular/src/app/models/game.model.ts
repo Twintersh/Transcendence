@@ -28,6 +28,7 @@ export interface Player {
 	avatar: string;
 	score: number;
 	winner: boolean;
+	ft_auth: boolean;
 }
 
 export interface GamePlayers {

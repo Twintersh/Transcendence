@@ -112,7 +112,6 @@ export class WebSocketService {
 		}
 
 		this.chatSocket.onclose = (err) => {
-			console.log(err);
 			console.log('Chat WebSocket connection closed:');
 		}
 	}

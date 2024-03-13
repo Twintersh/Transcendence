@@ -6,7 +6,7 @@ import { Observable, map, of, catchError, BehaviorSubject } from 'rxjs';
 import { CookieService } from './cookie.service'; 
 
 import { User } from '../models/user.model';
-import { HTTP_MODE, IP_SERVER, PROD_MODE } from '../../env';
+import { HTTP_MODE, IP_SERVER } from '../../env';
 
 @Injectable({
   providedIn: 'root'
@@ -21,9 +21,9 @@ export class AuthService {
 		private readonly http: HttpClient,
 		private readonly cookieService: CookieService,
 	) {
-		this.isAuth().subscribe((res: boolean) => {
-			this.isAuthValue = res;
-		});
+		// this.isAuth().subscribe((res: boolean) => {
+		// 	this.isAuthValue = res;
+		// });
 	}
 		
 	get isAuthSubject() {
@@ -33,9 +33,6 @@ export class AuthService {
 	public nextValue(value: boolean) {
 		this._isAuthSubject.next(value);
 		this.isAuthValue = value;
-		if (value === false) {
-			this.cookieService.deleteCookie('authToken');
-		}
 	}
 
   	public signup(newUser: User) {
@@ -43,12 +40,11 @@ export class AuthService {
 	}	
 
 	public signup42() {
-		var httpmode = HTTP_MODE.slice(0, -3);
-		var ip = IP_SERVER.slice(0, -5);
-		console.log(ip)
-		const url: string = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-07f2dcaa8cb3bea2fc596723d624d6d09f0e930ed9b35c5d9b30f5a1159b7cce&redirect_uri=' + httpmode + '%3A%2F%2F' + ip + '%3A8000%2Fusers%2Fsignup42%2F&response_type=code';
-		document.location.href = url;
-	}
+        let httpmode = HTTP_MODE.slice(0, -3);
+        let ip = IP_SERVER.slice(0, -5);
+        const url: string = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-f0d899fa3b78bf41eaaa5cbae6370ce7fc32b62b7f26461b6ee7d21c8f8423a7&redirect_uri=' + httpmode + '%3A%2F%2F' + ip + '%3A8000%2Fusers%2Fcallback&response_type=code';
+        document.location.href = url;
+    }
 
 	public logout(): Observable<boolean> {
 		const token = this.cookieService.getCookie('authToken');

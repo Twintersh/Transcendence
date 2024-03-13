@@ -7,6 +7,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { GameService } from 'src/app/services/game.service';
 import { TournamentService } from 'src/app/services/tournament.service';
+import { UserService } from 'src/app/services/user.service';
 
 import { GameData, GamePlayers } from 'src/app/models/game.model';
 import { WinModalComponent } from '../win-modal/win-modal.component';
@@ -38,7 +39,7 @@ export class GameComponent implements OnInit {
 	local: boolean = false;
 	tournament: boolean = false;
 	localOpp: string = '';
-	winModal!: NgbModalRef;
+	winModal: NgbModalRef = {} as NgbModalRef;
 
 	private routeSub: Subscription = new Subscription();
 	
@@ -47,7 +48,8 @@ export class GameComponent implements OnInit {
 		private readonly routerActive: ActivatedRoute,
 		private readonly gameService: GameService,
 		private readonly modalService: NgbModal,
-		private readonly tournamentService: TournamentService
+		private readonly tournamentService: TournamentService,
+		private readonly userService: UserService
 	) { }
 
 	ngOnInit() {
@@ -70,7 +72,7 @@ export class GameComponent implements OnInit {
 		
 		this.gameService.getPlayers(this.gameElements.id).subscribe((res: any) => {
 			this.players.player1 = res.player1;
-			this.players.player1.avatar = HTTP_MODE + IP_SERVER + this.players.player1.avatar;
+			this.players.player1.avatar = this.userService.cleanUserAvatar(this.players.player1.ft_auth, this.players.player1.avatar);
 			if (this.tournament) {
 				this.players.player1.username = this.tournamentService.tournamentPlayers[0];
 				this.players.player1.score = 0;
@@ -84,7 +86,7 @@ export class GameComponent implements OnInit {
 			}
 			else {
 				this.players.player2 = res.player2;
-				this.players.player2.avatar = HTTP_MODE + IP_SERVER + this.players.player2.avatar;
+				this.players.player2.avatar = this.userService.cleanUserAvatar(this.players.player2.ft_auth, this.players.player2.avatar);
 			}
 			this.gameloop(this.gameElements.id, this.local);
 		});
@@ -114,6 +116,7 @@ export class GameComponent implements OnInit {
 
 		this.gameService.getGameElements().subscribe((data: GameData) => {
 			if (data['winner' as keyof GameData]) {
+				if (this.gameService.gameEnded) return;
 				this.endGame(data, this.players);
 				return;
 			}

@@ -9,6 +9,7 @@ export interface User {
 	avatar: string;
 	is_active: boolean;
 	asWon: boolean;
+	ft_auth: boolean;
 }
 
 export interface UpdatedUser {

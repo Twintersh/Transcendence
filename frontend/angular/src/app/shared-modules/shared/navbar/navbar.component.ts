@@ -76,6 +76,9 @@ export class NavbarComponent implements OnInit {
 						this.offcanvas.dismiss();
 						this.router.navigateByUrl('/user/' + this.userId);
 					}
+				},
+				error: (error) => {
+					console.error('User information failed:', error);
 				}
 			})
 		);

@@ -32,48 +32,58 @@ def signup(request):
         token = Token.objects.create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
 
-@api_view(['POST'])
-def signup42(request):
-	auth_code = request.query_params.get('code')
+def getToken(auth_code):
+    client_id = str(os.environ.get('FT_CLIENT_ID'))
+    client_secret = str(os.environ.get('FT_SECRET_KEY'))
+    httpmode = str(os.environ.get('HTTP_MODE'))
+    ipserv = str(os.environ.get('IP_SERVER'))
+    uri = httpmode + ipserv + "/users/callback"
+    token_url = 'https://api.intra.42.fr/oauth/token'
+    
+    data = {
+        "grant_type" : "authorization_code",
+        "client_id" : client_id,
+        "client_secret" : client_secret,
+        "code" : auth_code,
+        "redirect_uri": uri
+    }
+    response = py_request.post(token_url, data=data)
+    token = response.json()
+    return token.get('access_token')
+    
 
-	client_id = os.environ.get('42_CLIENT_ID')
-	client_secret = os.environ.get('42_SECRET_KEY')
+@api_view(['GET'])
+def callback(request):
+    auth_code = request.query_params.get('code')
+    if not auth_code:
+        return Response("Code not provided", status=status.HTTP_204_NO_CONTENT)
+    ft_token = getToken(auth_code)
+    user_response = py_request.get("https://api.intra.42.fr/v2/me", headers={"Authorization": f"Bearer {ft_token}"})
+    if user_response.status_code == 401:
+        return Response(ft_token, status=status.HTTP_401_UNAUTHORIZED)
 
-	httpmode = str(os.environ.get('HTTP_MODE'))
-	ipserv = str(os.environ.get('IP_SERVER'))
-	uri = httpmode + ipserv + "/users/signup42/"
-
-	token_url = 'https://api.intra.42.fr/oauth/token'
-	data = {"grant_type" : "authorization_code",
-			"client_id" : client_id,
-			"client_secret" : client_secret,
-			"code" : auth_code,
-			"redirect_uri": uri
-    } # to https://
-	token_response = py_request.post(token_url, data=data)
-	if token_response.status_code == 401:
-		return Response(token_response, status=token_response.status_code)
-	access_token = json.loads(token_response.content).get('access_token')
-	user_reponse = py_request.get("https://api.intra.42.fr/v2/me", headers={"Authorization": f"Bearer {access_token}"})
-	if user_reponse.status_code == 401:
-		return Response(user_reponse.content, status=user_reponse.status_code)
-
-	content = json.loads(user_reponse.content)
-	username = content.get('login')
-	avatar_link = content.get('image').get('link')
-	email = content.get('email')
-	try :
-		user = User.objects.get(username=username)
-		token, created = Token.objects.get_or_create(user=user)
-		redirect_url = httpmode + ipserv + ':4200/?token=' + token.key
-		return redirect(redirect_url)
-	except User.DoesNotExist:
-		user = User.objects.create(username=username, email=email, ft_auth=True)
-		avatar = Avatar.objects.create(user=user, image=avatar_link)
-		user.save()
-		token = Token.objects.create(user=user)
-		redirect_url = httpmode + ipserv + '4200/?token=' + token.key
-		return redirect(redirect_url)
+    httpmode = str(os.environ.get('HTTP_MODE'))
+    ipserv = str(os.environ.get('IP_SERVER'))[:-5]
+    content = user_response.json()
+    username = content.get('login')
+    avatar_link = content.get('image').get('link')
+    email = content.get('email')
+    try :
+        user = User.objects.get(username=username)
+        user.is_active = True
+        token, created = Token.objects.get_or_create(user=user)
+        user.save()
+        redirect_url = httpmode + ipserv + ':4200/?token=' + token.key     #443 POUR LE PROD MODE
+        return redirect(redirect_url)
+    except User.DoesNotExist:
+        user = User.objects.create(username=username, email=email, ft_auth=True)
+        avatar = Avatar.objects.create(user=user, image=avatar_link)
+        avatar.save()
+        user.is_active = True
+        token = Token.objects.create(user=user)
+        user.save()
+        redirect_url = httpmode + ipserv + ':4200/?token=' + token.key
+        return redirect(redirect_url)
 
 @swagger_auto_schema(method='POST', request_body=UserLoginSerializer)
 @api_view(['POST'])

@@ -98,7 +98,7 @@ export class UserProfileComponent implements OnInit {
 				next: (response: any) => {
 					if (this.id != 0) {
 						this.user = response;
-						this.user.avatar = HTTP_MODE + IP_SERVER + response.avatar.image;
+						this.user.avatar = this.userService.cleanUserAvatar(this.user.ft_auth, response.avatar.image);
 						this.SetPongoProgressBar();
 					}
 				},

@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalModule, NgbModalRef, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ToastrModule } from 'ngx-toastr';
 
@@ -22,7 +22,6 @@ import { QueueModalComponent } from './feature-modules/home/components/queue-mod
 import { AddPlayerModalComponent } from './feature-modules/home/components/add-player-modal/add-player-modal.component';
 import { WinModalComponent } from './feature-modules/game/components/win-modal/win-modal.component';
 import { NavbarComponent } from './shared-modules/shared/navbar/navbar.component';
-import { authGuard } from './guards/auth.guard';
 
 @NgModule({
 	declarations: [
@@ -45,6 +44,7 @@ import { authGuard } from './guards/auth.guard';
 		ToastrModule.forRoot(),
 		LandingModule,
 		NgbModule,
+		NgbModalModule,
 		UserModule,
 		SharedModule,
 		ChatModule

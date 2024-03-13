@@ -24,6 +24,20 @@ export class UserService {
 		private readonly localDataManager: LocalDataManagerService
 	) {}
 
+	public cleanUserAvatar(ft_auth: boolean, avatar: string): string {
+		let avatarUrl: string = '';
+		if (ft_auth === false) {
+			avatarUrl = HTTP_MODE + IP_SERVER + avatar;
+		}
+		else {
+			avatar = avatar.slice(10);
+			avatarUrl = avatar;
+			avatarUrl = 'https://' + avatarUrl;
+		}
+		return avatarUrl;
+	}
+
+
 	public nextUserInfo(user: User): void {
 		this.userInfoSubject.next(user);
 	}
@@ -32,7 +46,7 @@ export class UserService {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 		
-		return this.http.get<User>(HTTP_MODE + IP_SERVER + '/users/getUserInfo/', { headers });
+		return this.http.get<User>(HTTP_MODE + IP_SERVER + '/users/getUserInfo', { headers });
 	}
 
 	public getUserInfosById(id: number): Observable<User> {

@@ -1,25 +1,25 @@
-from django.urls import re_path, include
-from .views import *
+from django.urls import re_path
+from . import views
 
 
 urlpatterns = [
-    re_path('login/', login),
-	re_path('signup42/', signup42),
-    re_path('signup/', signup),
-    re_path('updateCredential/', updateCredential),
-    re_path('logout', logout),
-	re_path('getUserInfoById', getUserInfoById),
-    re_path('getUserInfo', getUserInfo),
-	re_path('getUserAvatar', getUserAvatar),
-    re_path('getUserMatches', getUserMatches),
-    re_path('sendFriendRequest/', sendFriendRequest),
-    re_path('acceptFriendRequest/', acceptFriendRequest),
-    re_path('getSentRequests/', getSentFriendRequests),
-    re_path('getReceivedRequests', getReceivedFriendRequests),
-    re_path('getUserFriends/', getUserFriends),
-    re_path('getBlockedUsers/', getBlockedUsers),
-    re_path('blockUser/', blockUser),
-    re_path('unBlockUser/', unBlockUser),
-    re_path('uploadAvatar/', uploadAvatar),
-	re_path('isAuth/', isAuth)
+    re_path('login/', views.login),
+    re_path('callback', views.callback, name="callback"),
+    re_path('signup/', views.signup),
+    re_path('updateCredential/', views.updateCredential),
+    re_path('logout', views.logout),
+    re_path('getUserInfoById', views.getUserInfoById),
+	re_path('getUserInfo', views.getUserInfo, name="getUserInfo"),
+    re_path('getUserAvatar', views.getUserAvatar),
+    re_path('getUserMatches', views.getUserMatches),
+    re_path('sendFriendRequest/', views.sendFriendRequest),
+    re_path('acceptFriendRequest/', views.acceptFriendRequest),
+    re_path('getSentRequests/', views.getSentFriendRequests),
+    re_path('getReceivedRequests', views.getReceivedFriendRequests),
+    re_path('getUserFriends/', views.getUserFriends),
+    re_path('getBlockedUsers/', views.getBlockedUsers),
+    re_path('blockUser/', views.blockUser),
+    re_path('unBlockUser/', views.unBlockUser),
+    re_path('uploadAvatar/', views.uploadAvatar),
+    re_path('isAuth/', views.isAuth)
 ]

@@ -31,8 +31,11 @@ export class LandingComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		if (this.router.url.includes('?code=')) {
-			this.cookieService.saveCookie('authToken', this.router.url.split('=')[1]);
+		if (this.router.url.includes('?token=')) {
+			let token: string = this.router.url.split('=')[1];
+			this.cookieService.saveCookie('authToken', token);
+			this.authService.nextValue(true);
+			this.router.navigate(['/home']);
 		}
 		this.subscription.add(
 			this.authService.isAuth$.subscribe((res: boolean) => {

@@ -6,7 +6,7 @@ import { UserService } from './user.service';
 import { WebSocketService } from './websocket.service';
 
 import { User } from '../models/user.model';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -45,18 +45,15 @@ export class TournamentService {
 		);
 	}
 
-	getNextGame(winner: string): void {
+	async getNextGame(): Promise<any> {
 		this.matchesId = '';
-		console.log('players in getnextmatch are', this.tournamentPlayers);
-		console.log('winners in getnextmatch are', this.winners);
-		this.gameService.getLocalMatch(this.user.username, this.user.username).subscribe((res: any) => {
+		return firstValueFrom(this.gameService.getLocalMatch(this.user.username, this.user.username).pipe(tap((res: any) => {
 			this.matchesId = res['id'];
-			this.router.navigateByUrl('home');
-			setTimeout(() => {
-				this.websocketService.closeMatch();
-				this.router.navigateByUrl('game/tournament/' + this.matchesId);
-			}, 0);
-		});
+			this.websocketService.closeMatch();
+			this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+				this.router.navigate(['game/tournament/' + this.matchesId]);
+			});
+		})));
 	}
 
 	ngOnDestroy() {
