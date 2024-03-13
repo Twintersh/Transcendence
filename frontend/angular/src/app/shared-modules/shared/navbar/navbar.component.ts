@@ -74,7 +74,7 @@ export class NavbarComponent implements OnInit {
 					this.localDataManager.removeData('userName');
 					this.localDataManager.removeData('userAvatar');
 					this.authService.nextValue(false);
-					this.router.navigateByUrl('/');
+					window.location.href = '/';
 				},
 				error: (error) => {
 					console.error('Logout failed:', error);

@@ -64,7 +64,6 @@ export class GameComponent implements OnInit {
 		this.router.events.subscribe((event) => {
 			if (event instanceof NavigationStart && !this.gameService.gameEnded) {
 				this.endGame(this.gameElements, this.players);
-				this.gameService.getGameElements().unsubscribe();
 			}
 		});
 		

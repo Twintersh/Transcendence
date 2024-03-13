@@ -90,9 +90,7 @@ export class WinModalComponent implements OnInit {
 			this.tournament = false;
 			this.endTournament = false;
 		}
-		this.router.navigateByUrl('/user/' + this.user.id).then(() => {
-			this.modalRef.close();
-		});
+		window.location.href = '/user/' + this.user.id;
 	}
 
 	nextMatch() {
