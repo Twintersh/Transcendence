@@ -1,6 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../../../services/auth.service'
 import { Router } from '@angular/router';
+
+import { Subscription } from 'rxjs';
+
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+import { AuthService } from '../../../../services/auth.service';
+import { CookieService } from '../../../../services/cookie.service';
+
+import { AuthenticationComponent } from '../authentication/authentication.component';
 
 @Component({
   selector: 'landing',
@@ -10,24 +20,37 @@ import { Router } from '@angular/router';
 
 export class LandingComponent implements OnInit {
 
-	constructor(private authService: AuthService, private router: Router) {
-	}
+	private subscription = new Subscription();
+
+	constructor(
+		private authService: AuthService,
+		private router: Router,
+		private modalService: NgbModal,
+		private cookieService: CookieService,
+		private http: HttpClient
+	) { }
 
 	ngOnInit() {
-		this.isAuth();
-	}
-
-	isAuth(): void {
-		this.authService.isAuth().subscribe( {
-			next: (res) => {
+		if (this.router.url.includes('?token=')) {
+			let token: string = this.router.url.split('=')[1];
+			this.cookieService.saveCookie('authToken', token);
+			this.authService.nextValue(true);
+			this.router.navigate(['/home']);
+		}
+		this.subscription.add(
+			this.authService.isAuth$.subscribe((res: boolean) => {
 				if (res) {
-					window.location.href = 'http://localhost:4200/home';
+					this.router.navigate(['/home']);
 				}
 			}
-		})
-	};
+		));
+	}
 
-	sign42() {
-		this.authService.signup42();
+	signup(): void {
+		this.modalService.open(AuthenticationComponent, { centered: true });
+	}
+
+	ngOnDestroy() {
+		this.subscription.unsubscribe();
 	}
 }

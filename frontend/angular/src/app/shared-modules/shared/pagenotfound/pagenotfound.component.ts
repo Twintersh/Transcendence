@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'pagenotfound',
   templateUrl: './pagenotfound.component.html',
@@ -7,4 +9,11 @@ import { Component } from '@angular/core';
 })
 export class PageNotFoundComponent {
 
+	constructor(
+		private router: Router
+	) { }
+
+	goHome(): void{
+		this.router.navigateByUrl('/');
+	}
 }

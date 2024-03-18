@@ -1,66 +1,106 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
-import { User } from '../models/user.model';
 import { CookieService } from './cookie.service';
+
+import { Game } from 'src/app/models/game.model';
+import { User } from '../models/user.model';
+import { HTTP_MODE, IP_SERVER } from '../../env';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
+	private userInfoSubject = new BehaviorSubject<User>({} as User);
+	userInfo$ = this.userInfoSubject.asObservable();
+
 	constructor(
 		private readonly http: HttpClient, 
-		private readonly cookieService: CookieService
-		) 
-	{ }
+		private readonly cookieService: CookieService,
+		private readonly router: Router
+	) {}
 
-	public getUserInfos(): Observable<User | null> {
-		const token = this.cookieService.getCookie('authToken');
-		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
-
-		return this.http.get<User>('http://127.0.0.1:8000/users/getUserInfo/', { headers });
+	public cleanUserAvatar(ft_auth: boolean, avatar: string): string {
+		if (avatar === undefined || ft_auth === undefined) {
+			return '';
+		}
+		let avatarUrl: string = '';
+		if (ft_auth === false) {
+			avatarUrl = HTTP_MODE + IP_SERVER + avatar;
+		}
+		else {
+			avatar = avatar.slice(10);
+			avatarUrl = avatar;
+			avatarUrl = 'https://' + avatarUrl;
+		}
+		return avatarUrl;
 	}
 
-	public getUserMatches(): Observable<User | null> {
+
+	public nextUserInfo(user: User): void {
+		this.userInfoSubject.next(user);
+	}
+
+	public getUserInfos(): Observable<User> {
+		const token = this.cookieService.getCookie('authToken');
+		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+		
+		return this.http.get<User>(HTTP_MODE + IP_SERVER + '/users/getUserInfo', { headers });
+	}
+
+	public getUserInfosById(id: number): Observable<User> {
+		if (id === undefined || Number.isInteger(id) === false) {
+			id = 900000;
+		}
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		return this.http.get<User>('http://127.0.0.1:8000/users/getUserMatches/', { headers });
+		let params = new HttpParams().set('id', id.toString());
+
+		return this.http.get<User>(HTTP_MODE + IP_SERVER + '/users/getUserInfoById', { headers, params });
+	}
+
+	public getUserMatches(id: number): Observable<Game[]> {
+		if (id === undefined || Number.isInteger(id) === false) {
+			id = 900000;
+		}
+		const token = this.cookieService.getCookie('authToken');
+		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+		let params = new HttpParams().set('id', id.toString());
+
+		return this.http.get<Game[]>(HTTP_MODE + IP_SERVER + '/users/getUserMatches/', { headers, params });
 	}
 
 	public getUserAvatar(): Observable<any> {
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		return this.http.get<any>('http://127.0.0.1:8000/users/getUserAvatar/', { headers });
+		return this.http.get<any>(HTTP_MODE + IP_SERVER + '/users/getUserAvatar/', { headers });
 	}
 
-	// ON NE SUBSCRIBE PAS DANS UN SERVICE
 	public updateUserInfos(data: any): Observable<any> {
-		const token = this.cookieService.getCookie('authToken');//DRY
-		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);//DRY
-		return this.http.post('http://localhost:8000/users/updateCredential/', data, { headers });
+		const token = this.cookieService.getCookie('authToken');
+		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+		return this.http.post(HTTP_MODE + IP_SERVER + '/users/updateCredential/', data, { headers });
 	}
 
 	public updateProfilePicture(data: any): void {
+		if (data === null || data === undefined) {
+			return;
+		}
 		const token = this.cookieService.getCookie('authToken');
 		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
-		this.http.post('http://localhost:8000/users/uploadAvatar/', data, { headers }).subscribe({
+		this.http.post(HTTP_MODE + IP_SERVER + '/users/uploadAvatar/', data, { headers }).subscribe({
 			next: () => {
-				console.log('User avatar updated');
-				this.getUserInfos().subscribe({
-					next: (data) => {
-					},
-					error: (error) => {
-						console.error('Error updating user information:', error);
-					}
-				});
+				this.getUserInfos();
 			},
 			error: (error) => {
-				// Error: Handle the error if the user information update fails
 				console.error('User information update failed:', error);
 			},
 		});

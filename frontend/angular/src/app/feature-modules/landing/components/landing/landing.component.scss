@@ -1,19 +1,15 @@
 /* Header Styles */
-header {
+.header-logo {
 	font-size: 10rem;
-    color: #FD8743;
+	color: #FD8743;
 	display: flex;
-    justify-content: center;
-    align-items: center;
+	justify-content: center;
+	align-items: center;
 
-	.logo {
-
-
-		//border-radius: 50%;
-   		//box-shadow: 5px 5px 0px black;                             //CSS BOX SHADOW INSTEAD OF JPG SHADOW
-
-
-		margin: 0rem 0.5rem;
+	img {
+		border-radius: 50%;
+		box-shadow: 5px 5px 0px black;
+		margin: -0.5rem 0rem 0.5rem 0.5rem;
 	}
 
 	span {
@@ -21,9 +17,9 @@ header {
 	}
 }
 
-
 .landing-header {
-	height: 83vh;
+	min-height: 80vh;
+	margin-bottom: 100px;
 }
 
 .landing-content {
@@ -32,7 +28,7 @@ header {
 
 .modal-content, .modal-header, .modal-footer, .modal-body {
 	border-color: black;
-    border-width: 4px;
+	border-width: 4px;
 	background-color: #53A6AC;
 }
 
@@ -59,9 +55,22 @@ header {
 }
 
 
+h2.hprimary{
+	margin-bottom: 1.75rem;
+	text-align: center;
+	border: solid 4px #000;
+	box-shadow: 5px 5px 0px 0px #000;
+	background-color: #9D95E7;
+}
 
 
-
+h2.hsecondary{
+	margin-bottom: 1.75rem;
+	text-align: center;
+	border: solid 4px #000;
+	box-shadow: 5px 5px 0px 0px #000;
+	background-color: #FFC801;
+}
 
 //////////////////////////////
 /*		ANIMATED CLASS		*/

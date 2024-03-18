@@ -1,50 +1,53 @@
 <div class="container text-center">
 	<div class="row">
 
-		<div class="col-md-4">
+		<div class="col-md-4 mb-5">
 			<div class="usercard sticky-top">
 				<div class="backpanel">
-					<h2>{{ user?.username }}</h2>
-					<div class="row my-4">
+					<h2> {{ user.username }} </h2>
+					<div class="row mt-4 mb-3">
 						<div class="col-md-5">
-							<img class="img-fluid" *ngIf="user?.avatar" [src]="user?.avatar">
-						</div>
+							<img class="img-fluid mb-3" *ngIf="user.avatar" [src]="user.avatar">
+						</div>	
 						<div class="col-md-7">
-							<p>{{ user?.username }}, you really are Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-							<button class="btn btn-secondary w-100" (click)="editProfile()">Edit Profile</button>
+							<p> {{ user.username }}, you really are Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+							<button *ngIf="isItMe" class="btn btn-secondary w-100" (click)="editProfile()">Edit Profile</button>
 						</div>
-					</div>
-					<p>Achievements</p>
-					<div class="achievements d-flex justify-content-around">
-						<img src="assets/logo.svg" style="height:45px">
-						<img src="assets/ballgreen.svg" style="height:45px">
-						<img src="assets/logo.svg" style="height:45px">
 					</div>
 				</div>
 
-				<div class="backpanel mt-4">
+				<div class="backpanel my-4">
 					<h2>Games Stats</h2>
 
-					<div class="progress my-4" style="height: 50px;">
-						<div class="progress-bar w-50" role="progressbar"></div>
-						<div class="d-flex justify-content-between" style="width: 100%;">
-							<img src="assets/logo.svg" style="margin-left: -25px;">
-							<img src="assets/ballgreen.svg" class="spinning">
+					<div *ngIf="!user.asWon" class="position-relative m-4">
+						<div class="progress" role="progressbar" aria-label="Progress" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="height: 50px;">
+						  	<div id="pongoProgress" class="progress-bar" style="width: 50%">
+							</div>
+							<img style="height: 50px; margin-left: -25px;" src="assets/logo.svg">
 						</div>
+						<img style="height: 50px;  margin-left: -25px;" src="assets/ballgreen.svg" class="spinning position-absolute top-0 start-100">
 					</div>
 
-					<div class="statscontainer d-flex">
+					<div *ngIf="user.asWon && isItMe" class="my-5">
+						<h3>You saved pongi</h3>
+						<h4>You're such a great pong player, good job!</h4>
+					</div>
+					<div *ngIf="user.asWon && !isItMe" class="my-5">
+						<h3>This user saved pongi!</h3>
+					</div>
+
+					<div class="statscontainer d-flex justify-content-evenly">
 						<div>
-							<p>Games Played</p>
-							<p>{{ user?.MatchesCount }}</p>
-						</div><p>Games Played</p>
-						<div>
-							<p>Games Won</p>
-							<p>{{ user?.wonMatchesCount }}</p>
+							<p class="mb-0">Games Played</p>
+							<span class="badge text-bg-secondary">{{ user.MatchesCount }}</span>
 						</div>
 						<div>
-							<p>W/L Ratio</p>
-							<p>{{ user?.gameRatio }}</p>
+							<p class="mb-0">Games Won</p>
+							<span class="badge text-bg-secondary">{{ user.wonMatchesCount }}</span>
+						</div>
+						<div>
+							<p class="mb-0">W/L Ratio</p>
+							<span class="badge text-bg-secondary">{{ user.gameRatio }}</span>
 						</div>
 					</div>
 				</div>
@@ -52,15 +55,22 @@
 		</div>
 
 		<div class="col-md-8">
-			<div class="gameList px-4">
-				<h2>Game History</h2>
-				<div class="d-flex-column justify-content-evenly">
-					<div class="matchcontainer" *ngFor="let game of gameList">
-						<match [game]="game"></match>
-					</div>
+
+			<h2>Game History</h2>
+
+			<div *ngIf="gameList?.length == 0" class="h-100 px-4 d-flex flex-column justify-content-evenly">
+				<div>
+					<h5>No games played yet...</h5>
+					<h5>Go face your first opponent to see how terrible you are!</h5>
 				</div>
 			</div>
+
+			<div *ngIf="gameList?.length != 0" class="h-100 px-4">
+				<div class="matchcontainer" *ngFor="let game of gameList">
+					<match [user]="user" [game]="game"></match>
+				</div>
+			</div>
+
 		</div>
-		
 	</div>
 </div>

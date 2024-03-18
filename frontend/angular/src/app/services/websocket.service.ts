@@ -1,50 +1,136 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+
+import { BehaviorSubject, Subject } from 'rxjs';
+
+import { HTTP_MODE, IP_SERVER, WS_MODE} from '../../env';
+
+import { CookieService } from '../services/cookie.service';
+
+import { Message } from '../models/chat.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WebSocketService {
-	private socket: WebSocket = {} as WebSocket;
+	private matchSocket: WebSocket | null = null;
 	public messages$: Subject<any> = new Subject<any>();
 
-	constructor() {
+	private queueWebSocket:  WebSocket | null = null;
+	public queueMessages$: Subject<any> = new Subject<any>();
+
+	private chatSocket: WebSocket = {} as WebSocket;
+	private chatMessages: BehaviorSubject<Message[]> = new BehaviorSubject<Message[]>([]);
+	public chatMessages$ = this.chatMessages.asObservable();
+	
+	constructor(
+		private readonly cookieService: CookieService
+	) { }
+	
+	connectQueue(friend:string | null): void {
+		if (this.queueWebSocket?.readyState === WebSocket.OPEN) {
+			this.queueWebSocket.close();
+		}
+		this.queueWebSocket = null;
+		const token = this.cookieService.getCookie('authToken');
+		this.queueWebSocket = new WebSocket(WS_MODE + IP_SERVER + '/ws/game/queue/' + '?token=' + token);
+
+		this.queueWebSocket.onopen = () => {
+			this.queueWebSocket?.send(JSON.stringify({
+				'message' : 'join',
+				'friend' : friend
+			}));
+			this.queueMessages$.next({
+				'message' : 'connected to queue'
+			});
+			console.log('WebSocket connection established.');
+		}
+
+		this.queueWebSocket.onclose = () => {
+			if (this.queueWebSocket) {
+				this.queueWebSocket.onmessage = null;
+				this.queueMessages$.complete();
+				this.queueMessages$ = new Subject<any>();
+			}
+			console.log('WebSocket connection closed:');
+		}
+
+		this.queueWebSocket.onmessage = (event) => {
+			this.queueMessages$.next(JSON.parse(event.data));
+		}
 	}
 
-	connect(url: string): void {
-		this.socket = new WebSocket(url);
+	disconnectQueue() {
+		this.queueWebSocket?.close();
+	}
 
-		this.socket.onopen = () => {
+	connectMatch(match_id: string): void {
+		if (this.matchSocket?.readyState === WebSocket.OPEN) {
+			this.matchSocket.close();
+		}
+		this.matchSocket = null;
+		const token: string = this.cookieService.getCookie("authToken");
+		const matchSocket: string = WS_MODE + IP_SERVER + '/ws/game/' + match_id + '/?token=' + token;
+
+		this.matchSocket = new WebSocket(matchSocket);
+
+		this.matchSocket.onopen = () => {
 			console.log('WebSocket connection established.');
-		};
+		}
 
-		this.socket.onclose = (event) => {
-			console.log('WebSocket connection closed:', event);
-		};
-
-		this.socket.onerror = (error) => {
+		this.matchSocket.onerror = (error) => {
 			console.error('WebSocket error:', error);
 		};
+
+		this.matchSocket.onclose = () => {
+			if (this.matchSocket) {
+				this.matchSocket.onmessage = null;
+				this.messages$.complete();
+				this.messages$ = new Subject<any>();
+			}
+		}
+
+		this.matchSocket.onmessage = (event) => {
+			this.messages$.next(JSON.parse(event.data));
+		}
+	}
+
+	connectChat(roomId: string): void {
+		const token = this.cookieService.getCookie('authToken');
+
+		this.chatSocket = new WebSocket(WS_MODE + IP_SERVER + '/ws/chat/' + roomId + '/?token=' + token);
+
+		this.chatSocket.onopen = () => {
+			console.log('Chat WebSocket connection established.');
+		}
+
+		this.chatSocket.onmessage = (event) => {
+			const data: Message[] | {message: Message} = JSON.parse(event.data);
+			if (data instanceof Array)
+				this.chatMessages.next([...this.chatMessages.value, ...data])
+			else
+				this.chatMessages.next([...this.chatMessages.value, data.message])
+		}
+
+		this.chatSocket.onclose = (err) => {
+			console.log('Chat WebSocket connection closed:');
+		}
 	}
 
 	send(message: any) {
-		// Send data to the server
-		console.log(message);
-		this.socket.send(JSON.stringify({
-			'message' : message,
-		}));
+		if (this.matchSocket?.readyState === WebSocket.OPEN)
+			this.matchSocket?.send(message);
 	}
 
-	receive() {
-		// Receive data from the server
-		this.socket.onmessage = (event) => {
-			console.log(event.data);
-			this.messages$.next(JSON.parse(event.data));
-		};
+	sendChatMessage(message: any) {
+		if (this.chatSocket?.readyState === WebSocket.OPEN)
+			this.chatSocket.send(message);
 	}
 
-	close() {
-		// Close the WebSocket connection
-		this.socket.close();
+	closeMatch() {
+		this.matchSocket?.close();
+	}
+
+	disconnectChat() {
+		this.chatSocket.close();
 	}
 }

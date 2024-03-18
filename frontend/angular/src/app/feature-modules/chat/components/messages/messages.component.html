@@ -1,0 +1,6 @@
+<div *ngIf="friend">
+	<div class="message" [ngClass]="{'sentMsg': msg.sender === friend.username}" *ngFor="let msg of messages">
+		<h4 *ngIf="msg.content != '/invite'">{{ msg.sender }}: {{ msg.content }}</h4>
+		<h4 *ngIf="msg.content === '/invite' && msg.sender === friend.username">{{ msg.sender }}: <a class="btn btn-primary" (click)="acceptGameInvite(friend)">ACCEPT</a></h4>
+	</div>
+</div>

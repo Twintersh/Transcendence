@@ -1,17 +1,29 @@
-<div class="match-container">
+<div *ngIf="win; else lose" class="match-container win">
 	<div class="matchId">
-		<h3>{{ game.title }}</h3>
-	</div>
-	<div class="matchWinner">
-		<p> Winner : {{ game.winner }}</p>
+		<h3> Win </h3>
 	</div>
 	<div class="matchScore">
-		<p> {{ game.scoreOp1 }} </p>
+		<h3> {{ game.wScore }} </h3>
 		<h3> VS </h3>
-		<p>	{{ game.scoreOp2 }} </p>
+		<h3> {{ game.lScore }} </h3>
 	</div>
 	<div class="matchPlayers">
-		<p> Player 1 </p>
-		<p> Player 2 </p>
+		<h4> {{ this.game.player2.username }} </h4>
 	</div>
 </div>
+
+<ng-template #lose>
+	<div class="match-container loss">
+		<div class="matchId">
+			<h3> Defeat </h3>
+		</div>
+		<div class="matchScore">
+			<h3> {{ game.lScore }} </h3>
+			<h3> VS </h3>
+			<h3> {{ game.wScore }} </h3>
+		</div>
+		<div class="matchPlayers">
+			<h4> {{ this.game.player1.username }} </h4>
+		</div>
+	</div>
+</ng-template>

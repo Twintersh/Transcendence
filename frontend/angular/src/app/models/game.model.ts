@@ -1,8 +1,37 @@
+import { User } from './user.model';
+
 export interface Game {
 	id: number;
-	title: string;
-	scoreOp1: number;
-	scoreOp2: number;
+	lScore: number;
+	wScore: number;
+	winner: User;
+	player1: User;
+	player2: User;
+}
+
+export interface GameData {
+	id: string;
+	paddle1: { x: number, y: number, score: number };
+	paddle2: { x: number, y: number, score: number };
+	ball: { x: number, y: number };
+}
+
+export interface GameResult {
 	winner: string;
-	loser: string;
+	lScore: number;
+	wScore: number;
+	duration: number;
+}
+
+export interface Player {
+	username: string;
+	avatar: string;
+	score: number;
+	winner: boolean;
+	ft_auth: boolean;
+}
+
+export interface GamePlayers {
+	player1: Player;
+	player2: Player;
 }

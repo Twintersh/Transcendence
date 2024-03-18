@@ -6,12 +6,14 @@ from rest_framework.parsers import MultiPartParser, FileUploadParser
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import update_last_login
-import requests
+import requests as py_request
+import json
+import os
 from django.http import JsonResponse
 
 from .models import User, FriendRequest, Avatar
 from game.models import Match
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from rest_framework.authtoken.models import Token
 
 from .serializers import *
@@ -24,66 +26,64 @@ def signup(request):
     if serializer.is_valid(raise_exception=True):
         serializer.save()
         user = get_object_or_404(User, email=request.data['email'])
-        avatar = Avatar(user=user)
-        avatar.save()
         user.set_password(request.data['password'])
+        Avatar.objects.create(user=user, image='media/avatars/default.jpg')
         user.save()
-        update_last_login(User, request.user)
         token = Token.objects.create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
 
-@api_view(['POST'])
-def signup42(request):
-    # Handle the request data from the frontend
-    data_from_frontend = request.data
-    token = data_from_frontend.get('token')
-
-    if not token:
-        return Response({'error': 'Token is missing in the request'}, status=status.HTTP_400_BAD_REQUEST)
-
-    external_api_endpoint = 'https://api.intra.42.fr/userinfo'
-
-    try:
-        # Make the GET request to the external API
-        headers = {'Authorization': f'Bearer {token}'}
-        response = requests.get(external_api_endpoint, headers=headers)
-
-        # Check if the request was successful (status code 200)
-        if response.status_code == 200:
-            # Parse the JSON data from the response
-            external_data = response.json()
-
-            # Process the external data and extract necessary information
-            username = external_data.get('username')
-            email = external_data.get('email')
-
-            # Assuming your User model has fields like 'username' and 'email'
-            user, created = User.objects.get_or_create(username=username, email=email)
-
-            # Perform any additional logic, such as updating the last login time
-            # update_last_login(user, user)
-
-    except requests.RequestException as e:
-        # Handle exceptions, such as connection errors
-        return JsonResponse({'error': f'Request failed: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    # If the external API response doesn't contain the necessary user data, you can create a user manually
-    external_user_data = {
-        'email': 'example@email.com',
-        'username': 'example_user',
-        'password': 'password123',
+def getToken(auth_code):
+    client_id = str(os.environ.get('FT_CLIENT_ID'))
+    client_secret = str(os.environ.get('FT_SECRET_KEY'))
+    httpmode = str(os.environ.get('HTTP_MODE'))
+    ipserv = str(os.environ.get('IP_SERVER'))
+    uri = httpmode + ipserv + "/users/callback"
+    token_url = 'https://api.intra.42.fr/oauth/token'
+    
+    data = {
+        "grant_type" : "authorization_code",
+        "client_id" : client_id,
+        "client_secret" : client_secret,
+        "code" : auth_code,
+        "redirect_uri": uri
     }
+    response = py_request.post(token_url, data=data)
+    token = response.json()
+    return token.get('access_token')
+    
 
-    # Create a user or perform other backend operations
-    external_user_serializer = UserRegisterSerializer(data=external_user_data)
-    if external_user_serializer.is_valid(raise_exception=True):
-        external_user_serializer.save()
-        user = get_object_or_404(User, email=external_user_data['email'])
-        user.set_password(external_user_data['password'])
+@api_view(['GET'])
+def callback(request):
+    auth_code = request.query_params.get('code')
+    if not auth_code:
+        return Response("Code not provided", status=status.HTTP_204_NO_CONTENT)
+    ft_token = getToken(auth_code)
+    user_response = py_request.get("https://api.intra.42.fr/v2/me", headers={"Authorization": f"Bearer {ft_token}"})
+    if user_response.status_code == 401:
+        return Response(ft_token, status=status.HTTP_401_UNAUTHORIZED)
+
+    httpmode = str(os.environ.get('HTTP_MODE'))
+    ipserv = str(os.environ.get('IP_SERVER'))[:-5]
+    content = user_response.json()
+    username = content.get('login')
+    avatar_link = content.get('image').get('link')
+    email = content.get('email')
+    try :
+        user = User.objects.get(username=username)
+        user.is_active = True
+        token, created = Token.objects.get_or_create(user=user)
         user.save()
+        redirect_url = httpmode + ipserv + ':443/?token=' + token.key     #443 POUR LE PROD MODE
+        return redirect(redirect_url)
+    except User.DoesNotExist:
+        user = User.objects.create(username=username, email=email, ft_auth=True)
+        avatar = Avatar.objects.create(user=user, image=avatar_link)
+        avatar.save()
+        user.is_active = True
         token = Token.objects.create(user=user)
-
-    return JsonResponse({'user': {'username': user.username, 'email': user.email}}, status=status.HTTP_201_CREATED)
+        user.save()
+        redirect_url = httpmode + ipserv + ':443/?token=' + token.key
+        return redirect(redirect_url)
 
 @swagger_auto_schema(method='POST', request_body=UserLoginSerializer)
 @api_view(['POST'])
@@ -91,10 +91,13 @@ def login(request):
     serializer = UserLoginSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     user = get_object_or_404(User, email=serializer.data['email'])
+    if user.ft_auth:
+        return Response("This user is authenticated with 42", status=status.HTTP_400_BAD_REQUEST)
     if not user.check_password(request.data['password']):
         return Response("Wrong password", status=status.HTTP_400_BAD_REQUEST)
     token, created = Token.objects.get_or_create(user=user)
-    update_last_login(User, user)
+    user.is_active = True
+    user.save()
     return Response({'token': token.key}, status=status.HTTP_200_OK)
 
 @swagger_auto_schema(method='GET')
@@ -102,17 +105,18 @@ def login(request):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 def isAuth(request):
 	if request.user.is_authenticated:
-		return Response("User is authenticated", status=status.HTTP_200_OK)
+		return Response(True, status=status.HTTP_200_OK)
 	else:
-		return Response("User is not authenticated", status=status.HTTP_401_UNAUTHORIZED)
+		return Response(False, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def logout(request):
     request.user.auth_token.delete()
-    update_last_login(User, request.user)
-    return Response("User logged out", status=status.HTTP_200_OK)
+    request.user.is_active = False
+    request.user.save()
+    return Response(True, status=status.HTTP_200_OK)
 
 @swagger_auto_schema(method='POST', request_body=UserUpdateSerializer)
 @api_view(['POST'])
@@ -134,6 +138,22 @@ def getUserInfo(request):
     user = request.user
     serializer = UserInfoSerializer(instance=user)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@swagger_auto_schema(method='GET')
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FileUploadParser])
+def getUserInfoById(request):
+	try :
+		user_id = request.query_params.get('id')
+	except ValueError:
+		return Response("Invalid ID", status=status.HTTP_400_BAD_REQUEST)
+	if not user_id:
+		return Response("No user_ provided", status=status.HTTP_400_BAD_REQUEST)
+	user = get_object_or_404(User, id=user_id)
+	serializer = UserInfoSerializer(instance=user)
+	return Response(serializer.data, status=status.HTTP_200_OK)
 
 @swagger_auto_schema(method='GET')
 @api_view(['GET'])
@@ -168,8 +188,6 @@ def uploadAvatar(request):
         avatar = Avatar(user=user, image=file)
         avatar.save()
         return Response("Avatar uploaded succesfully", status=status.HTTP_201_CREATED)
-
-
 
 # FRIENDS REQUESTS
 
@@ -285,15 +303,18 @@ def getBlockedUsers(request):
      return Response(serializer.data, status=status.HTTP_200_OK)
 
 #   MATCHES
-
-
 @swagger_auto_schema(method='GET')
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def getUserMatches(request):
-    user = request.user
-    Matches = user.p1Matches.all() | user.p2Matches.all()
-    MatchesSerializer = MatchSerializer(instance=Matches, many=True)
-    return Response(MatchesSerializer.data, status=status.HTTP_200_OK)
+	id = request.query_params.get('id')
+	if not id:
+		return Response("No id provided", status=status.HTTP_400_BAD_REQUEST)
+	user = get_object_or_404(User, id=id)
+	user.p1Matches.filter(winner=None).delete()
+	user.p2Matches.filter(winner=None).delete()
+	Matches = user.p1Matches.all() | user.p2Matches.all()
+	MatchesSerializer = MatchSerializer(instance=Matches, many=True)
+	return Response(MatchesSerializer.data, status=status.HTTP_200_OK)
 

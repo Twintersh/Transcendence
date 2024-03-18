@@ -5,7 +5,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import Room
+from .models import Room, Message
 from users.models import User
 from django.shortcuts import get_object_or_404
 
@@ -34,3 +34,13 @@ def getRoomName(request):
 	room.users.add(user, toUser)
 	room.save()
 	return Response({'room_id': room.id}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def removeInvites(request):
+	room_id = request.data['id']
+	room = get_object_or_404(Room, id=room_id)
+	Message.objects.filter(content__icontains="/invite").delete()
+	Message.objects.filter(content__icontains="/accept").delete()
+	return Response("Message deleted successfully", status=status.HTTP_200_OK)

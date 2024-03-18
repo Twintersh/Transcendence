@@ -1,17 +1,27 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
+
+import { Observable, Subject } from 'rxjs';
+
 import { CookieService } from './cookie.service';
 import { WebSocketService } from './websocket.service';
-import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+
+import { HTTP_MODE, IP_SERVER } from '../../env';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
 
-	matchSocket: number = 0; // inférence
+	matchSocket: number = 0;
+	lastMove: number = 0;
+	input: number = 0;
+	player: number = 0;
+	localOpp: string = '';
+	public gameEnded: boolean = false;
 	private gameElements$: Subject<any> = new Subject<any>();
+	readonly QueueMessages$: Subject<any> = new Subject<any>();
 
 	constructor(
 		private readonly http: HttpClient,
@@ -20,71 +30,123 @@ export class GameService {
 		private readonly webSocketService: WebSocketService
 	) { }
 
-	getMatch(token: string) {
-		//debugger;
-		console.log('getMatch');
-		const url: string = 'ws://' + "127.0.0.1:8000" +'/ws/game/queue/' + '?token=' + token;
-		const queueSocket = new WebSocket(url);
-
-		queueSocket.onopen = function(e) {
-			console.log('queueSocket open');
-			queueSocket.send(JSON.stringify({
-				'message': 'join',
-			}));
-		};
-
-		queueSocket.onclose = function(e) {
-			console.log('queueSocket close');
-		}
-
-		queueSocket.onmessage = (e) => {
-			console.log('queueSocket message');
-			const data = JSON.parse(e.data);
-			console.log(data.response);
-			if (data.response == 'match_found') {
-				queueSocket.close();
-				this.router.navigate(['/game/', data.match_id.toString()]);
-				//this.launchMatch(data.match_id, token);
-			}
-		};
+	getMatch(friend: string | null): void {
+		this.webSocketService.connectQueue(friend);
+		this.webSocketService.queueMessages$.subscribe((data) => {
+			this.QueueMessages$.next(data);
+		});
 	}
 
-	launchMatch(match_id: string) {
-		const token: string = this.cookieService.getCookie("authToken");
-		const matchSocket: string = 'ws://localhost:8000/ws/game/' + match_id + '/?token=' + token;
+	getLocalMatch(player1: string, player2: string): Observable<any> {
+		const token = this.cookieService.getCookie('authToken');
+		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
 
-		const gameSocket = this.webSocketService.connect(matchSocket);
-			
+		const body = { "player1" : player1, "player2" : player2 };
+		return this.http.post(HTTP_MODE + IP_SERVER + '/game/createMatch/', body, { headers });
+	}
+
+	launchMatch(match_id: string, local: boolean): void {
+		this.gameEnded = false;
+		this.webSocketService.connectMatch(match_id);
+		
 		this.webSocketService.messages$.subscribe((data) => {
-			this.gameElements$.next(data);
+			if (!this.gameEnded)
+				this.gameElements$.next(data);
+			else
+				this.gameElements$.complete();
 		});
 		
-		// Additional setup for keyboard events (optional)
-		document.addEventListener('keydown', this.sendInputs.bind(this), false);
-		document.addEventListener('keyup', this.sendInputs.bind(this), false);
-		console.log('WebSocket connection initiated');
+		if (local) {
+			document.addEventListener('keydown', this.sendInputsLocal.bind(this), false);
+			document.addEventListener('keyup', this.sendInputsLocal.bind(this), false);
+		}
+		else {
+			document.addEventListener('keydown', this.sendInputs.bind(this), false);
+			document.addEventListener('keyup', this.sendInputs.bind(this), false);
+		}
 	}
-		
-	// Send keyboard inputs to the server
+
 	private sendInputs(e: KeyboardEvent): void {
-		if (e.keyCode !== 83 && e.keyCode !== 87) {
-		return;
+		if (this.gameEnded)
+			return;
+		if (e.type != 'keyup' && e.keyCode == this.lastMove)
+			return;
+		if (e.type == 'keyup')
+			this.input = 0;
+		else if (e.keyCode == 83)
+			this.input = 1;
+		else if (e.keyCode == 87)
+			this.input = -1;
+		this.webSocketService.send(JSON.stringify({
+			'message': this.input})
+		);
+		if (e.type == 'keyup')
+			this.lastMove = 0;
+		else
+			this.lastMove = e.keyCode;
+	};
+
+	private sendInputsLocal(e : KeyboardEvent): void {
+		if (this.gameEnded)
+			return;
+		if (e.type != 'keyup' && e.keyCode == this.lastMove)
+			return
+		switch(e.keyCode)
+		{
+			case 83:
+				this.input = 1;
+				this.player = 1;
+				break;
+			case 87:
+				this.input = -1;
+				this.player = 1;
+				break ;
+			case 38 :
+				this.input = -1;
+				this.player = 2;
+				break;
+			case 40:
+				this.input = 1;
+				this.player = 2;
+				break;
 		}
-	
-		var input: number = e.keyCode;
-		if (e.type === 'keyup') {
-			input = 0;
-		}
-	
-		// Send keyboard input to the server using WebSocketService
-		this.webSocketService.send({
-			type: 'keyboard_input',
-			input: input,
-		});
+		if (e.type == 'keyup')
+			this.input = 0;
+		this.webSocketService.send(JSON.stringify({
+			'player' : this.player,
+			'message': this.input,
+		}));
+		if (e.type == 'keyup')
+			this.lastMove = 0
+		else
+			this.lastMove = e.keyCode
+	};
+
+	getQueueMessages(): Subject<any> {
+		return this.QueueMessages$;
 	}
 	
-	// Get an observable for game elements' positions
 	getGameElements(): Subject<any> {
 		return this.gameElements$;
+	}
+
+	getPlayers(matchId: string): Observable<any> {
+		const token = this.cookieService.getCookie('authToken');
+		const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+		return this.http.get(HTTP_MODE + IP_SERVER + `/game/getPlayers/?id=${matchId}`, { headers });
+	}
+
+	disconnectQueue(): void {
+		this.webSocketService.disconnectQueue();
+	}
+
+	endGame() {
+		this.gameEnded = true;
+		document.removeEventListener('keydown', this.sendInputsLocal.bind(this), false);
+		document.removeEventListener('keyup', this.sendInputsLocal.bind(this), false);
+		document.removeEventListener('keydown', this.sendInputs.bind(this), false);
+		document.removeEventListener('keyup', this.sendInputs.bind(this), false);
+		this.webSocketService.closeMatch();
 	}
 }

@@ -14,3 +14,30 @@
 	overflow-y: auto;
 	height: 100%;
 }
+
+.friend {
+	border: solid 4px #000;
+	box-shadow: 5px 5px 0px 0px #000;
+}
+
+.blockedUser {
+	background-color: #dc3545!important;
+}
+
+.interactableButton {
+	cursor: pointer;
+}
+
+h2 {
+	justify-items: center;
+	border: solid 4px #000;
+	box-shadow: 5px 5px 0px 0px #000;
+	background-color: #9D95E7;
+}
+
+#addFriendDropdown , .btn-primary , .btn-primary:active , input , input:hover, input:focus{
+	box-shadow: none !important;
+	transform: translate(0px, 0px);
+	margin: 0;
+	border: 0 !important;
+}

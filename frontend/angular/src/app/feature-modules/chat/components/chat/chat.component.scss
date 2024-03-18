@@ -3,7 +3,11 @@
 	border: solid 4px black;
     padding: 1rem;
     background-color: #53A6AC;
+}
 
+.messages {
+	height: 50vh;
+	overflow-y: scroll;
 }
 
 h2 {

@@ -5,15 +5,16 @@
 }
 
 .card {
-	width: 18rem;
-	animation: 0.5s;
 	border: 4px solid black;
-	transition: all 1s;
+	transition: all .25s;
 	border-radius: 10px;
+	margin-bottom: 50px;
+	padding-bottom: 20px;
+	height: 90%;
 
 	&:hover {
 		cursor: pointer;
-		box-shadow: black 6px 6px 6px 0px;
-		transform: scale(1.01);
+		box-shadow: black 5px 5px 5px 0px;
+		transform: scale(1.05);
 	}
 }

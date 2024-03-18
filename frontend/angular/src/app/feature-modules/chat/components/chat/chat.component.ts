@@ -1,4 +1,17 @@
 import { Component } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+
+import { Router } from '@angular/router';
+
+import { Subscription } from 'rxjs';
+
+
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+
+import { ChatService } from 'src/app/services/chat.service';
+import { GameService } from 'src/app/services/game.service';
+import { UserService } from 'src/app/services/user.service';
+
 import { User } from 'src/app/models/user.model'
 
 @Component({
@@ -7,31 +20,41 @@ import { User } from 'src/app/models/user.model'
   styleUrls: ['./chat.component.scss']
 })
 export class ChatComponent {
-	friends!: User[];
+	friends: User[] = [];
+	FriendSubscription: Subscription = new Subscription();
+	myForm: FormGroup;
+	selectedFriend!: User;
 
-	constructor() {
-		this.friends = [
-			{ id: 1, username: 'Jack', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 2, username: 'Titi', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 3, username: 'Back', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 4, username: 'Toto', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 5, username: 'Tack', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 6, username: 'Tutu', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 7, username: 'Jack', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 8, username: 'Titi', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 9, username: 'Back', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 10, username: 'Toto', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 11, username: 'Tack', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 12, username: 'Tutu', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 13, username: 'Jack', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 14, username: 'Titi', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 15, username: 'Back', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 16, username: 'Toto', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 17, username: 'Tack', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-			{ id: 18, username: 'Tutu', avatar: 'https://www.w3schools.com/howto/img_avatar.png', isActive: true},
-		];
+	private modal!: NgbModalRef;
 
-		console.log('Friends:', this.friends);
-		console.log('Friends:', this.friends.length);
+	constructor(
+		private readonly fb: FormBuilder,
+		private readonly router: Router,
+		private readonly gameService: GameService,
+		private readonly userService: UserService,
+		private readonly ngbModal: NgbModal,
+		private readonly chatService: ChatService
+	) { 
+		this.myForm = this.fb.group({
+			message: new FormControl('', Validators.required)
+		});
 	}
+
+	sendMessage(): void {
+		if (this.myForm.invalid) {
+			return;
+		}
+		this.chatService.sendMessage(this.myForm.value);
+		this.myForm.reset();
+	}
+
+	onSelect(friend: User): void {
+		this.selectedFriend = friend;
+	}
+
+	sendGameInvite(friend: User): void {
+		this.myForm.value.message = "/invite";
+		this.chatService.sendMessage(this.myForm.value);
+	}
+
 }

@@ -2,10 +2,10 @@ version: '3.8'
 
 services:
   angular:
-    image: angular
     container_name: angular
     networks:
       - transcendence
+    restart: always
     build:
       context: containers/angular
       dockerfile: Dockerfile
@@ -17,10 +17,10 @@ services:
       - django
 
   django:
-    image: django
     container_name: django
     networks:
       - transcendence
+    restart: always
     build:
       context: containers/django
       dockerfile: Dockerfile
@@ -33,17 +33,58 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
-    # healthcheck :
-    #   test:  nc -w 5 127.0.0.1 4200
-    #   interval: 5s
-    #   retries: 30
-    
-    # depends_on:
-    #   angular-app:
-    #     condition: service_healthy
+
+  redis:
+    image: redislabs/redismod
+    container_name: redis
+    restart: always
+    ports:
+      -  6379:6379
+    networks:
+      - transcendence
+    depends_on:
+      - django
+
+  postgresql:
+    container_name: postgresql
+    build:
+      context: ./containers/postgres/
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      .env
+    networks:
+      - transcendence
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_INITDB_ARGS: --no-locale --encoding=UTF-8
+      PG_DATA: /var/lib/postgresql/data
+    healthcheck:
+      test: nc -w 5 127.0.0.1 5432
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - ./volumes/db:/var/lib/postgresql/data
+ 
+  adminer:
+    container_name: adminer
+    image: adminer:latest
+    restart: always
+    networks:
+      - transcendence
+    env_file:
+      .env
+    ports:
+      - "${ADMINER_PORT}:8080"
+    depends_on:
+      postgresql:
+        condition: service_healthy
 
 networks:
   transcendence:
-
-volumes:
-  db:
+    driver: bridge

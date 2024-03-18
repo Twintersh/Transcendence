@@ -6,25 +6,20 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { NavbarComponent } from './navbar/navbar.component';
 import { PageNotFoundComponent } from './pagenotfound/pagenotfound.component';
-import { FriendComponent } from './friend/friend.component';
 
 @NgModule({
-  declarations: [
-    NavbarComponent,
-    PageNotFoundComponent,
-	FriendComponent,
-  ],
-  imports: [
+declarations: [
+	PageNotFoundComponent
+],
+imports: [
 	NgbModule,
-    CommonModule,
+	CommonModule,
 	FormsModule,
 	ReactiveFormsModule
-  ],
-  exports: [
-    NavbarComponent,
-    PageNotFoundComponent,
-	FriendComponent
-  ]
+],
+exports: [
+	PageNotFoundComponent
+]
 })
 export class SharedModule {
 }

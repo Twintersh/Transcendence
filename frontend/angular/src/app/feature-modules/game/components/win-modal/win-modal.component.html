@@ -1,0 +1,41 @@
+<div class="modal-content text-center">
+    <div class="modal-header">
+        <h2> The results </h2>
+    </div>
+	<div *ngIf="win; else lose" class="modal-body">	
+		<div class="row">
+			<img height="128px"  width="128px" src="../../../../../assets/game/win.svg" alt="win logo">
+			<h3> {{ status }} </h3>
+		</div>
+		<div class="row">
+			<h3> <span class="badge text-bg-secondary">{{ players.player1.score }}</span> - <span class="badge text-bg-secondary">{{ players.player2.score }}</span> </h3>
+			<h3> Time {{ gameResult.duration }}s </h3>
+		</div>
+		<div *ngIf="tournament && !endTournament && nextPlayers[0]">
+			<h3> Next game : {{ nextPlayers[0] }} VS {{ nextPlayers[1] }} </h3>
+		</div>
+	</div>
+    <div *ngIf="tournament && !endTournament; else single" class="modal-footer">
+		<button type="button" class="btn btn-danger" (click)="nextMatch()">Next Game</button>
+        <button type="button" class="btn btn-danger" (click)="leaveMatch()">Leave match</button>
+    </div>
+</div>
+
+<ng-template #lose>
+	<div class="modal-body">	
+		<div class="row">
+			<img height="128px"  width="128px" src="../../../../../assets/game/lose.svg" alt="lose logo">
+			<h3> {{ status }} </h3>
+		</div>
+		<div class="row">
+			<h3> <span class="badge text-bg-secondary">{{ players.player1.score }}</span> - <span class="badge text-bg-secondary">{{ players.player2.score }}</span> </h3>
+			<h3> Time {{ gameResult.duration }}s </h3>
+		</div>
+	</div>
+</ng-template>
+
+<ng-template #single>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="leaveMatch()">Leave match</button>
+    </div>
+</ng-template>

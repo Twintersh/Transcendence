@@ -70,7 +70,7 @@
 			const score2 = document.getElementById('Score2');
 			
 			const matchSocket = new WebSocket(
-				'ws://'
+				'wss://'
 				+ window.location.host
 				+ '/ws/game/'
 				+ match_id
@@ -78,7 +78,7 @@
 				+ token
 				);
 						
-				
+
 			matchSocket.onopen = function(e) {
 				if (local)
 				{

@@ -1,10 +1,10 @@
+@import '../../../../../colors.scss';
 
 .backpanel {
 	box-shadow: 0.75rem 0.75rem black;
 	border: solid 4px black;
 	padding: 1rem;
 	background-color: #53A6AC;
-
 }
 
 .img-fluid {
@@ -22,16 +22,13 @@ h2 {
 	background-color: #9D95E7;
 }
 
-.gameList {
-    min-height: 80vh;
-    margin-bottom: 10rem;
+.edit {
+	background-color: $tertiary;
 }
 
 //////////////////////////
 /*		ANIMATIONS		*/
 //////////////////////////
-
-
 
 .spinning {
 	animation:	spin 2.5s linear infinite;

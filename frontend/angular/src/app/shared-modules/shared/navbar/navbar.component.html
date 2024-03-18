@@ -1,6 +1,6 @@
 <nav *ngIf="isAuthenticated" class="navbar mx-5">
-	<a class="navbar-brand" href="/home">
-		<img class="selectDisable" src="../../../../assets/logo.svg" width="64" href="/home">
+	<a class="navbar-brand" (click)="toHome()">
+		<img class="selectDisable" src="../../../../assets/logo.svg" width="64" alt="logo" (click)="toHome()">
 		<span class="selectDisable">PONG</span>
 	</a>
 	<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
@@ -16,16 +16,24 @@
 		<div class="offcanvas-body">
 			<!-- Display items in offcanvas if the currentPage is not 'home' -->
 			<ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-				<li class="nav-item"> <a class="nav-link" aria-current="page" href="/home">Home</a> </li>
-				<li class="nav-item"> <a class="nav-link" href="/user">Profile</a> </li>
+				<li class="nav-item"> <a class="nav-link" aria-current="page" (click)="toHome()" data-bs-dismiss="offcanvas">Home</a> </li>
+				<li class="nav-item"> <a class="nav-link" (click)="toMyProfile()" data-bs-dismiss="offcanvas">Profile</a> </li>
 				<li class="nav-item"> <a class="nav-link" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFriend" aria-controls="offcanvasFriend">Friends</a></li>
-				<li class="nav-item"> <a class="nav-link" aria-current="page" href="/chat">Chat</a> </li>
-				<li class="nav-item"> <a class="nav-link" href="/settings">Settings</a> </li>
+				<li class="nav-item"> <a class="nav-link" aria-current="page" (click)="toChat()" data-bs-dismiss="offcanvas">Chat</a> </li>
 			</ul>
-			<button class="btn btn-lg mt-5 btn-danger" (click)="logout()">Logout</button>
+			<button class="btn btn-lg mt-5 w-75 btn-danger" (click)="logout()">Logout</button>
 		</div>
 	</div>	
 	<div class="offcanvas offcanvas-end offcanvasFriend" tabindex="-1" id="offcanvasFriend" aria-labelledby="offcanvasFriend">
-		<app-friend></app-friend>
+		<div class="offcanvas-header">
+			<h4 class="offcanvas-title">Friends</h4>
+			<button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="offcanvas"></button>
+		</div>
+			
+		
+		<div class="offcanvas-body justify-content-center">
+			<app-friend></app-friend>
+		</div>
 	</div>
 </nav>
+
